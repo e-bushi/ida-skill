@@ -128,11 +128,15 @@ Illustrations. During practice, do not open this file.
       ▒░░░░░░░░░░░░░░░░░░░    1%  +0.5
 ```
 
-## Not yet, in the reply
+## idk, pasted before the choice
 
-The person typed idk. The only command was `sh ~/.agents/skills/ida/ida turn idk`. The chat reply pastes the fence below, banner included, before any choice tool. If that command stopped at the banner, the two sentences and the three steps are written under the fence. The choice tool comes after that, with got it, another like this, and menu. The reveal is not inside the tool.
+The person typed idk. The only command was:
 
-## Not yet
+```bash
+sh ~/.agents/skills/ida/ida turn idk
+```
+
+The reply pastes that stdout verbatim in a text fence before anything else. Nothing comes before the fence. The choice tool comes after it, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
 
 ```text
   □□□  not yet. here's what to reach for.
@@ -146,14 +150,7 @@ The person typed idk. The only command was `sh ~/.agents/skills/ida/ida turn idk
   Saying so is the honest start. Here's one way in.
  ​
  ​
-  ────────────────────────────────────────────────────────────────────────
- ​
-  01  name the bad case  the raise does not come
- ​
-  02  price that year   salary gap times twelve
- ​
-  03  then decide       only if that year is survivable
- ​
+  ■ H O W   T O   A P P L Y   I T
  ​
   Name the failure before you admire the offer.
 ```

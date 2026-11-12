@@ -14,7 +14,7 @@ First run only. The opening already asks:
 
 One message with all three is fine. Map what they said into role, interests, and decisions. If they skip one, store `""` for that field. Do not invent a job. Do not block practice on a polished profile.
 
-`update my profile`: show the three stored lines, ask what to change, then `ida.py profile` with only the flags they changed. Return to the menu. Do not start a scenario in that turn unless they ask.
+`update my profile`: show the three stored lines, ask what to change, then one quiet `profile` command with only the flags they changed. Do not start a scenario in that turn unless they ask. The next `ida turn` shows the menu.
 
 Use the profile in scenes. Work scenes draw on the role and the decisions. Other scenes draw on the interests. Across a sitting, mix the two. Do not announce the mix. If the profile is empty, write ordinary scenes and do not pretend you know their job.
 
@@ -22,27 +22,27 @@ Use the profile in scenes. Work scenes draw on the role and the decisions. Other
 
 `[1]` section, `[2]` named ideas, `[3]` random. All sections are open. There is no unlocking and no mastery gate.
 
-Section: `ida.py next --phylum <id>`. Add `--category` only when they name one. `reasoning tools` is in both axiom and momentum, so pass `--phylum` with it.
+Section: `sh ~/.agents/skills/ida/ida turn` plus the lane, then the idea and the three quotes. `reasoning tools` sits in both thinking clearly and deciding and acting, so the lane in that command picks the home.
 
-Named ideas: `ida.py next --name "<idea>"`, once per name. If the line starts with `UNMATCHED`, ask before a card. Do not show the line.
+Named ideas: the first quote is the idea. One idea per card. If the reply is the menu and stderr says there is no idea under that name, ask before you invent a card. Do not show that line.
 
-Random: `ida.py next --random`. The script prefers ideas with no attempts, then ideas never marked strong, and it skips ids from the last 8 scenarios when anything else is left.
+Random, daily, and spot with no quotes let ida pick. It prefers ideas with no attempts, then ideas never marked strong, and it skips ideas from the last 8 scenarios when anything else is left. Pass the quotes when you already know which idea you are teaching.
 
-Stay in the same selection from card to card. Ask for a new choice only when they ask to switch, or when a named list runs out. Then: "That's the list. A section, more ideas, or random?"
+Stay in the same lane from card to card. Ask for a new choice only when they ask to switch, or when a named list runs out. Then: "That's the list. A section, more ideas, or random?"
 
-`next` may name two ideas, tab-separated after the first. Write one scene that honestly fits both. Do not add a hidden third target.
+Write one scene for the idea you dealt. Do not add a hidden second target.
 
 ## Writing the card
 
-- The first field from `next` is `decide` or `spot`. `decide` is a stake. `spot` is "what is this called?"
+- A lane card is a stake. `spot` is "what is this called?"
 - Second person. A few sentences. One scene.
-- Do not name the intended idea. Do not quote its law. Do not define it in the setup.
+- Do not name the intended idea in the scene. Do not quote its law. Do not define it in the setup.
 - Do not reuse a premise you already used in this sitting.
 - Specific: a person, a number, a thing they could lose. No "consider a company".
-- When the line contains `opts`, those names are the choices, in that order. Four lines. Do not invent a fifth.
-- Draw the card from `references/format.md`. `next` already stored the idea. Do not run a second command before you show it.
+- A multiple-choice card lists the names ida printed. Do not invent another.
+- The deal command prints the card. Paste it. Do not run a second command to draw it.
 
-Mode switches: "multiple choice", "choices", or "easier" means the next `ida.py next` gets `--choices`. "free text" or "no choices" leaves it off. If a card is on screen and they switch, draw that same scene again in the new shape.
+Mode switches: "multiple choice", "choices", or "easier" means the next deal is `spot`. "free text" or "no choices" leaves spot off. If a card is on screen and they switch, `retry` uses the saved scene.
 
 ## Grading
 
@@ -81,13 +81,15 @@ Prefer a neighbor that is actually in the library when you say "also consider". 
 
 ## What to record
 
-One command, after the answer:
+One command, after the answer. The answer is one quoted argument. Do not write a file. Do not pipe stdin.
 
-`sh ~/.agents/skills/ida/ida turn` with the grade in `/tmp/ida-screen.json`
+`sh ~/.agents/skills/ida/ida turn "their answer"`
 
-Add `--id <id>` when they practiced a different library idea than the one `next` stored. For `idk`, or a miss that named nothing in the library, omit `--id` so the stored idea takes the grade. Do not put a miss on an idea they never mentioned.
+That records a strong grade. A thin answer is `sh ~/.agents/skills/ida/ida turn partial "their answer"`. A wrong one is `sh ~/.agents/skills/ida/ida turn miss "their answer"`. For idk, `sh ~/.agents/skills/ida/ida turn idk` with no extra words. The scene, the summary, and the explanation were saved when the card was dealt, and the reveal is rebuilt from that.
 
-The command prints nothing. Do not announce it.
+The dealt idea takes the grade. If they reached for a fair different idea, say so in the reply after the screen. Do not put a miss on an idea they never mentioned.
+
+The command prints the screen. Paste it. Do not announce the command.
 
 The session summary counts scenarios. A strong idea fills a full share of its section. A partial idea fills half. A miss or an idk fills nothing. The summary still counts one scenario.
 
@@ -111,9 +113,10 @@ The choice tool comes after the block is in the reply. Single select. Short labe
 
 When the screen ends in a `›` line, that line is the prompt. Honor it. A free-text card has no choice tool and no hint line. The fence ends at the question, and the reply ends so they can type. idk, hint, and skip are still valid typed replies. The choice tool is only a menu, a multiple-choice answer, or the next step after feedback. It is never a substitute for `■ T H E   Q U E S T I O N`.
 
-- "hint" before an answer: one nudge, no `save`.
-- "idk" or "skip": the NOT YET screen, then `save --result idk`.
-- a thin answer: PARTIAL. A wrong one: NOT YET, and `save --result miss`.
+- "hint" before an answer: `sh ~/.agents/skills/ida/ida turn hint`. One nudge from the saved explanation. No new grade.
+- "idk": `sh ~/.agents/skills/ida/ida turn idk`. The reveal screen, then the choice tool only after that screen is in the reply.
+- "skip": `sh ~/.agents/skills/ida/ida turn skip`. A miss, then the menu.
+- a thin answer: `sh ~/.agents/skills/ida/ida turn partial "their answer"`. A wrong one: `sh ~/.agents/skills/ida/ida turn miss "their answer"`.
 - "why" or "show me": one more sentence in ida's voice. No new card. Do not attribute it to a real person.
 - "next", "got it", "another like this", or "retry": another card, same selection. "retry" repeats the same scene.
 - "menu": the practice menu.
@@ -121,6 +124,6 @@ When the screen ends in a `›` line, that line is the prompt. Honor it. A free-
 
 On the screen the grades are only STRONG, PARTIAL, and NOT YET. idk and miss both use NOT YET. The file still stores them apart, and neither fills the bar.
 
-Run `ida.py end` with no output, then `ida.py open` once if you need fresh bar counts, and draw the session sheet. The sign-off rotates: session 1 uses "Clarity is a competitive edge.", session 2 uses "The people who see clearly win.", then back. Do not show the commands.
+`sh ~/.agents/skills/ida/ida turn done` is the summary. Paste it. The sign-off rotates: session 1 uses "Clarity is a competitive edge.", session 2 uses "The people who see clearly win.", then back. Do not show the command. Do not run a second command.
 
 Between scenarios, do not re-teach the whole library. Do not list lanes again unless they ask.

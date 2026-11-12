@@ -1,54 +1,55 @@
 # Commands
 
-Read this instead of `--help`. `--help` is refused on purpose. One shell command per user message. No fallback chain.
+Read this instead of `--help`. `--help` is refused on purpose. One shell command per user message. No fallback chain. No second command.
 
 The shim is `ida` next to this skill. Run it with `sh`. The usual install:
 
 ```bash
 sh ~/.agents/skills/ida/ida turn
-sh ~/.agents/skills/ida/ida turn 3
+sh ~/.agents/skills/ida/ida turn "their answer"
+sh ~/.agents/skills/ida/ida turn 1 "inversion" "the scene" "one-line summary" "short explanation. How to apply it here."
 sh ~/.agents/skills/ida/ida turn idk
-sh ~/.agents/skills/ida/ida turn next
+sh ~/.agents/skills/ida/ida turn next "next idea" "the scene" "one-line summary" "short explanation. How to apply it here."
 sh ~/.agents/skills/ida/ida turn done
 ```
 
 If SKILL.md was loaded from another directory, use that directory, still with `sh`, still one command. Do not search for a binary. Do not pass `--help`. Do not explore flags.
 
-Stdout is the plain screen. Paste it into a `text` fence. Stderr is one JSON line for you. Never paste stderr. Never quote it. Never narrate the command.
+Do not write a temp file. Do not use a file-edit tool. Do not use a heredoc. Do not pipe stdin. Do not chain commands. The words the command needs are quoted arguments on that one command.
 
-A long answer, a scene, or an idk reveal does not go on the command line. Write `/tmp/ida-screen.json` with the file tool, then:
+Stdout is the plain screen. Paste it into a `text` fence. Its last line is a spacer, so a collapsed tail is empty. Keep that spacer in the fence.
 
-```bash
-sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json
-```
-
-That is still one command. No heredoc.
+Stderr stays empty, except after `ida turn idk`, which prints one reminder and then a spacer. Do not paste stderr. Do not quote it. There is no JSON line.
 
 ## ida turn
 
 | Argument | Meaning |
 | --- | --- |
-| (none) | First run: the next profile question. Otherwise the menu, or the open card again. |
-| `1` to `7` | A lane, when the menu is waiting. 1 thinking clearly, 2 knowing what's true, 3 blind spots, 4 reading people, 5 playing to win, 6 seeing ripple effects, 7 deciding and acting. |
-| a spoken lane name | Same as the number. |
-| `daily` | One card chosen for today. |
-| `spot` | A quick multiple-choice card. |
-| `surprise` | A random card. |
-| `next` | The next card after feedback. |
-| `retry` | The same idea again. |
+| (none) | First run: the next profile question. Otherwise the menu. |
+| `1` to `7`, then quotes | Deal a card in that lane. 1 thinking clearly, 2 knowing what's true, 3 blind spots, 4 reading people, 5 playing to win, 6 seeing ripple effects, 7 deciding and acting. |
+| a spoken lane name, then quotes | Same as the number. |
+| `"idea"` | First quote. A library name. ida deals that idea. |
+| `"scenario"` | Second quote. The scene the person reads. Saved in `~/.ida`. |
+| `"summary"` | Third quote. One line about the premise. Saved. |
+| `"explanation"` | Fourth quote. One or two sentences: the idea, then how to apply it. Saved. `idk` and `hint` reuse it. |
+| `daily`, `spot`, `surprise` | Same quotes when you already know the idea. With no quotes, ida picks and saves a short explanation from the library. |
+| `next` | The next card. Pass a new idea and the same three quotes. |
+| `retry` | The same idea again. The saved scene is reused when you pass no quotes. |
+| `"their answer"` | A free-text answer while a card is open. One quoted argument. Recorded as strong. |
+| `partial "their answer"` | A thin answer. |
+| `miss "their answer"` | A wrong answer. Returns to the menu. |
+| `idk` | Save idk and print the full reveal from the saved card: the name, the 3-row banner, the short explanation, how to apply it. No other arguments. |
+| `hint` | The card again, plus one nudge from the saved explanation. No banner. |
+| `skip` | Save a miss and return to the menu. |
 | `why` | The last feedback, one level down. |
 | `menu` | The seven lanes. |
 | `done` | End the sitting and show the summary. |
 | `--typed` | No choice tool on this host. Remember it for the sitting. Screens then end with a `›` line. Pass it once, on the first turn. |
-| `idk` | Save idk and show the banner. The JSON carries `explain`, `moves`, and `closing`. |
-| `skip` | Save a miss and return to the menu. |
 | a number during a choice card | That option. A correct option is strong. |
 
-Stdin JSON keys, all optional: `answer`, `choice`, `result` (`strong`, `partial`, `miss`, `idk`), `summary`, `explain`, `moves` (list of `[title, detail]`), `closing`, `comment`, `reached`, `deeper`, `got`, `missing`, `try`, `carry`, `body`, `name`, `id`.
+`ida turn idk` does not take the explanation again. If you did not pass one when you dealt the card, ida uses the library line it saved at deal time.
 
-If the card rail contains the word `SCENE`, replace that word in the fence with the scene. Do not run a second command to redraw it.
-
-Stderr JSON keys: `screen`, `await`, `id`, `name`, `section`, `phylum`, `practice`, `mode`, `number`, `options`, `fill`, `error`.
+A card has no `SCENE` token. The scene you quoted is already on the screen.
 
 ## Other commands
 
@@ -56,11 +57,11 @@ These are for tests and for `ida turn` itself. A sitting does not call them.
 
 | Command | Arguments | What it prints |
 | --- | --- | --- |
-| `open` | `--path` | One JSON line: `kind`, `line`, `bars`. |
+| `open` | `--path` | One JSON line, then a spacer. |
 | `profile` | `--role`, `--interests`, `--decisions` | Nothing. |
-| `next` | `--random`, `--phylum`, `--category`, `--name` (repeatable), `--choices`, `--seed`, `--fresh`, `--daily`, `--spot` | One JSON line: `id`, `name`, `section`, `phylum`, `practice`, `mode`, `number`, `options`. |
-| `save` | `--result` (`strong`, `partial`, `miss`, `idk`), `--id`, `--summary`. The same JSON keys as `turn` may arrive on stdin. | Nothing. Stores the reveal for `show`. |
-| `show` | `opening`, `menu`, `card`, `strong`, `partial`, `idk`, `summary`. Optional `--beat`, `--phylum`, `--number`, `--total`, `--body`, `--kind`, `--mode`, `--comment`, `--reached`, `--deeper`, `--got`, `--missing`, `--try`, `--name`, `--explain`, `--closing`, `--carry`, `--move`. Prefer stdin JSON. | The plain screen on stdout. |
+| `next` | `--random`, `--phylum`, `--category`, `--name` (repeatable), `--choices`, `--seed`, `--fresh`, `--daily`, `--spot` | One JSON line, then a spacer. |
+| `save` | `--result` (`strong`, `partial`, `miss`, `idk`), `--id`, `--summary` | Nothing. |
+| `show` | `opening`, `menu`, `card`, `strong`, `partial`, `idk`, `summary`. Optional `--beat`, `--phylum`, `--number`, `--total`, `--body`, `--kind`, `--mode`, `--comment`, `--reached`, `--deeper`, `--got`, `--missing`, `--try`, `--name`, `--explain`, `--closing`, `--carry` | The plain screen on stdout, then a spacer. |
 | `end` | none | Nothing. Closes the sitting. |
 
 `--path` on any command chooses the progress file. The default is `~/.ida/progress.json`.

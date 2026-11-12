@@ -1,12 +1,12 @@
 # Format
 
-`sh ~/.agents/skills/ida/ida turn` prints the screen in plain text on stdout. One command. No fallback chain. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The flags are in `references/commands.md`.
+`sh ~/.agents/skills/ida/ida turn` prints the screen in plain text on stdout. One command. No fallback chain. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The arguments are in `references/commands.md`.
 
-Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Stderr is one JSON line for the agent. It is not part of the fence.
+Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Do not paste stderr.
 
-A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
+A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji. Every command that prints ends with one more spacer, so the collapsed tail is empty.
 
-Do not pass the scene, the explanation, or the steps as command flags. Write `/tmp/ida-screen.json` and run `sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json`.
+Pass the scene, the summary, and the explanation as quoted arguments on the command that deals the card. `ida turn idk` rebuilds the reveal from what that command saved. Do not write a temp file. Do not use a heredoc. Do not pipe stdin. Do not use a file-edit tool.
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
@@ -46,7 +46,7 @@ Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss 
 
 ## Hosts
 
-Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line. That is why the reply fence is required even when you also see color. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
+Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line as a dim preview. That last line is a spacer, so the preview is empty. The reply fence is still required. On idk the fence is the whole reveal, and it comes before the choice tool. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
 
 ```bash
 sh ~/.agents/skills/ida/ida turn idk
@@ -207,14 +207,7 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   Saying so is the honest start. Here's one way in.
  ​
  ​
-  ────────────────────────────────────────────────────────────────────────
- ​
-  01  name the bad case  the raise does not come
- ​
-  02  price that year   salary gap times twelve
- ​
-  03  then decide       only if that year is survivable
- ​
+  ■ H O W   T O   A P P L Y   I T
  ​
   Name the failure before you admire the offer.
 ```
@@ -326,4 +319,4 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
 
 ## Machine line
 
-`ida.py open` still prints one machine line for you. Do not show it. `ida.py show` is what the person sees.
+A sitting runs `ida turn` only. `open` and `next` print one JSON line for tests, then a spacer. Do not show that JSON.

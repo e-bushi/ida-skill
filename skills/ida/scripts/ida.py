@@ -1,7 +1,8 @@
-"""The only command a sitting should run.
+"""The only command a sitting should run is `ida turn`.
 
-open prints one machine line. save, profile, and end print nothing.
-Do not show this output in the chat. Draw the screen yourself.
+Stdout is the plain screen. Its last line is a spacer, so a collapsed
+log has an empty tail. idk prints one reminder on stderr, then a spacer.
+`turn` does not read stdin and does not write a temp file.
 """
 
 from __future__ import annotations
@@ -13,7 +14,16 @@ import sys
 from types import SimpleNamespace
 
 from catalog import load_catalog
-from common import DISPLAY_NAMES, DISPLAY_ORDER, RESULTS, ROOT, progress_path
+from common import (
+    DISPLAY_NAMES,
+    DISPLAY_ORDER,
+    PROMPT_LIMIT,
+    RESULTS,
+    ROOT,
+    SPACER,
+    SUMMARY_LIMIT,
+    progress_path,
+)
 from color import color_mode, paint
 from progress import (
     end_session,
@@ -82,7 +92,7 @@ def cmd_open(path) -> None:
     touch_streak(data)
     save_file(path, data)
     _doc, catalog = load_catalog()
-    sys.stdout.write(json.dumps(status_json(data, catalog), ensure_ascii=False) + "\n")
+    write_machine(json.dumps(status_json(data, catalog), ensure_ascii=False))
 
 
 def cmd_profile(path, args) -> None:
@@ -111,7 +121,7 @@ def _run_pick(path, args) -> dict:
         command.extend(["--ids", args.ids])
     proc = subprocess.run(command, capture_output=True, text=True, check=False)
     if proc.returncode != 0:
-        sys.stderr.write(proc.stderr or proc.stdout)
+        _err(proc.stderr or proc.stdout or "could not deal a card")
         raise SystemExit(1)
     return json.loads(proc.stdout)
 
@@ -138,7 +148,7 @@ def deal(path, data, args) -> dict:
         selection = "section"
     mode = "choice" if args.choices else "free"
     if data.get("session") and data["session"].get("in_progress") and not args.fresh:
-        sys.stderr.write("a scenario is in progress\n")
+        _err("a scenario is in progress")
         raise SystemExit(1)
     start_session(
         data,
@@ -194,7 +204,7 @@ def deal(path, data, args) -> dict:
 
 def cmd_next(path, args) -> None:
     data = load_file(path)
-    sys.stdout.write(json.dumps(deal(path, data, args), ensure_ascii=False) + "\n")
+    write_machine(json.dumps(deal(path, data, args), ensure_ascii=False))
 
 
 def read_stdin_payload() -> dict:
@@ -244,7 +254,7 @@ def cmd_save(path, args) -> None:
     intended = live.get("entry_ids") or []
     credited = args.id or payload.get("id") or (intended[0] if intended else None)
     if not credited:
-        sys.stderr.write("nothing to save\n")
+        _err("nothing to save")
         raise SystemExit(1)
     summary = args.summary or str(payload.get("summary") or "")
     record_attempt(
@@ -311,7 +321,7 @@ def cmd_show(path, args) -> None:
     elif screen == "card":
         body = args.body or spec.get("body") or ""
         if not str(body).strip():
-            sys.stderr.write("card needs a scene\n")
+            _err("card needs a scene")
             raise SystemExit(1)
         text = render.card(
             int(spec.get("number") or args.number or 1),
@@ -349,14 +359,10 @@ def cmd_show(path, args) -> None:
             typed=typed,
         )
     elif screen == "idk":
-        moves = _moves(spec, args.move or [])
-        while len(moves) < 3:
-            moves.append(("keep going", "one concrete note"))
         text = render.feedback_not_yet(
             args.name or spec.get("name") or "the idea",
             args.explain or spec.get("explain") or "Saying so is the honest start. Here's one way in.",
-            moves[:3],
-            args.closing or spec.get("closing") or "Name the idea, then say what it changes here.",
+            args.closing or spec.get("apply") or spec.get("closing") or "Name the idea, then say what it changes here.",
             typed=typed,
         )
     elif screen == "summary":
@@ -399,26 +405,79 @@ def cmd_show(path, args) -> None:
         )
         del log
     else:
-        sys.stderr.write("unknown screen\n")
+        _err("unknown screen")
         raise SystemExit(1)
     if note and screen in ("strong", "partial", "menu", "summary"):
         lane, _, mark = note.partition("|")
-        text = text + f"\n\n  ■ {lane} crossed {mark}%"
+        text = text + "\n" + SPACER + "\n" + f"  ■ {lane} crossed {mark}%"
         practice = data.setdefault("practice", {})
         practice["pending_note"] = None
         save_file(path, data)
     elif screen == "menu":
         save_file(path, data)
-    sys.stdout.write(paint(text, color_mode()) + "\n")
+    write_screen(text)
 
 
-def emit(path, data, text: str, info: dict) -> None:
+REMIND_IDK = "paste this reveal in a text fence before the choice tool"
+NAV = {
+    "menu",
+    "back to the menu",
+    "done",
+    "stop",
+    "next",
+    "again",
+    "another",
+    "another like this",
+    "retry",
+    "why",
+    "show me",
+    "hint",
+    "skip",
+    "daily",
+    "spot",
+    "surprise",
+    "surprise me",
+    "random",
+    "got it",
+    "another angle",
+    "explain it another way",
+}
+NEXT_KEYS = {"next", "again", "another", "another like this", "retry", "got it"}
+
+
+def write_machine(text: str) -> None:
+    sys.stdout.write(text.rstrip("\n") + "\n" + SPACER + "\n")
+
+
+def write_screen(text: str, reminder: str = "") -> None:
+    painted = paint(text.replace("\r\n", "\n").rstrip("\n"), color_mode())
+    sys.stdout.write(painted + "\n")
+    if reminder:
+        sys.stderr.write(reminder.rstrip("\n") + "\n")
+    sys.stdout.write(SPACER + "\n")
+    sys.stdout.flush()
+    if reminder:
+        sys.stderr.write(SPACER + "\n")
+        sys.stderr.flush()
+
+
+def _err(message: str) -> None:
+    text = (message or "").rstrip("\n")
+    if text:
+        sys.stderr.write(text + "\n")
+    sys.stderr.write(SPACER + "\n")
+
+
+def _clip(text: str, limit: int) -> str:
+    return " ".join(str(text).split())[:limit]
+
+
+def emit(path, data, text: str, info: dict, reminder: str = "") -> None:
     session = data.get("session")
     if isinstance(session, dict):
         session["await"] = info.get("await")
     save_file(path, data)
-    sys.stderr.write(json.dumps(info, ensure_ascii=False, separators=(",", ":")) + "\n")
-    sys.stdout.write(paint(text, color_mode()) + "\n")
+    write_screen(text, reminder)
 
 
 def _is_typed(data) -> bool:
@@ -471,37 +530,119 @@ def _lane_phylum(choice: str) -> str | None:
     return None
 
 
-def _render_card(info: dict, body: str, typed: bool = False) -> str:
-    options = info.get("options") or None
-    return render.card(
+def _find_entry(query: str) -> dict | None:
+    token = " ".join(query.lower().split())
+    if not token:
+        return None
+    _doc, catalog = load_catalog()
+    for entry in catalog:
+        if entry["name"].lower() == token or entry["id"] == token:
+            return entry
+    return None
+
+
+def _split_teaching(text: str) -> tuple[str, str]:
+    cleaned = " ".join(str(text).split())
+    if not cleaned:
+        return "", ""
+    for mark in (". ", "? ", "! "):
+        at = cleaned.find(mark)
+        if at != -1:
+            head = cleaned[: at + 1].strip()
+            rest = cleaned[at + len(mark) :].strip()
+            if rest:
+                return head, rest
+    return cleaned, "Name the idea, then say what it changes here."
+
+
+def _fallback_teaching(name: str, entry_id: str) -> tuple[str, str, str]:
+    scenario = "A decision is on the table, and something specific can be lost."
+    explain = f"{name} is the idea to reach for here."
+    apply = "Name the idea, then say what it changes in the scene."
+    path = ROOT / "library" / "exemplars.json"
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return scenario, explain, apply
+    for entry in doc.get("entries") or []:
+        if entry.get("id") == entry_id:
+            law = " ".join(str(entry.get("law") or "").split())
+            notes = " ".join(str(entry.get("notes") or "").split())
+            if law:
+                explain = law
+            if notes:
+                apply = notes
+            break
+    return scenario, explain, apply
+
+
+def _content_from(texts: list[str]) -> dict:
+    items = [" ".join(part.split()) for part in texts if part.strip()]
+    found = _find_entry(items[0]) if items else None
+    name = ""
+    if found:
+        name = found["name"]
+        items = items[1:]
+    scenario = summary = explain = apply = ""
+    if len(items) >= 3:
+        scenario, summary, blob = items[0], items[1], " ".join(items[2:])
+        explain, apply = _split_teaching(blob)
+    elif len(items) == 2:
+        scenario, blob = items[0], items[1]
+        summary = scenario
+        explain, apply = _split_teaching(blob)
+    elif len(items) == 1:
+        scenario = items[0]
+        summary = scenario
+    return {"name": name, "scenario": scenario, "summary": summary, "explain": explain, "apply": apply}
+
+
+def _parse_turn(choice: list[str]) -> tuple[str, list[str]]:
+    if not choice:
+        return "", []
+    head = choice[0].strip()
+    key = head.lower()
+    if key.startswith("got it"):
+        return "got it", []
+    if key in NAV or key in RESULTS or _lane_phylum(head):
+        return head, [part.strip() for part in choice[1:] if part.strip()]
+    return "", [" ".join(part.strip() for part in choice if part.strip())]
+
+
+def _held(live: dict) -> dict:
+    options = live.get("options") or []
+    return {
+        "number": live.get("number"),
+        "phylum": live.get("phylum"),
+        "practice": live.get("practice"),
+        "mode": live.get("mode"),
+        "options": [item.get("name") for item in options],
+        "id": (live.get("entry_ids") or [""])[0],
+        "name": _idea_name(live, {}),
+        "section": DISPLAY_NAMES.get(live.get("phylum") or "", ""),
+    }
+
+
+def _show_card(path, data, info: dict, body: str, nudge: str = "") -> None:
+    scene = (body or "").strip()
+    if not scene:
+        scene, _explain, _apply = _fallback_teaching(info.get("name") or "the idea", info.get("id") or "")
+    text = render.card(
         int(info.get("number") or 1),
         info.get("phylum") or "axiom",
-        body,
+        scene,
         practice=info.get("practice") or "decide",
         mode=info.get("mode") or "free",
-        options=options,
-        typed=typed,
+        options=info.get("options") or None,
+        nudge=nudge,
+        typed=_is_typed(data),
     )
-
-
-def _show_card(path, data, info: dict, body: str) -> None:
-    scene = (body or "").strip()
-    text = _render_card(info, scene or "SCENE", _is_typed(data))
-    payload = {
-        "screen": "card",
-        "await": "answer",
-        "id": info.get("id"),
-        "name": info.get("name"),
-        "section": info.get("section"),
-        "phylum": info.get("phylum"),
-        "practice": info.get("practice"),
-        "mode": info.get("mode"),
-        "number": info.get("number"),
-        "options": info.get("options") or [],
-    }
-    if not scene:
-        payload["fill"] = "SCENE"
-    emit(path, data, text, payload)
+    emit(
+        path,
+        data,
+        text,
+        {"screen": "card", "await": "answer", "name": info.get("name"), "id": info.get("id")},
+    )
 
 
 def _show_menu(path, data, catalog) -> None:
@@ -522,35 +663,77 @@ def _idea_name(live: dict, payload: dict) -> str:
     return ""
 
 
-def _grade(path, data, result: str, payload: dict, live: dict) -> None:
+def _remember_card(path, info: dict, content: dict) -> dict:
+    data = load_file(path)
+    live = (data.get("session") or {}).get("in_progress") or {}
+    scenario = _clip(content.get("scenario") or "", PROMPT_LIMIT)
+    explain = _clip(content.get("explain") or "", 500)
+    apply = _clip(content.get("apply") or "", 500)
+    summary = _clip(content.get("summary") or "", SUMMARY_LIMIT)
+    if not scenario or not explain or not apply:
+        fb_scene, fb_explain, fb_apply = _fallback_teaching(info.get("name") or "the idea", info.get("id") or "")
+        scenario = scenario or fb_scene
+        explain = explain or fb_explain
+        apply = apply or fb_apply
+    if not summary:
+        summary = _clip(scenario, SUMMARY_LIMIT)
+    if info.get("names"):
+        live["names"] = info["names"]
+    live["scenario"] = scenario
+    live["summary"] = summary
+    live["explain"] = explain
+    live["apply"] = apply
+    data["session"]["in_progress"] = live
+    save_file(path, data)
+    return live
+
+
+def _reveal(name: str, explain: str, apply: str, typed: bool) -> str:
+    return render.feedback_not_yet(
+        name or "the idea",
+        explain or "Saying so is the honest start. Here's one way in.",
+        apply or "Name the idea, then say what it changes here.",
+        typed=typed,
+    )
+
+
+def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> None:
     intended = live.get("entry_ids") or []
-    credited = payload.get("id") or (intended[0] if intended else None)
+    credited = intended[0] if intended else None
     if not credited:
         _doc, catalog = load_catalog()
         _show_menu(path, data, catalog)
         return
-    summary = str(payload.get("summary") or payload.get("answer") or result)
+    idea = _idea_name(live, {})
+    explain = _clip(live.get("explain") or "", 500)
+    apply = _clip(live.get("apply") or "", 500)
+    scenario = _clip(live.get("scenario") or "", PROMPT_LIMIT)
+    if not explain or not apply:
+        _scene, fb_explain, fb_apply = _fallback_teaching(idea or "the idea", credited)
+        explain = explain or fb_explain
+        apply = apply or fb_apply
+    summary = _clip(live.get("summary") or answer or result, SUMMARY_LIMIT) or result
     record_attempt(
         data,
         {"session_result": result, "updates": [{"id": credited, "result": result}], "summary": summary},
     )
-    idea = _idea_name(live, payload)
     screen = {
         "result": result,
         "summary": summary,
         "name": idea,
-        "phylum": payload.get("phylum") or live.get("phylum") or "",
-        "explain": payload.get("explain") or "",
-        "moves": [list(pair) for pair in _moves(payload, [])],
-        "closing": payload.get("closing") or "",
-        "comment": payload.get("comment") or "",
-        "reached": payload.get("reached") or idea,
-        "deeper": payload.get("deeper") or "",
-        "got": payload.get("got") or "",
-        "missing": payload.get("missing") or "",
-        "try": payload.get("try") or "",
-        "carry": payload.get("carry") or "",
-        "body": payload.get("body") or "",
+        "phylum": live.get("phylum") or "",
+        "explain": explain,
+        "apply": apply,
+        "closing": apply,
+        "comment": comment,
+        "reached": idea,
+        "deeper": apply,
+        "got": answer,
+        "missing": "how it changes the stake",
+        "try": apply,
+        "carry": apply,
+        "body": scenario,
+        "scenario": scenario,
         "number": live.get("number"),
         "mode": live.get("mode") or "free",
         "kind": live.get("practice") or "decide",
@@ -560,99 +743,112 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
     _doc, catalog = load_catalog()
     rows = _rows(data, catalog)
     phylum = screen["phylum"] or "axiom"
-    row = next(item for item in rows if item["phylum"] == phylum)
+    row = next((item for item in rows if item["phylum"] == phylum), {"strong": 0, "partial": 0, "total": 1})
+    reminder = ""
     if result == "idk":
-        supplied = bool(str(payload.get("explain") or "").strip() or payload.get("moves"))
-        if supplied:
-            moves = _moves(screen, [])
-            while len(moves) < 3:
-                moves.append(("keep going", "one concrete note"))
-            text = render.feedback_not_yet(
-                screen["name"] or "the idea",
-                screen["explain"] or "Saying so is the honest start. Here's one way in.",
-                moves[:3],
-                screen["closing"] or "Name the idea, then say what it changes here.",
-                typed=_is_typed(data),
-            )
-            info = {"screen": "idk", "await": "next", "name": screen["name"], "id": credited, "phylum": phylum}
-        else:
-            text = render.reveal_banner(screen["name"] or "the idea")
-            info = {
-                "screen": "idk",
-                "await": "next",
-                "name": screen["name"],
-                "id": credited,
-                "phylum": phylum,
-                "fill": "explain",
-            }
+        text = _reveal(idea, explain, apply, _is_typed(data))
+        info = {"screen": "idk", "await": "next", "name": idea, "id": credited, "phylum": phylum}
+        reminder = REMIND_IDK
     elif result == "partial":
         text = render.feedback_partial(
-            screen["got"] or "the neighborhood",
-            screen["missing"] or "the stake",
-            screen["try"] or "Name it, then say what it changes.",
+            answer or "the neighborhood",
+            "how it changes the stake",
+            apply or "Name it, then say what it changes.",
             phylum,
             row["strong"],
             row["partial"],
             row["total"] or 1,
             typed=_is_typed(data),
         )
-        info = {"screen": "partial", "await": "next", "name": screen["name"], "id": credited}
+        info = {"screen": "partial", "await": "next", "name": idea, "id": credited}
     elif result == "strong":
         text = render.feedback_strong(
-            screen["comment"] or "That's the move.",
-            screen["reached"] or screen["name"] or "the idea",
-            screen["deeper"] or "Say what it changes in this scene.",
+            comment or "That's the move.",
+            idea or "the idea",
+            apply or "Say what it changes in this scene.",
             phylum,
             row["strong"],
             row["partial"],
             row["total"] or 1,
             typed=_is_typed(data),
         )
-        info = {"screen": "strong", "await": "next", "name": screen["name"], "id": credited}
+        info = {"screen": "strong", "await": "next", "name": idea, "id": credited}
     else:
         text = _menu_text(data, catalog)
         info = {"screen": "menu", "await": "lane", "result": result}
     note = (data.get("practice") or {}).get("pending_note")
     if note and result in ("strong", "partial"):
         lane, _, mark = note.partition("|")
-        text = text + f"\n\n  ■ {lane} crossed {mark}%"
+        text = text + "\n" + SPACER + "\n" + f"  ■ {lane} crossed {mark}%"
         data["practice"]["pending_note"] = None
-    emit(path, data, text, info)
+    emit(path, data, text, info, reminder)
 
 
-def _deal_and_show(path, data, spec, body: str) -> None:
+def _spec_for(key: str, lane: str | None, content: dict, session: dict):
+    screen = session.get("screen") or {}
+    named = bool(content.get("name"))
+    if key == "retry" and screen.get("id") and not named:
+        spec = _pick_spec(ids=screen["id"], fresh=False)
+    elif key == "daily" and not named:
+        spec = _pick_spec(daily=True, fresh=False)
+    elif key == "spot" and not named:
+        spec = _pick_spec(spot=True, choices=True, fresh=False)
+    elif key in ("surprise", "surprise me", "random") and not named:
+        spec = _pick_spec(random=True, fresh=False)
+    elif lane:
+        spec = _pick_spec(phylum=lane, fresh=False)
+    elif named:
+        spec = _pick_spec(fresh=False)
+    else:
+        phylum = session.get("last_phylum") or session.get("phylum")
+        spec = _pick_spec(phylum=phylum, random=not phylum, fresh=False)
+    if named:
+        spec.name = [content["name"]]
+        spec.random = False
+        spec.ids = None
+    if key == "spot":
+        spec.spot = True
+        spec.choices = True
+    return spec
+
+
+def _deal_and_show(path, data, spec, content: dict) -> None:
+    if data.get("session") and data["session"].get("in_progress") and not getattr(spec, "fresh", False):
+        data["session"]["in_progress"] = None
+        save_file(path, data)
+        data = load_file(path)
     info = deal(path, data, spec)
     data = load_file(path)
     if info.get("unmatched"):
         _doc, catalog = load_catalog()
-        emit(
-            path,
-            data,
-            _menu_text(data, catalog),
-            {"screen": "menu", "await": "lane", "unmatched": info["unmatched"], "suggestions": info.get("suggestions") or []},
-        )
+        _show_menu(path, data, catalog)
+        _err("no idea under that name")
         return
-    _show_card(path, data, info, body)
+    live = _remember_card(path, info, content)
+    data = load_file(path)
+    _show_card(path, data, info, live.get("scenario") or "")
+
+
+def _is_next(key: str) -> bool:
+    return key in NEXT_KEYS or key.startswith("got it")
 
 
 def cmd_turn(path, args) -> None:
     data = load_file(path)
     touch_streak(data)
     _remember_typed(data, bool(getattr(args, "typed", False)))
-    payload = read_stdin_payload()
-    choice = " ".join(args.choice or []).strip()
-    if not choice:
-        choice = str(payload.get("choice") or payload.get("answer") or "").strip()
+    action, texts = _parse_turn(list(args.choice or []))
+    key = action.lower()
+    content = _content_from(texts)
     _doc, catalog = load_catalog()
-    key = choice.lower()
-    profile = data.get("profile")
-    if not profile:
+    if not data.get("profile"):
         practice = data.setdefault("practice", {})
         draft = practice.setdefault("draft", {"step": 1})
         step = int(draft.get("step") or 1)
         fields = ("role", "interests", "decisions")
-        if choice and step <= 3:
-            draft[fields[step - 1]] = choice
+        spoken = " ".join(args.choice or []).strip()
+        if spoken and step <= 3:
+            draft[fields[step - 1]] = spoken
             step += 1
             draft["step"] = step
         if step > 3:
@@ -665,16 +861,16 @@ def cmd_turn(path, args) -> None:
         return
     session = data.get("session") or {}
     live = session.get("in_progress") or {}
-    awaiting = "card" if live else (session.get("await") or "lane")
     if key in ("done", "stop"):
         if data.get("session"):
-            log = (data["session"].get("log") or [])
+            log = data["session"].get("log") or []
             reached = []
             for event in log:
                 for update in event.get("updates") or []:
                     if update.get("result") == "strong" and update.get("name"):
                         reached.append(update["name"])
             counts = data["session"].get("counts") or {}
+            carry = " ".join(texts).strip() or ((session.get("screen") or {}).get("apply") or "")
             end_session(data)
             session_n = len(data.get("history") or [])
             text = render.summary_block(
@@ -688,7 +884,7 @@ def cmd_turn(path, args) -> None:
                 "",
                 session=session_n or 1,
                 reached=reached,
-                carry=str(payload.get("carry") or "Name the idea, then say what it changes here."),
+                carry=carry or "Name the idea, then say what it changes here.",
                 signoff_index=(session_n - 1) % 2,
                 rows=_rows(data, catalog),
                 typed=_is_typed(data),
@@ -697,17 +893,17 @@ def cmd_turn(path, args) -> None:
             return
         _show_menu(path, data, catalog)
         return
-    if key == "menu":
+    if key in ("menu", "back to the menu"):
         _show_menu(path, data, catalog)
         return
-    if key == "why" or key == "show me":
+    if key in ("why", "show me"):
         screen = session.get("screen") or {}
         phylum = screen.get("phylum") or "axiom"
         row = next(item for item in _rows(data, catalog) if item["phylum"] == phylum)
         text = render.feedback_strong(
-            screen.get("comment") or screen.get("explain") or "One more pass at the same stake.",
+            screen.get("comment") or "One more pass at the same stake.",
             screen.get("reached") or screen.get("name") or "the idea",
-            screen.get("deeper") or "Say what it changes here.",
+            screen.get("deeper") or screen.get("apply") or "Say what it changes here.",
             phylum,
             row["strong"],
             row["partial"],
@@ -716,31 +912,25 @@ def cmd_turn(path, args) -> None:
         )
         emit(path, data, text, {"screen": "why", "await": "next", "name": screen.get("name")})
         return
-    result = str(payload.get("result") or "")
-    if key in RESULTS:
-        result = key
+    result = key if key in RESULTS else ""
     if key == "skip":
         result = "miss"
-        payload.setdefault("summary", "skipped")
-    if live and choice and not result and key not in (
-        "menu",
-        "done",
-        "stop",
-        "next",
-        "again",
-        "another",
-        "another like this",
-        "retry",
-        "why",
-        "show me",
-        "hint",
-        "skip",
-        "daily",
-        "spot",
-        "surprise",
-        "surprise me",
-        "random",
-    ):
+    answer = texts[0] if texts else ""
+    comment = texts[1] if len(texts) > 1 else ""
+    if key == "idk" and not live:
+        screen = session.get("screen") or {}
+        if screen.get("name"):
+            text = _reveal(
+                screen.get("name") or "",
+                screen.get("explain") or "",
+                screen.get("apply") or screen.get("closing") or "",
+                _is_typed(data),
+            )
+            emit(path, data, text, {"screen": "idk", "await": "next", "name": screen.get("name")}, REMIND_IDK)
+            return
+        _show_menu(path, data, catalog)
+        return
+    if live and not result and key not in NAV:
         options = live.get("options") or []
         if key.isdigit() and options:
             number = int(key)
@@ -749,79 +939,38 @@ def cmd_turn(path, args) -> None:
                 if int(item.get("n") or index) == number:
                     chosen = item
                     break
-            correct = bool(chosen and chosen.get("id") in (live.get("entry_ids") or []))
-            result = "strong" if correct else "miss"
-            payload.setdefault("summary", (chosen or {}).get("name") or choice)
-        else:
-            held = {
-                "number": live.get("number"),
-                "phylum": live.get("phylum"),
-                "practice": live.get("practice"),
-                "mode": live.get("mode"),
-                "options": [item.get("name") for item in options],
-                "id": (live.get("entry_ids") or [""])[0],
-                "name": (live.get("names") or [""])[0],
-                "section": DISPLAY_NAMES.get(live.get("phylum") or "", ""),
-            }
-            emit(
-                path,
-                data,
-                _render_card(held, str(payload.get("body") or "SCENE"), _is_typed(data)),
-                {"screen": "card", "await": "answer", "error": "result required", "name": held["name"], "id": held["id"]},
-            )
+            result = "strong" if chosen and chosen.get("id") in (live.get("entry_ids") or []) else "miss"
+            answer = (chosen or {}).get("name") or key
+        elif answer or key:
+            _grade(path, data, "strong", answer or action, comment, live)
             return
     if live and result:
-        _grade(path, data, result, payload, live)
+        _grade(path, data, result, answer, comment, live)
         return
-    if live and key == "hint":
-        _show_card(
-            path,
-            data,
-            {
-                "number": live.get("number"),
-                "phylum": live.get("phylum"),
-                "practice": live.get("practice"),
-                "mode": live.get("mode"),
-                "options": [item.get("name") for item in (live.get("options") or [])],
-                "id": (live.get("entry_ids") or [""])[0],
-                "name": (live.get("names") or [""])[0],
-                "section": DISPLAY_NAMES.get(live.get("phylum") or "", ""),
-            },
-            str(payload.get("body") or ""),
-        )
+    if live and key in ("hint", "another angle", "explain it another way"):
+        nudge, _rest = _split_teaching(live.get("explain") or live.get("apply") or "")
+        _show_card(path, data, _held(live), live.get("scenario") or "", nudge=nudge)
         return
-    if key in ("next", "again", "another", "another like this", "retry") or (not live and result):
+    if _is_next(key) or (not live and result):
         screen = session.get("screen") or {}
-        if key == "retry" and screen.get("id"):
-            spec = _pick_spec(ids=screen["id"], fresh=False)
-        elif key == "daily" or False:
-            spec = _pick_spec(daily=True)
-        else:
-            phylum = session.get("last_phylum") or session.get("phylum")
-            spec = _pick_spec(phylum=phylum, random=not phylum, fresh=False)
-        if data.get("session") and data["session"].get("in_progress"):
-            data["session"]["in_progress"] = None
-            save_file(path, data)
-            data = load_file(path)
-        _deal_and_show(path, data, spec, str(payload.get("body") or ""))
+        if key == "retry":
+            reused = content
+            if not content.get("scenario") and not content.get("explain"):
+                reused = {
+                    "name": content.get("name") or "",
+                    "scenario": screen.get("scenario") or screen.get("body") or "",
+                    "summary": screen.get("summary") or "",
+                    "explain": screen.get("explain") or "",
+                    "apply": screen.get("apply") or screen.get("closing") or "",
+                }
+            content = reused
+        spec = _spec_for(key if key == "retry" else "next", None, content, session)
+        _deal_and_show(path, data, spec, content)
         return
-    lane = _lane_phylum(choice) if choice else None
-    if key in ("daily", "spot", "surprise", "surprise me", "random") or lane or (choice and awaiting == "lane"):
-        if key == "daily":
-            spec = _pick_spec(daily=True, fresh=False)
-        elif key == "spot":
-            spec = _pick_spec(spot=True, fresh=False)
-        elif key in ("surprise", "surprise me", "random"):
-            spec = _pick_spec(random=True, fresh=False)
-        elif lane:
-            spec = _pick_spec(phylum=lane, fresh=False)
-        else:
-            spec = _pick_spec(random=True, fresh=False)
-        if data.get("session") and data["session"].get("in_progress"):
-            data["session"]["in_progress"] = None
-            save_file(path, data)
-            data = load_file(path)
-        _deal_and_show(path, data, spec, str(payload.get("body") or ""))
+    lane = _lane_phylum(action) if action else None
+    if key in ("daily", "spot", "surprise", "surprise me", "random") or lane or content.get("name"):
+        spec = _spec_for(key, lane, content, session)
+        _deal_and_show(path, data, spec, content)
         return
     _show_menu(path, data, catalog)
 
@@ -836,7 +985,7 @@ def cmd_end(path) -> None:
 
 def _refuse_help(message: str) -> None:
     del message
-    sys.stderr.write("commands are in references/commands.md\n")
+    _err("commands are in references/commands.md")
     raise SystemExit(2)
 
 
