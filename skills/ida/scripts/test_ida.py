@@ -90,7 +90,9 @@ class RenderTests(unittest.TestCase):
             for practice in ("decide", "spot"):
                 text = render.card(4, phylum, "A short scene with a real stake.", practice=practice)
                 self.assertTrue(all(len(line) <= 76 for line in text.splitlines()), text)
-                self.assertTrue(text.strip().endswith('"skip"'))
+                self.assertNotIn("›", text)
+                typed = render.card(4, phylum, "A short scene with a real stake.", practice=practice, typed=True)
+                self.assertTrue(typed.strip().endswith('"skip"'))
                 self.assertNotIn("✓", text)
                 self.assertIn(render.spaced(render.display_name(phylum)), text)
                 self.assertIn("┃", text)
@@ -313,8 +315,12 @@ class RenderTests(unittest.TestCase):
         self.assertNotIn("your own words", render.opening(1))
         card = render.card(1, "bias", "A short scene with a real stake.")
         self.assertNotIn("your answer", card)
-        self.assertIn('› "hint" · "idk" · "skip"', card)
-        self.assertTrue(card.splitlines()[-3] == SPACER and card.splitlines()[-2] == SPACER)
+        self.assertNotIn("›", card)
+        typed_card = render.card(1, "bias", "A short scene with a real stake.", typed=True)
+        self.assertIn('› "hint" · "idk" · "skip"', typed_card)
+        self.assertTrue(typed_card.splitlines()[-3] == SPACER and typed_card.splitlines()[-2] == SPACER)
+        self.assertNotIn("›", render.menu(4))
+        self.assertIn("›", render.menu(4, typed=True))
         for block in (
             render.opening(1),
             render.menu(4),
@@ -779,6 +785,10 @@ class IdaCommandTests(unittest.TestCase):
             self.assertNotEqual(helped.returncode, 0)
             self.assertEqual(helped.stderr.strip().splitlines(), ["commands are in references/commands.md"])
             self.assertEqual(helped.stdout, "")
+            typed = run(["turn", "--typed"])
+            self.assertIn("›", typed.stdout)
+            remembered = run(["turn", "menu"])
+            self.assertIn("›", remembered.stdout)
 
 
 class ColorAndBannerTests(unittest.TestCase):

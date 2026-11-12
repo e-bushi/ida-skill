@@ -39,6 +39,7 @@ That is still one command. No heredoc.
 | `why` | The last feedback, one level down. |
 | `menu` | The seven lanes. |
 | `done` | End the sitting and show the summary. |
+| `--typed` | No choice tool on this host. Remember it for the sitting. Screens then end with a `›` line. Pass it once, on the first turn. |
 | `idk` | Save idk and show the banner. The JSON carries `explain`, `moves`, and `closing`. |
 | `skip` | Save a miss and return to the menu. |
 | a number during a choice card | That option. A correct option is strong. |

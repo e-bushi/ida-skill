@@ -290,6 +290,7 @@ def _rows(data, catalog) -> list[dict]:
 def cmd_show(path, args) -> None:
     data = load_file(path)
     touch_streak(data)
+    typed = _remember_typed(data, bool(getattr(args, "typed", False)))
     save_file(path, data)
     _doc, catalog = load_catalog()
     rows = _rows(data, catalog)
@@ -306,7 +307,7 @@ def cmd_show(path, args) -> None:
     if screen == "opening":
         text = render.opening(args.beat or 1)
     elif screen == "menu":
-        text = render.menu(session_n, rows, collected, len(catalog), int(practice.get("streak") or 0))
+        text = render.menu(session_n, rows, collected, len(catalog), int(practice.get("streak") or 0), typed=typed)
     elif screen == "card":
         body = args.body or spec.get("body") or ""
         if not str(body).strip():
@@ -319,6 +320,7 @@ def cmd_show(path, args) -> None:
             practice=args.kind if args.kind != "decide" else spec.get("kind") or "decide",
             mode=args.mode if args.mode != "free" else spec.get("mode") or "free",
             total=args.total,
+            typed=typed,
         )
     elif screen == "strong":
         phylum = args.phylum or spec.get("phylum") or "axiom"
@@ -331,6 +333,7 @@ def cmd_show(path, args) -> None:
             row["strong"],
             row["partial"],
             row["total"] or 1,
+            typed=typed,
         )
     elif screen == "partial":
         phylum = args.phylum or spec.get("phylum") or "axiom"
@@ -343,6 +346,7 @@ def cmd_show(path, args) -> None:
             row["strong"],
             row["partial"],
             row["total"] or 1,
+            typed=typed,
         )
     elif screen == "idk":
         moves = _moves(spec, args.move or [])
@@ -353,6 +357,7 @@ def cmd_show(path, args) -> None:
             args.explain or spec.get("explain") or "Saying so is the honest start. Here's one way in.",
             moves[:3],
             args.closing or spec.get("closing") or "Name the idea, then say what it changes here.",
+            typed=typed,
         )
     elif screen == "summary":
         reached_raw = args.reached or spec.get("reached") or ""
@@ -390,6 +395,7 @@ def cmd_show(path, args) -> None:
             carry=args.carry or spec.get("carry") or "Name the idea, then say what it changes here.",
             signoff_index=(session_n - 1) % 2,
             rows=rows,
+            typed=typed,
         )
         del log
     else:
@@ -415,6 +421,16 @@ def emit(path, data, text: str, info: dict) -> None:
     sys.stdout.write(paint(text, color_mode()) + "\n")
 
 
+def _is_typed(data) -> bool:
+    return bool((data.get("practice") or {}).get("typed"))
+
+
+def _remember_typed(data, flag: bool) -> bool:
+    if flag:
+        data.setdefault("practice", {})["typed"] = True
+    return _is_typed(data)
+
+
 def _menu_text(data, catalog) -> str:
     rows = _rows(data, catalog)
     practice = data.get("practice") or {}
@@ -422,7 +438,7 @@ def _menu_text(data, catalog) -> str:
     session_n = len(data.get("history") or []) + (1 if data.get("session") else 0)
     if session_n <= 0:
         session_n = 1
-    return render.menu(session_n, rows, collected, len(catalog), int(practice.get("streak") or 0))
+    return render.menu(session_n, rows, collected, len(catalog), int(practice.get("streak") or 0), typed=_is_typed(data))
 
 
 def _pick_spec(**kwargs):
@@ -455,7 +471,7 @@ def _lane_phylum(choice: str) -> str | None:
     return None
 
 
-def _render_card(info: dict, body: str) -> str:
+def _render_card(info: dict, body: str, typed: bool = False) -> str:
     options = info.get("options") or None
     return render.card(
         int(info.get("number") or 1),
@@ -464,12 +480,13 @@ def _render_card(info: dict, body: str) -> str:
         practice=info.get("practice") or "decide",
         mode=info.get("mode") or "free",
         options=options,
+        typed=typed,
     )
 
 
 def _show_card(path, data, info: dict, body: str) -> None:
     scene = (body or "").strip()
-    text = _render_card(info, scene or "SCENE")
+    text = _render_card(info, scene or "SCENE", _is_typed(data))
     payload = {
         "screen": "card",
         "await": "answer",
@@ -539,6 +556,7 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
             screen["explain"] or "Saying so is the honest start. Here's one way in.",
             moves[:3],
             screen["closing"] or "Name the idea, then say what it changes here.",
+            typed=_is_typed(data),
         )
         info = {"screen": "idk", "await": "next", "name": screen["name"], "id": credited}
     elif result == "partial":
@@ -550,6 +568,7 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
             row["strong"],
             row["partial"],
             row["total"] or 1,
+            typed=_is_typed(data),
         )
         info = {"screen": "partial", "await": "next", "name": screen["name"], "id": credited}
     elif result == "strong":
@@ -561,6 +580,7 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
             row["strong"],
             row["partial"],
             row["total"] or 1,
+            typed=_is_typed(data),
         )
         info = {"screen": "strong", "await": "next", "name": screen["name"], "id": credited}
     else:
@@ -592,6 +612,7 @@ def _deal_and_show(path, data, spec, body: str) -> None:
 def cmd_turn(path, args) -> None:
     data = load_file(path)
     touch_streak(data)
+    _remember_typed(data, bool(getattr(args, "typed", False)))
     payload = read_stdin_payload()
     choice = " ".join(args.choice or []).strip()
     if not choice:
@@ -644,6 +665,7 @@ def cmd_turn(path, args) -> None:
                 carry=str(payload.get("carry") or "Name the idea, then say what it changes here."),
                 signoff_index=(session_n - 1) % 2,
                 rows=_rows(data, catalog),
+                typed=_is_typed(data),
             )
             emit(path, data, text, {"screen": "summary", "await": "done"})
             return
@@ -664,6 +686,7 @@ def cmd_turn(path, args) -> None:
             row["strong"],
             row["partial"],
             row["total"] or 1,
+            typed=_is_typed(data),
         )
         emit(path, data, text, {"screen": "why", "await": "next", "name": screen.get("name")})
         return
@@ -717,7 +740,7 @@ def cmd_turn(path, args) -> None:
             emit(
                 path,
                 data,
-                _render_card(held, str(payload.get("body") or "SCENE")),
+                _render_card(held, str(payload.get("body") or "SCENE"), _is_typed(data)),
                 {"screen": "card", "await": "answer", "error": "result required", "name": held["name"], "id": held["id"]},
             )
             return
@@ -840,6 +863,8 @@ def main() -> None:
     show.add_argument("--move", action="append", default=[])
     turn = sub.add_parser("turn")
     turn.add_argument("choice", nargs="*")
+    turn.add_argument("--typed", action="store_true")
+    show.add_argument("--typed", action="store_true")
     args = parser.parse_args()
     path = progress_path(args.path)
     if args.cmd == "open":

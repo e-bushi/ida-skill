@@ -65,6 +65,13 @@ def gap(count: int = 1) -> list[str]:
     return [SPACER] * count
 
 
+def choices(lines: list[str], prompt: str, typed: bool) -> None:
+    """A › line is only the fallback when the host has no choice tool."""
+    if typed:
+        lines.extend(gap(2))
+        lines.append(prompt)
+
+
 def heavy() -> str:
     return "  " + ("━" * RULE_WIDTH)
 
@@ -159,7 +166,7 @@ def opening_new() -> str:
     return opening(1)
 
 
-def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, total: int = 443, streak: int = 0) -> str:
+def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, total: int = 443, streak: int = 0, typed: bool = False) -> str:
     if rows is None:
         rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in DISPLAY_ORDER]
     ranked = []
@@ -185,8 +192,7 @@ def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, t
         lines.extend(lane_lines(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"])))
     lines.extend(gap(2))
     lines.append(f"  ■ suggested  {light_index:02d}, your lightest lane")
-    lines.extend(gap(2))
-    lines.append('  › a number · daily · spot · "surprise me"')
+    choices(lines, '  › a number · daily · spot · "surprise me"', typed)
     return _check(lines)
 
 
@@ -212,6 +218,7 @@ def card(
     options: list[str] | None = None,
     total: int | None = None,
     signoff_index: int = 0,
+    typed: bool = False,
 ) -> str:
     del signoff_index
     lane = DISPLAY_ORDER.index(phylum) + 1
@@ -241,8 +248,7 @@ def card(
             for piece_index, piece in enumerate(wrap(name, 66)):
                 prefix = f"    {index}  " if piece_index == 0 else "       "
                 lines.append(prefix + piece)
-    lines.extend(gap(2))
-    lines.append(prompt)
+    choices(lines, prompt, typed)
     return _check(lines)
 
 
@@ -270,6 +276,7 @@ def feedback_strong(
     partial: int,
     total: int,
     delta: str = "+1",
+    typed: bool = False,
 ) -> str:
     lines = ["  ■■■  " + spaced("strong")]
     lines.extend(gap(1))
@@ -284,8 +291,7 @@ def feedback_strong(
     lines.append(thin())
     lines.extend(gap(1))
     lines.extend(lane_lines(phylum, strong, partial, total, delta=delta))
-    lines.extend(gap(2))
-    lines.append('  › "next" · "why" · "menu"')
+    choices(lines, '  › "next" · "why" · "menu"', typed)
     return _check(lines)
 
 
@@ -298,6 +304,7 @@ def feedback_partial(
     partial: int,
     total: int,
     delta: str = "+0.5",
+    typed: bool = False,
 ) -> str:
     lines = ["  ■■□  " + spaced("partial")]
     lines.extend(gap(2))
@@ -312,12 +319,11 @@ def feedback_partial(
     lines.append(thin())
     lines.extend(gap(1))
     lines.extend(lane_lines(phylum, strong, partial, total, delta=delta))
-    lines.extend(gap(2))
-    lines.append('  › "retry" · "next" · "show me"')
+    choices(lines, '  › "retry" · "next" · "show me"', typed)
     return _check(lines)
 
 
-def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str) -> str:
+def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str, typed: bool = False) -> str:
     lines = ["  □□□  not yet. here's what to reach for."]
     lines.extend(gap(2))
     for piece in render_name(name):
@@ -333,23 +339,23 @@ def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], clos
         lines.extend(_field(f"{index:02d}  {title}", detail))
     lines.extend(gap(2))
     lines.extend(_prose(closing))
-    lines.extend(gap(2))
-    lines.append('  › "got it" · "another like this" · "menu"')
+    choices(lines, '  › "got it" · "another like this" · "menu"', typed)
     return _check(lines)
 
 
-def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: str = "strategy") -> str:
+def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: str = "strategy", typed: bool = False) -> str:
     del signoff_index
     text = " ".join(comment) if isinstance(comment, list) else comment
     if result == "strong":
-        return feedback_strong(text, name, text, phylum, 1, 0, 81)
+        return feedback_strong(text, name, text, phylum, 1, 0, 81, typed=typed)
     if result == "partial":
-        return feedback_partial(name, text, text, phylum, 0, 1, 81)
+        return feedback_partial(name, text, text, phylum, 0, 1, 81, typed=typed)
     return feedback_not_yet(
         name,
         "Saying so is the honest start. Here's one way in. " + text,
         [("name it", name), ("apply it", text), ("keep it", "one sentence on the stake")],
         "Name the idea, then say what it changes here.",
+        typed=typed,
     )
 
 
@@ -369,6 +375,7 @@ def summary_block(
     reached: list[str] | None = None,
     carry: str = "",
     rows: list[dict] | None = None,
+    typed: bool = False,
 ) -> str:
     del revisit
     not_yet = miss + idk
@@ -413,8 +420,7 @@ def summary_block(
     lines.append(heavy())
     lines.extend(gap(1))
     lines.append("  " + SIGNOFFS[signoff_index % 2])
-    lines.extend(gap(2))
-    lines.append('  › "again" · "menu" · "done"')
+    choices(lines, '  › "again" · "menu" · "done"', typed)
     return _check(lines)
 
 
