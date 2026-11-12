@@ -1111,15 +1111,19 @@ class ColorAndBannerTests(unittest.TestCase):
 
         self.assertEqual(question_tier("inversion"), 1)
         inversion = question_banner("inversion")
-        self.assertEqual(len(inversion), 3)
-        self.assertTrue(any("█" in line for line in inversion))
+        self.assertEqual(len(inversion), 5)
+        self.assertIn("_|_", "\n".join(inversion))
         self.assertNotIn("░", "\n".join(inversion))
 
-        self.assertEqual(question_tier("material conditional"), 2)
+        self.assertEqual(question_tier("material conditional"), 3)
         material = question_banner("material conditional")
-        self.assertEqual(len(material), 2)
-        self.assertNotIn("░", "\n".join(material))
-        self.assertLessEqual(max(len(line) for line in material), 60)
+        self.assertEqual(material, ["MATERIAL CONDITIONAL"])
+        self.assertLessEqual(len(material[0]), 60)
+
+        self.assertEqual(question_tier("contingency"), 2)
+        contingency = question_banner("contingency")
+        self.assertEqual(len(contingency), 4)
+        self.assertNotIn("░", "\n".join(contingency))
 
         long_name = "first-mover advantage vs. first-mover disadvantage"
         self.assertEqual(question_tier(long_name), 3)
@@ -1134,9 +1138,9 @@ class ColorAndBannerTests(unittest.TestCase):
             bare, _symbol, _gloss = _split_name(entry["name"])
             rows = question_banner(bare)
             self.assertGreaterEqual(len(rows), 1, entry["name"])
-            self.assertLessEqual(len(rows), 3, entry["name"])
+            self.assertLessEqual(len(rows), 5, entry["name"])
             self.assertTrue(all(row.strip() for row in rows), entry["name"])
-            self.assertEqual(len(rows), {1: 3, 2: 2, 3: 1}[question_tier(bare)], entry["name"])
+            self.assertEqual(len(rows), {1: 5, 2: 4, 3: 1}[question_tier(bare)], entry["name"])
             for row in rows:
                 self.assertNotIn("░", row, entry["name"])
                 self.assertLessEqual(len(row), 60, entry["name"])
@@ -1144,6 +1148,22 @@ class ColorAndBannerTests(unittest.TestCase):
             self.assertNotIn("░", body, entry["name"])
             for line in body.splitlines():
                 self.assertLessEqual(len(line), 64, entry["name"])
+
+    def test_question_fonts_use_distinct_letterforms(self):
+        from banner import LARGE, MEDIUM
+
+        forbidden = set("░▒▀▄█")
+        glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&-.',/?"
+        for font in (LARGE, MEDIUM):
+            shapes = []
+            for ch in glyphs:
+                glyph = font[ch]
+                self.assertEqual(len({len(row) for row in glyph}), 1, ch)
+                self.assertFalse(forbidden & set("".join(glyph)), ch)
+                shapes.append(tuple(row.rstrip() for row in glyph))
+            self.assertEqual(len(shapes), len(set(shapes)))
+        self.assertEqual(len(LARGE["A"]), 5)
+        self.assertEqual(len(MEDIUM["A"]), 4)
 
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name

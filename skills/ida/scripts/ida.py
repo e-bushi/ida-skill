@@ -584,7 +584,8 @@ def _idk_question(name: str, definition: str) -> str:
     """Framed name, definition, a scene placeholder, then the ask.
 
     The default is one banner line inside a heavy frame. A longer name uses
-    a smaller font instead of a second banner row. Line breaks in the
+    a smaller letterform, then plain uppercase, instead of a second banner
+    row. Line breaks in the
     Cursor choice box do render, so the question is multi-line. Set
     IDA_QUESTION_BANNER=spaced to use spaced caps inside the same frame.
     The agent replaces the scene placeholder. The script does not know the scene.
