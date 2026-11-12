@@ -1103,6 +1103,47 @@ class ColorAndBannerTests(unittest.TestCase):
         )
         self.assertIn("  (→)", framed)
         self.assertIn("Where to from here?", framed)
+        self.assertNotIn("░", framed)
+
+    def test_question_banner_shrinks_to_one_line(self):
+        from banner import question_banner, question_tier
+        from ida import _idk_question, _split_name
+
+        self.assertEqual(question_tier("inversion"), 1)
+        inversion = question_banner("inversion")
+        self.assertEqual(len(inversion), 3)
+        self.assertTrue(any("█" in line for line in inversion))
+        self.assertNotIn("░", "\n".join(inversion))
+
+        self.assertEqual(question_tier("material conditional"), 2)
+        material = question_banner("material conditional")
+        self.assertEqual(len(material), 2)
+        self.assertNotIn("░", "\n".join(material))
+        self.assertLessEqual(max(len(line) for line in material), 60)
+
+        long_name = "first-mover advantage vs. first-mover disadvantage"
+        self.assertEqual(question_tier(long_name), 3)
+        long_line = question_banner(long_name)
+        self.assertEqual(long_line, [long_name.upper()])
+        self.assertNotIn("░", long_line[0])
+        self.assertLessEqual(len(long_line[0]), 60)
+
+        _doc, catalog = load_catalog()
+        self.assertEqual(len(catalog), 443)
+        for entry in catalog:
+            bare, _symbol, _gloss = _split_name(entry["name"])
+            rows = question_banner(bare)
+            self.assertGreaterEqual(len(rows), 1, entry["name"])
+            self.assertLessEqual(len(rows), 3, entry["name"])
+            self.assertTrue(all(row.strip() for row in rows), entry["name"])
+            self.assertEqual(len(rows), {1: 3, 2: 2, 3: 1}[question_tier(bare)], entry["name"])
+            for row in rows:
+                self.assertNotIn("░", row, entry["name"])
+                self.assertLessEqual(len(row), 60, entry["name"])
+            body = _idk_question(entry["name"], "A short definition.").split("QUESTION:\n", 1)[1]
+            self.assertNotIn("░", body, entry["name"])
+            for line in body.splitlines():
+                self.assertLessEqual(len(line), 64, entry["name"])
 
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name
@@ -1112,6 +1153,7 @@ class ColorAndBannerTests(unittest.TestCase):
         for entry in catalog:
             for line in render_name(entry["name"]):
                 self.assertLessEqual(len(line), 72, entry["name"])
+                self.assertNotIn("░", line, entry["name"])
 
     def test_color_falls_back(self):
         from color import color_mode, paint

@@ -1,12 +1,14 @@
 """Compact banners for an idk reveal.
 
-Each letter is 3 columns and 3 rows, drawn with █ ▀ ▄ so the strokes
-stay crisp. A ░ sits one column to the right of a stroke, only in an
-empty cell, so the banner stays 3 rows tall. A letter plus that shadow
-is 4 columns. 18 letters is 72 columns. A name that fits is one line.
-Otherwise each word is its own line. A word that still does not fit,
-or that uses a character this font does not have, falls back to spaced
-caps with a ■.
+Each letter is 3 columns and 3 rows, drawn with █ ▀ ▄. A plain space
+separates glyphs. There is no shade character. 18 letters is about 72
+columns. A name that fits is one line. Otherwise each word is its own
+line. A word that still does not fit, or that uses a character this
+font does not have, falls back to spaced caps with a ■.
+
+The choice-box banner never wraps. A short name uses this 3-row font.
+A longer name uses a 2-row font. A name that still does not fit is one
+row of uppercase.
 """
 
 from __future__ import annotations
@@ -55,10 +57,60 @@ FONT = {
     "'": ["▀", " ", " "],
     "-": ["   ", "▀▀▀", "   "],
     ".": ["   ", "   ", " ▄ "],
+    "/": ["  █", " █ ", "█  "],
+    ",": ["   ", "   ", " ▄ "],
+    "?": ["▀▀▄", " ▀ ", " ▄ "],
+}
+
+# Two rows. Each glyph ends with a space so letters stay apart.
+# Wider letters are the ones a 2-column body cannot draw.
+SMALL = {
+    "A": ["▀█ ", "█▀ "],
+    "B": ["██ ", "██ "],
+    "C": ["▄▀ ", "▀  "],
+    "D": ["█▄ ", "█▀ "],
+    "E": ["█▀ ", "█▄ "],
+    "F": ["█▀ ", "█  "],
+    "G": ["▄▀ ", "▀█ "],
+    "H": ["█▀█ ", "█ █ "],
+    "I": ["█ ", "█ "],
+    "J": ["▀█ ", "▄▀ "],
+    "K": ["█▀ ", "█▀ "],
+    "L": ["█  ", "█▄ "],
+    "M": ["█▄█ ", "█ █ "],
+    "N": ["█▀█ ", "█ █ "],
+    "O": ["▄▀ ", "▀▄ "],
+    "P": ["██ ", "█  "],
+    "Q": ["▄▀ ", "▀█ "],
+    "R": ["█▀ ", "▀█ "],
+    "S": ["▀▄ ", "▄▀ "],
+    "T": ["▀▀ ", " █ "],
+    "U": ["█▄ ", "▀▄ "],
+    "V": ["█▄ ", "▀  "],
+    "W": ["█▄█ ", "▀▄▀ "],
+    "X": ["█▀ ", "▀█ "],
+    "Y": ["█▀ ", "▄  "],
+    "Z": ["▀█ ", "█▄ "],
+    "0": ["▄▀ ", "▀▄ "],
+    "1": ["▀█ ", "▄█ "],
+    "2": ["▀▀ ", "█▄ "],
+    "3": ["▀█ ", "▄▀ "],
+    "4": ["█▀ ", "▀█ "],
+    "5": ["█▀ ", "▄▀ "],
+    "6": ["█▄ ", "▀▄ "],
+    "7": ["▀▀ ", " █ "],
+    "8": ["▄▀ ", "▄▀ "],
+    "9": ["▄▀ ", "▀█ "],
+    " ": [" ", " "],
+    "'": ["▀ ", "  "],
+    "-": ["  ", "▀ "],
+    ".": ["  ", "▄ "],
+    "/": [" █ ", "█  "],
+    ",": ["  ", "▄ "],
+    "?": ["▀█ ", " ▄ "],
 }
 
 MAX_COLS = 72
-FILL = set("█▀▄")
 
 
 def spaced_caps(text: str) -> str:
@@ -99,15 +151,7 @@ def _raster(token: str) -> list[str]:
         glyph = FONT[ch]
         for y in range(3):
             rows[y] += glyph[y]
-    rows = [row + " " for row in rows]
-    painted = []
-    for row in rows:
-        chars = list(row)
-        for x, ch in enumerate(chars[:-1]):
-            if ch in FILL and chars[x + 1] == " ":
-                chars[x + 1] = "░"
-        painted.append("".join(chars).rstrip())
-    return painted
+    return [row.rstrip() for row in rows]
 
 
 def _width(token: str) -> int:
@@ -118,67 +162,77 @@ def _fallback(token: str) -> list[str]:
     return ["■ " + spaced_caps(token)]
 
 
-def question_banner(name: str, max_cols: int = 62) -> list[str]:
-    """Banner rows for the choice box. Each line is at most max_cols.
+def _plain_name(name: str) -> str:
+    text = str(name).replace("\u2013", "-").replace("\u2014", "-").replace("\u2019", "'")
+    return " ".join(text.upper().split())
 
-    Words share a 3-row line while they fit. The next word starts another
-    3-row line. A word this font cannot draw, or that is wider than
-    max_cols, is printed in spaced caps.
+
+def _fits(lines: list[str], max_cols: int) -> bool:
+    return bool(lines) and max(len(line) for line in lines) <= max_cols
+
+
+def _tier1_lines(text: str, max_cols: int) -> list[str] | None:
+    if not text or not _supported(text):
+        return None
+    lines = _raster(text)
+    if _fits(lines, max_cols):
+        return lines
+    return None
+
+
+def _raster_small(token: str) -> list[str]:
+    rows = ["", ""]
+    for ch in token:
+        glyph = SMALL[ch]
+        rows[0] += glyph[0]
+        rows[1] += glyph[1]
+    return [row.rstrip() for row in rows]
+
+
+def _tier2_lines(text: str, max_cols: int) -> list[str] | None:
+    if not text or any(ch not in SMALL for ch in text):
+        return None
+    lines = _raster_small(text)
+    if _fits(lines, max_cols):
+        return lines
+    return None
+
+
+def _tier3_lines(text: str, max_cols: int) -> list[str]:
+    upper = text.upper()
+    spaced = spaced_caps(text)
+    if len(spaced) <= max_cols:
+        return [spaced]
+    return [upper]
+
+
+def question_tier(name: str, max_cols: int = 60) -> int:
+    """1 is the 3-row font, 2 is the 2-row font, 3 is one uppercase row."""
+    text = _plain_name(name)
+    if _tier1_lines(text, max_cols) is not None:
+        return 1
+    if _tier2_lines(text, max_cols) is not None:
+        return 2
+    return 3
+
+
+def question_banner(name: str, max_cols: int = 60) -> list[str]:
+    """One banner line for the choice box, at most 3 rows tall.
+
+    The whole name stays on that line. Tier 1 is the 3-row block font
+    when it fits in max_cols. Tier 2 is the 2-row font. Tier 3 is one
+    row of spaced caps when that fits, otherwise plain uppercase.
     """
-    words = _words(name.replace(",", " "))
-    if not words:
-        return _wrap_caps(name, max_cols)
-    groups: list[list[str]] = []
-    current: list[str] = []
-    for word in words:
-        drawable = _supported(word) and _width(word) <= max_cols
-        if not drawable:
-            if current:
-                groups.append(current)
-                current = []
-            groups.append([word])
-            continue
-        trial = current + [word]
-        if current and _width(" ".join(trial)) <= max_cols:
-            current = trial
-        else:
-            if current:
-                groups.append(current)
-            current = [word]
-    if current:
-        groups.append(current)
-    lines: list[str] = []
-    for group in groups:
-        word = group[0]
-        if len(group) == 1 and (not _supported(word) or _width(word) > max_cols):
-            lines.extend(_wrap_caps(word, max_cols))
-            continue
-        lines.extend(_raster(" ".join(group)))
-    return lines or _wrap_caps(name, max_cols)
-
-
-def _wrap_caps(text: str, max_cols: int) -> list[str]:
-    raw = spaced_caps(text)
-    if len(raw) <= max_cols:
-        return [raw]
-    lines: list[str] = []
-    current = ""
-    for word in raw.split(" "):
-        if not word:
-            continue
-        if not current:
-            current = word
-        elif len(current) + 1 + len(word) <= max_cols:
-            current = current + " " + word
-        else:
-            lines.append(current)
-            current = word
-        while len(current) > max_cols:
-            lines.append(current[:max_cols])
-            current = current[max_cols:]
-    if current:
-        lines.append(current)
-    return lines or [raw[:max_cols]]
+    text = _plain_name(name)
+    if not text:
+        return [""]
+    tier1 = _tier1_lines(text, max_cols)
+    if tier1 is not None:
+        return tier1
+    tier2 = _tier2_lines(text, max_cols)
+    if tier2 is not None:
+        return tier2
+    return _tier3_lines(text, max_cols)
 
 
 def render_name(name: str) -> list[str]:
