@@ -139,6 +139,46 @@ def today() -> str:
     return date.today().isoformat()
 
 
+def practice_days(data: dict) -> set[str]:
+    """Dates on which at least one card was dealt or answered."""
+    days: set[str] = set()
+
+    def add(stamp: str) -> None:
+        if stamp and len(stamp) >= 10:
+            days.add(stamp[:10])
+
+    for item in data.get("recent_scenarios") or []:
+        add(str(item.get("at") or ""))
+    for item in data.get("history") or []:
+        if int(item.get("scenarios") or 0) > 0:
+            add(str(item.get("started_at") or item.get("ended_at") or ""))
+    session = data.get("session") or {}
+    counts = session.get("counts") or {}
+    answered = sum(int(counts.get(name) or 0) for name in ("strong", "partial", "miss", "idk"))
+    if answered or session.get("in_progress"):
+        add(str(session.get("started_at") or ""))
+        if session.get("in_progress"):
+            days.add(today())
+    return days
+
+
+def card_streak(data: dict, day: str | None = None) -> int:
+    """Consecutive days with a card, ending today, or yesterday if today is still open."""
+    days = practice_days(data)
+    if not days:
+        return 0
+    cursor = date.fromisoformat(day or today())
+    if cursor.isoformat() not in days:
+        cursor = cursor - timedelta(days=1)
+        if cursor.isoformat() not in days:
+            return 0
+    count = 0
+    while cursor.isoformat() in days:
+        count += 1
+        cursor = cursor - timedelta(days=1)
+    return count
+
+
 def touch_streak(data: dict, day: str | None = None) -> None:
     practice = data.setdefault("practice", blank_practice())
     day = day or today()

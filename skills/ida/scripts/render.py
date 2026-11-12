@@ -256,6 +256,62 @@ def _card_body(body: str) -> list[str]:
     return lines
 
 
+def _blocks(done: int, total: int, cells: int) -> int:
+    if cells <= 0 or total <= 0 or done <= 0:
+        return 0
+    if done >= total:
+        return cells
+    blocks = int(round(cells * done / total))
+    if blocks < 1:
+        blocks = 1
+    if blocks > cells:
+        blocks = cells
+    return blocks
+
+
+def _join_strip(parts: list[str], gap: int) -> str:
+    kept = [part for part in parts if part]
+    return (" " * gap).join(kept)
+
+
+def status_strip(
+    lane_done: int,
+    lane_total: int,
+    reached: int,
+    session_total: int | None,
+    streak: int,
+) -> str:
+    """One status line, at most 72 columns.
+
+    The bar starts at 16 cells and shortens if a 3-digit count or a long
+    session would overflow. Streak is omitted at 0.
+    """
+    count = f"{lane_done} / {lane_total} ways"
+    streak_bit = f"streak {streak}d" if streak >= 1 else ""
+    if session_total is not None and session_total >= reached:
+        dots = ("●" * reached) + ("○" * (session_total - reached))
+    else:
+        dots = "●" * reached
+    today_bits = [f"today  {dots}" if dots else "today"]
+    if session_total is not None and session_total >= reached:
+        numeric = f"today  {reached}/{session_total}"
+    else:
+        numeric = f"today  {reached}"
+    for cells in (16, 12, 8, 4):
+        filled = _blocks(lane_done, lane_total, cells)
+        bar = ("■" * filled) + ("□" * (cells - filled))
+        lane_bit = f"lane  {bar}  {count}"
+        for today in (today_bits[0], numeric):
+            for gap in (6, 4, 2):
+                line = _join_strip([lane_bit, today, streak_bit], gap)
+                if len(line) <= 72:
+                    return line
+    line = _join_strip([f"lane  {count}", numeric, streak_bit], 2)
+    if len(line) <= 72:
+        return line
+    return _join_strip([f"lane  {count}", numeric], 2)
+
+
 def card(
     number: int,
     phylum: str,
@@ -267,11 +323,21 @@ def card(
     signoff_index: int = 0,
     nudge: str = "",
     typed: bool = False,
+    status: dict | None = None,
 ) -> str:
     del signoff_index
     lane = DISPLAY_ORDER.index(phylum) + 1
     card_label = f"CARD {number}" if total is None else f"CARD {number} / {total}"
     lines = [spread(f"  {lane:02d} · {spaced(display_name(phylum))}", card_label), heavy()]
+    if status is not None:
+        lines.append("  " + status_strip(
+            int(status.get("lane_done") or 0),
+            int(status.get("lane_total") or 0),
+            int(status.get("reached") or number),
+            status.get("session_total"),
+            int(status.get("streak") or 0),
+        ))
+        lines.append(heavy())
     lines.extend(gap(2))
     lines.extend(_card_body(body))
     lines.extend(gap(2))

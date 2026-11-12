@@ -36,6 +36,7 @@ from progress import (
     save_session,
     start_session,
     today,
+    card_streak,
     touch_streak,
     welcome_for,
 )
@@ -719,15 +720,47 @@ def _held(live: dict) -> dict:
     }
 
 
+def _lane_practiced(data, catalog, phylum: str) -> tuple[int, int]:
+    ids = [entry["id"] for entry in catalog if entry.get("phylum") == phylum]
+    entries = data.get("entries") or {}
+    done = 0
+    for eid in ids:
+        if int((entries.get(eid) or {}).get("attempts") or 0) >= 1:
+            done += 1
+    return done, len(ids)
+
+
+def _card_status(data, catalog, phylum: str, number: int) -> tuple[dict, int | None]:
+    session = data.get("session") or {}
+    done, lane_total = _lane_practiced(data, catalog, phylum)
+    reached = int(number or 0)
+    length = session.get("length")
+    session_total = length if isinstance(length, int) and length >= reached and length > 0 else None
+    status = {
+        "lane_done": done,
+        "lane_total": lane_total,
+        "reached": reached,
+        "session_total": session_total,
+        "streak": card_streak(data),
+    }
+    return status, session_total
+
+
 def _show_card(path, data, info: dict) -> None:
+    _doc, catalog = load_catalog()
+    number = int(info.get("number") or 1)
+    phylum = info.get("phylum") or "axiom"
+    status, session_total = _card_status(data, catalog, phylum, number)
     text = render.card(
-        int(info.get("number") or 1),
-        info.get("phylum") or "axiom",
+        number,
+        phylum,
         "SCENE",
         practice=info.get("practice") or "decide",
         mode=info.get("mode") or "free",
         options=info.get("options") or None,
+        total=session_total,
         typed=_is_typed(data),
+        status=status,
     )
     emit(
         path,
@@ -913,14 +946,20 @@ def _show_explain(path, data, name: str, definition: str) -> None:
 
 def _show_hint(path, data, live: dict) -> None:
     info = _held(live)
+    _doc, catalog = load_catalog()
+    number = int(info.get("number") or 1)
+    phylum = info.get("phylum") or "axiom"
+    status, session_total = _card_status(data, catalog, phylum, number)
     text = render.card(
-        int(info.get("number") or 1),
-        info.get("phylum") or "axiom",
+        number,
+        phylum,
         "SCENE",
         practice=info.get("practice") or "decide",
         mode=info.get("mode") or "free",
         options=info.get("options") or None,
+        total=session_total,
         typed=_is_typed(data),
+        status=status,
     )
     emit(
         path,

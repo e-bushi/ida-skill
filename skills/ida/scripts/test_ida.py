@@ -364,6 +364,58 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(opening[tagline + 5], SPACER)
         self.assertTrue(any(ch in "█▀▄" for ch in opening[tagline + 6]))
         self.assertNotIn("›", render.opening(1))
+        self._status_strip_fits()
+
+    def _status_strip_fits(self):
+        from common import SPACER
+        from progress import card_streak
+
+        sample = render.status_strip(6, 63, 2, 5, 3)
+        self.assertEqual(sample, "lane  ■■□□□□□□□□□□□□□□  6 / 63 ways      today  ●●○○○      streak 3d")
+        self.assertLessEqual(len(sample), 72)
+        self.assertIn("streak 1d", render.status_strip(0, 10, 1, None, 1))
+        self.assertNotIn("streak", render.status_strip(0, 10, 1, None, 0))
+        self.assertNotIn("○", render.status_strip(0, 10, 2, None, 1))
+        self.assertIn("●●○○○", render.status_strip(1, 10, 2, 5, 1))
+        wide = render.status_strip(999, 999, 99, 99, 999)
+        self.assertLessEqual(len(wide), 72)
+        self.assertIn("999 / 999 ways", wide)
+        header = render.card(
+            2,
+            "axiom",
+            "A founder pitches you for a check.",
+            total=5,
+            status={"lane_done": 6, "lane_total": 63, "reached": 2, "session_total": 5, "streak": 3},
+        )
+        self.assertIn("CARD 2 / 5", header)
+        self.assertIn(sample, header)
+        open_ended = render.card(2, "axiom", "A short scene.", status={"lane_done": 0, "lane_total": 10, "reached": 2, "session_total": None, "streak": 1})
+        self.assertIn("CARD 2\n", open_ended)
+        self.assertNotIn("CARD 2 /", open_ended)
+        for phylum in render.DISPLAY_ORDER:
+            titled = render.card(
+                999,
+                phylum,
+                "x",
+                total=999,
+                status={"lane_done": 999, "lane_total": 999, "reached": 99, "session_total": 99, "streak": 999},
+            )
+            self.assertTrue(all(len(line) <= 76 for line in titled.splitlines()))
+        days = {
+            "recent_scenarios": [
+                {"at": "2026-11-10T12:00:00Z"},
+                {"at": "2026-11-12T12:00:00Z"},
+            ],
+            "history": [{"started_at": "2026-11-11T08:00:00Z", "scenarios": 1}],
+            "session": None,
+        }
+        self.assertEqual(card_streak(days, "2026-11-12"), 3)
+        self.assertEqual(card_streak(days, "2026-11-13"), 3)
+        self.assertEqual(card_streak(days, "2026-11-14"), 0)
+        guide = (ROOT / "references" / "format.md").read_text(encoding="utf-8")
+        transcripts = (ROOT / "examples" / "transcripts.md").read_text(encoding="utf-8")
+        self.assertIn(sample, guide)
+        self.assertIn(sample, transcripts)
         self.assertNotIn("›", render.opening(2))
         self.assertNotIn("your own words", render.opening(1))
         card = render.card(1, "bias", "A short scene with a real stake.")
@@ -846,6 +898,10 @@ class IdaCommandTests(unittest.TestCase):
             assert_blank_tail(self, card.stderr)
             self.assertIn("Replace the word SCENE", card.stdout)
             self.assertIn("SCENE", screen_body(card.stdout))
+            self.assertIn("streak 1d", card.stdout)
+            self.assertIn(" ways", card.stdout)
+            self.assertIn("today", card.stdout)
+            self.assertNotIn("CARD 1 /", card.stdout)
             self.assertIn("T H E   Q U E S T I O N", card.stdout)
             self.assertNotIn("study how to fail", card.stdout.lower())
             reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
@@ -1122,7 +1178,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.8.0")
+        self.assertEqual(plugin["version"], "1.9.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 
