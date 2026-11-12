@@ -442,6 +442,7 @@ NAV = {
     "got it",
     "another angle",
     "explain it another way",
+    "explain",
     "deal",
 }
 NEXT_KEYS = {"next", "again", "another", "another like this", "retry", "got it"}
@@ -481,6 +482,12 @@ def _agent_preamble(screen: str, question: str = "") -> str:
         note = lead + ", THEN call the choice tool."
     elif screen == "summary":
         note = lead + "."
+    elif screen == "opening":
+        note = lead + ". Call the choice tool. Work is one role plus Other. Interests is multiSelect plus Other. Decisions is one pick plus Other."
+    elif screen == "explain":
+        note = lead + ", THEN call the choice tool. Put the explanation in that question, not in a separate message. Replace each <placeholder>."
+    elif screen == "hint":
+        note = lead + ", THEN call the choice tool. Put the nudge in that question, not in a separate message. Do not name the idea."
     else:
         note = lead + ". Then stop so they can type."
     if question:
@@ -523,6 +530,50 @@ def _question_line(result: str, name: str, definition: str = "") -> str:
     if result in ("miss", "menu"):
         return f"QUESTION: The idea was {called}. Where to from here?"
     return ""
+
+
+def _opening_question(step: int) -> str:
+    prompts = {
+        1: "QUESTION: What do you do for work?",
+        2: "QUESTION: What are you into besides that? Pick any that fit.",
+        3: "QUESTION: What decisions keep showing up for you?",
+    }
+    return prompts.get(step, prompts[1])
+
+
+def _explain_question(name: str, definition: str) -> str:
+    called = _called(name)
+    plain = _as_sentence(definition) if definition.strip() else "<one-line definition>."
+    return (
+        f"QUESTION: {called}. In plain words: {plain} "
+        "Like <everyday comparison>. "
+        "In your scene: <how it applies, 1-2 sentences>. "
+        "Try it: <3 short steps>. Where to from here?"
+    )
+
+
+def _is_request(text: str) -> bool:
+    token = " ".join(text.lower().split())
+    if not token:
+        return False
+    if token.endswith("?"):
+        return True
+    return token.startswith(
+        (
+            "can you",
+            "could you",
+            "please",
+            "explain",
+            "break this",
+            "help me",
+            "what is",
+            "how do",
+            "how does",
+            "tell me",
+            "i don't",
+            "still ",
+        )
+    )
 
 
 def _clip(text: str, limit: int) -> str:
@@ -814,6 +865,39 @@ def _deal_and_show(path, data, spec) -> None:
     _show_card(path, data, info)
 
 
+def _show_explain(path, data, name: str, definition: str) -> None:
+    text = render.feedback_not_yet(name or "the idea", definition or "", typed=_is_typed(data))
+    emit(
+        path,
+        data,
+        text,
+        {"screen": "explain", "await": "next", "name": name},
+        "",
+        _explain_question(name or "the idea", definition or ""),
+    )
+
+
+def _show_hint(path, data, live: dict) -> None:
+    info = _held(live)
+    text = render.card(
+        int(info.get("number") or 1),
+        info.get("phylum") or "axiom",
+        "SCENE",
+        practice=info.get("practice") or "decide",
+        mode=info.get("mode") or "free",
+        options=info.get("options") or None,
+        typed=_is_typed(data),
+    )
+    emit(
+        path,
+        data,
+        text,
+        {"screen": "hint", "await": "answer", "name": info.get("name"), "id": info.get("id")},
+        info.get("name") or "",
+        "QUESTION: In plain words: <one nudge, do not name the idea>. Where to from here?",
+    )
+
+
 def _is_next(key: str) -> bool:
     return key in NEXT_KEYS or key.startswith("got it")
 
@@ -850,7 +934,13 @@ def cmd_turn(path, args) -> None:
             _show_menu(path, data, catalog)
             return
         save_file(path, data)
-        emit(path, data, render.opening(step), {"screen": "opening", "await": "profile", "beat": step})
+        emit(
+            path,
+            data,
+            render.opening(step),
+            {"screen": "opening", "await": "profile", "beat": step},
+            question=_opening_question(step),
+        )
         return
     session = data.get("session") or {}
     live = session.get("in_progress") or {}
@@ -887,6 +977,22 @@ def cmd_turn(path, args) -> None:
         return
     if key in ("menu", "back to the menu"):
         _show_menu(path, data, catalog)
+        return
+    screen_saved = session.get("screen") or {}
+    asked = " ".join(texts).strip() if texts else ""
+    explain_name = _idea_name(live, {}) if live else (screen_saved.get("name") or "")
+    explain_def = ""
+    if live:
+        explain_def = live.get("definition") or ""
+    else:
+        explain_def = screen_saved.get("definition") or screen_saved.get("explain") or ""
+    if key in ("explain", "another angle", "explain it a different way") or (
+        explain_name and not live and key not in NAV and _is_request(asked or action)
+    ):
+        if not explain_name:
+            _show_menu(path, data, catalog)
+            return
+        _show_explain(path, data, explain_name, explain_def)
         return
     if key in ("why", "show me"):
         screen = session.get("screen") or {}
@@ -932,8 +1038,8 @@ def cmd_turn(path, args) -> None:
     if live and result:
         _grade(path, data, result, live)
         return
-    if live and key in ("hint", "another angle", "explain it another way"):
-        _show_card(path, data, _held(live))
+    if live and (key == "hint" or _is_request(asked or action)):
+        _show_hint(path, data, live)
         return
     if live and key not in NAV and not _is_next(key):
         _show_card(path, data, _held(live))
