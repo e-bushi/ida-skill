@@ -30,6 +30,8 @@ The fence is plain text, with no ANSI codes. Keep every spacer line. Keep the wh
 
 The idk reveal is the case that fails if you skip this. The reply contains the block letters of the name, the two sentences, the three steps, and the prompt. A collapsed tool log does not.
 
+Every turn, in this order: one command if the turn needs one, then the visible screen or explanation in the reply, then the choice tool last. Any explanation, re-explanation, reveal, feedback, or screen is written in the chat reply before the choice tool is called. A re-explanation is a short block in a `text` fence, header `■ A N O T H E R   A N G L E`, not a sentence inside the tool. Never put that explanation in the tool's question or in an option. Never call the choice tool twice in one turn with no visible text between the calls. If a host shows text poorly after a tool call, the text still goes before the call.
+
 Do not narrate a tool call, a path, or a command.
 
 At the start of a sitting, read these once: `references/format.md`, `references/commands.md`, `references/loop.md`, `references/voice.md`, `library/exemplars.json`. Do not open the CSV, the examples, the evals, or every index file. Do not run `--help`. Do not run a command to discover flags. `references/commands.md` already lists them.
@@ -58,9 +60,15 @@ If the card rail contains `SCENE`, replace that word in the fence with the scene
 
 ## Choices
 
-Use a native choice tool when the host has one. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` if that method is available, otherwise AskQuestion if it is in your tool list. Warp: `AskUserQuestion` when the host exposes it. Use the tool's own schema. Put the lane or the action in the label, and the percent or a one-line reason in the description.
+Use a native choice tool when the host has one. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp: `AskUserQuestion` when the host exposes it. Use the tool's own schema.
 
-Use it for the practice menu, the seven lanes, a multiple-choice card, and the actions after an answer (next, why, menu, retry). If there is no such tool, the `›` line is the choice.
+Single select only. Do not turn a menu into checkboxes. One question, and do not write "Question 1 of 1" yourself. Put a short label in the header or title field when the tool has one (lane, card, next).
+
+Labels are the spoken names in lowercase: thinking clearly, knowing what's true, blind spots, reading people, playing to win, seeing ripple effects, deciding and acting. Put the percent, or a one-line reason, in the description.
+
+Use the tool for the seven lanes (plus daily, spot, and surprise me), a multiple-choice card, idk / hint / skip on a free-text card, and the actions after an answer (next, why, menu, retry, again, done). After a re-explain, the options are got it, another angle, next, and menu. The screen does not repeat those choices. The tool's question is a short label such as "next", never "Clearer now?" and never the explanation.
+
+If the host has no choice tool, pass `--typed` on the first `ida turn` of the sitting. ida remembers it. The screen then ends with a `›` line, and that line is the choice. Do not pass `--typed` when the tool exists.
 
 ## Session
 

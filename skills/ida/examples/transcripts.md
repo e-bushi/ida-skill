@@ -64,9 +64,6 @@ Illustrations. During practice, do not open this file.
  ​
  ​
   ■ suggested  01, your lightest lane
- ​
- ​
-  › a number · daily · spot · "surprise me"
 ```
 
 ## A card
@@ -88,9 +85,6 @@ Illustrations. During practice, do not open this file.
  ​
     Which way of thinking fits here? Name it and apply it in a sentence or
     two.
- ​
- ​
-  › "hint" · "idk" · "skip"
 ```
 
 ```text
@@ -111,9 +105,6 @@ Illustrations. During practice, do not open this file.
  ​
   05  P L A Y I N G   T O   W I N
       ▒░░░░░░░░░░░░░░░░░░░    4%  +1
- ​
- ​
-  › "next" · "why" · "menu"
 ```
 
 ## Partial
@@ -135,9 +126,6 @@ Illustrations. During practice, do not open this file.
  ​
   05  P L A Y I N G   T O   W I N
       ▒░░░░░░░░░░░░░░░░░░░    1%  +0.5
- ​
- ​
-  › "retry" · "next" · "show me"
 ```
 
 ## Not yet, in the reply
@@ -171,9 +159,6 @@ The person said idk. The words went into `/tmp/ida-screen.json`. The only comman
  ​
  ​
   Name the failure before you admire the offer.
- ​
- ​
-  › "got it" · "another like this" · "menu"
 ```
 
 ## End
@@ -225,8 +210,20 @@ The person said idk. The words went into `/tmp/ida-screen.json`. The only comman
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ​
   Clarity is a competitive edge.
- ​
- ​
-  › "again" · "menu" · "done"
 ```
 
+
+## Another angle, in the reply
+
+The person said they were not sure they understood. The reply is the fence below, written before any choice tool. The tool comes after the fence, single select, with the short labels got it, another angle, next, and menu. The explanation is not inside the question. A second question is not the reply.
+
+```text
+  ■ A N O T H E R   A N G L E
+ ​
+ ​
+  one line              A sentence true either way says nothing.
+ ​
+  everyday              Like saying the bus is on time or it is not.
+ ​
+  in this scene         The launch line did not tell you whether to ship.
+```

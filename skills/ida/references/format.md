@@ -10,7 +10,7 @@ Do not pass the scene, the explanation, or the steps as command flags. Write `/t
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
-The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A `›` line lists real choices. Profile questions have no `›` line. The question itself is the prompt.
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. Profile questions have no `›` line. The question itself is the prompt. When the host has a choice tool, the screen has no `›` line either. The tool carries the choices, single select, with lowercase section names. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
 The headline stays on the first question of a first run only:
 
@@ -52,9 +52,24 @@ Claude Code, Warp, and Cursor may show command output, and they may not. Warp co
 ida turn idk
 ```
 
+## Another angle
+
+When the reveal did not land, this block is the reply. The choice tool comes after it, not instead of it.
+
+```text
+  ■ A N O T H E R   A N G L E
+ ​
+ ​
+  one line              A sentence true either way says nothing.
+ ​
+  everyday              Like saying the bus is on time or it is not.
+ ​
+  in this scene         The launch line did not tell you whether to ship.
+```
+
 ## Choices
 
-If the host has a choice tool, use it and skip the typed prompt. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise the AskQuestion tool if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Follow that tool's own schema. Put the lane or action in the label and the percent, or a one-line reason, in the description. If there is no such tool, the `›` line is the choice.
+If the host has a choice tool, use it and do not print a `›` line. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `ida turn --typed` and the `›` line is the choice.
 
 Use it for the practice menu, the seven lanes, multiple choice, and the after-answer actions (next, why, menu, retry).
 
@@ -120,9 +135,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
  ​
   ■ suggested  01, your lightest lane
- ​
- ​
-  › a number · daily · spot · "surprise me"
 ```
 
 ```text
@@ -142,9 +154,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
     Which way of thinking fits here? Name it and apply it in a sentence or
     two.
- ​
- ​
-  › "hint" · "idk" · "skip"
 ```
 
 ```text
@@ -165,9 +174,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
   05  P L A Y I N G   T O   W I N
       ▒░░░░░░░░░░░░░░░░░░░    4%  +1
- ​
- ​
-  › "next" · "why" · "menu"
 ```
 
 ```text
@@ -187,9 +193,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
   05  P L A Y I N G   T O   W I N
       ▒░░░░░░░░░░░░░░░░░░░    1%  +0.5
- ​
- ​
-  › "retry" · "next" · "show me"
 ```
 
 ```text
@@ -217,9 +220,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
  ​
   Name the failure before you admire the offer.
- ​
- ​
-  › "got it" · "another like this" · "menu"
 ```
 
 ```text
@@ -277,9 +277,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ​
   Clarity is a competitive edge.
- ​
- ​
-  › "again" · "menu" · "done"
 ```
 
 ```text
@@ -327,9 +324,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ​
   The people who see clearly win.
- ​
- ​
-  › "again" · "menu" · "done"
 ```
 
 
