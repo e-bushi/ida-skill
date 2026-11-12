@@ -85,30 +85,87 @@ class LibraryTests(unittest.TestCase):
 
 
 class RenderTests(unittest.TestCase):
-    def test_cards_share_a_width(self):
-        doc = json.loads((LIBRARY / "phyla.json").read_text(encoding="utf-8"))
-        for phylum in doc["phyla"]:
+    def test_cards_stay_within_56_and_end_on_a_prompt(self):
+        for phylum in render.DISPLAY_ORDER:
             for practice in ("decide", "spot"):
-                text = render.card(4, phylum["id"], practice, "A short scene with a real stake.")
-                widths = {len(line) for line in text.splitlines()}
-                self.assertEqual(widths, {render.CARD_WIDTH}, phylum["id"] + " " + practice)
+                text = render.card(4, phylum, "A short scene with a real stake.", practice=practice)
+                self.assertTrue(all(len(line) <= 56 for line in text.splitlines()), text)
+                self.assertEqual(text.splitlines()[-1], "│ ›")
+                self.assertNotIn("✓", text)
+                self.assertIn(render.display_name(phylum).upper(), text)
         long_name = "commutative / associative / distributive laws"
         text = render.card(
             8,
             "axiom",
-            "spot",
-            "A long label has to wrap inside the border.",
+            "A long label has to wrap inside the rail.",
+            practice="spot",
             mode="choice",
             options=[long_name, "tautology", "contradiction", "validity"],
         )
-        self.assertTrue(all(len(line) == render.CARD_WIDTH for line in text.splitlines()))
-        self.assertIn("1  commutative", text)
+        self.assertTrue(all(len(line) <= 56 for line in text.splitlines()))
+        self.assertIn("commutative", text)
+        self.assertNotIn("┐", text)
+
+    def test_bars_are_ten_cells_and_partials_are_half(self):
+        empty, pct = render.bar_cells(0, 0, 81)
+        self.assertEqual(empty, "░" * 10)
+        self.assertEqual(pct, 0)
+        full, pct = render.bar_cells(81, 0, 81)
+        self.assertEqual(full, "█" * 10)
+        self.assertEqual(pct, 100)
+        one, pct = render.bar_cells(1, 0, 81)
+        self.assertEqual(len(one), 10)
+        self.assertEqual(one, "▒" + "░" * 9)
+        self.assertEqual(pct, 1)
+        half, pct = render.bar_cells(0, 1, 10)
+        self.assertEqual(half[0], "▒")
+        self.assertEqual(pct, 5)
+        mixed, pct = render.bar_cells(8, 1, 10)
+        self.assertEqual(mixed, "████████▒░")
+        self.assertEqual(pct, 85)
+        untouched, pct = render.bar_cells(0, 0, 62)
+        self.assertEqual(set(untouched), {"░"})
+        self.assertEqual(pct, 0)
+        lines = [render.bar_line(phylum, 1, 1, 40) for phylum in render.DISPLAY_ORDER]
+        self.assertEqual(len({len(line) for line in lines}), 1)
+        self.assertTrue(all(len(line) <= 54 for line in lines))
+        screen = render.bars(
+            [{"phylum": phylum, "strong": 1, "partial": 0, "total": 81} for phylum in render.DISPLAY_ORDER]
+        )
+        self.assertTrue(all(len(line) <= 56 for line in screen.splitlines()))
+        self.assertNotIn("1/81", screen)
+        self.assertNotIn("axiom", screen)
+        self.assertIn("1%", screen)
+
+    def test_section_names(self):
+        self.assertEqual(
+            [render.display_name(phylum) for phylum in render.DISPLAY_ORDER],
+            [
+                "thinking clearly",
+                "knowing what's true",
+                "blind spots",
+                "reading people",
+                "playing to win",
+                "seeing ripple effects",
+                "deciding and acting",
+            ],
+        )
+        menu = render.menu("Last time: playing to win, 4 scenarios.")
+        self.assertIn("PLAYING TO WIN", menu)
+        self.assertNotIn("how to win", menu)
+        self.assertNotIn("axiom", menu)
+        self.assertNotIn("When it gets noisy", menu)
+        self.assertIn("sharpest minds", menu)
+        opening = render.opening_new()
+        self.assertEqual(opening.count("When it gets noisy, you can always reach for clarity."), 1)
+        self.assertIn("01", opening)
+        self.assertIn("What do you do for work?", opening)
+        self.assertNotIn("[1]", opening)
 
     def test_samples_live_in_the_docs(self):
         card = render.card(
             4,
             "strategy",
-            "decide",
             "Your biggest customer asks for a custom feature only they would use. They pay 40% of your revenue.",
         )
         feedback = render.feedback(
@@ -119,75 +176,66 @@ class RenderTests(unittest.TestCase):
                 "Also consider inversion: what would make losing them survivable?",
             ],
         )
-        bars = render.render_bars(
+        bars = render.bars(
             [
-                {"phylum": "axiom", "subtitle": "how to think clearly", "well": 0, "total": 103},
-                {"phylum": "strategy", "subtitle": "how to win when others play too", "well": 24, "total": 81},
+                {"phylum": "axiom", "strong": 0, "partial": 0, "total": 103},
+                {"phylum": "strategy", "strong": 1, "partial": 0, "total": 81},
             ]
         )
-        summary = render.summary_block(6, 4, 1, 0, 1, "inversion", "sunk cost fallacy", "pick up in strategy")
+        summary = render.summary_block(6, 4, 1, 0, 1, "inversion", "sunk cost fallacy", "pick up in playing to win")
         guide = (ROOT / "references" / "format.md").read_text(encoding="utf-8")
-        for block in (card, feedback, bars, summary, render.WORDMARK):
+        for block in (card, feedback, bars, summary, render.opening_new()):
             self.assertIn(block, guide)
+        for phylum, name in render.DISPLAY_NAMES.items():
+            self.assertIn(name, guide)
+            self.assertIn(phylum, guide)
         transcripts = (ROOT / "examples" / "transcripts.md").read_text(encoding="utf-8")
         blocks = [
-            render.opening("new"),
-            render.opening("ready"),
-            render.opening("returning", "Last time: 4 scenarios, last one in axiom."),
-            render.opening("resume", "Last time: strategy, scenario 3."),
-            render.sections(),
+            render.opening_new(),
+            render.menu("Last time: playing to win, 4 scenarios."),
+            render.resume("Last time: playing to win, scenario 3."),
             render.card(
                 1,
                 "strategy",
-                "decide",
                 "You and your climbing partner are split across two trailheads. Both phones are dead. You still have to meet before dark, and neither of you named a place.",
             ),
-            render.card(
-                2,
-                "systema",
-                "decide",
-                "Your team gets a bonus for tickets closed. This week the count is up, and the same bugs are coming back renamed.",
+            render.feedback(
+                "strong",
+                "schelling point",
+                "You named the place each of you expects the other to expect. That is the whole move when you cannot talk.",
+            ),
+            render.feedback(
+                "partial",
+                "schelling point",
+                "The meeting place is right, and the why is thin. Say what each of you expects the other to expect.",
+            ),
+            render.feedback(
+                "idk",
+                "goodhart's law",
+                "When the count became the bonus, the team started producing the count. Rename the bonus around bugs that stay fixed.",
             ),
             render.card(
                 4,
                 "axiom",
-                "spot",
                 '"Either the launch ships on Tuesday, or it does not."',
+                practice="spot",
             ),
             render.summary_block(4, 3, 0, 0, 1, "schelling point", "goodhart's law", "pick up at random"),
-            render.feedback(
-                "strong",
-                "schelling point",
-                [
-                    "You named the place each of you expects the other to expect.",
-                    "That is the whole move when you cannot talk.",
-                ],
-            ),
-            render.card(
-                3,
-                "bias",
-                "decide",
-                "You are hiring from the founders who got famous. The ones who tried the same playbook and folded never show up in the interviews.",
-                mode="choice",
-                options=["confirmation bias", "survivorship bias", "halo effect", "planning fallacy"],
-            ),
         ]
         for block in blocks:
             self.assertIn(block, transcripts)
-        section_lines = [line for line in render.sections().splitlines() if len(line) > 4 and line[2].isdigit()]
-        for line in section_lines:
-            self.assertEqual(line[13:15], "  ")
-            self.assertNotEqual(line[15], " ")
 
     def test_opening_and_summary_edges(self):
-        self.assertNotIn("Practice:", render.opening("new"))
-        self.assertIn("Practice:", render.opening("ready"))
+        opening = render.opening_new()
+        self.assertNotIn("PRACTICE", opening)
+        self.assertLessEqual(max(len(line) for line in opening.splitlines()), 56)
         quiet = render.summary_block(0, 0, 0, 0, 0, "", "", "pick up wherever you like")
         self.assertIn("No scenarios this time.", quiet)
-        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), render.CARD_WIDTH)
-        text = render.feedback("idk", "inversion", ["Study the failure, then refuse it."])
-        self.assertTrue(text.startswith("? inversion."))
-        self.assertTrue(all(len(line) <= render.CARD_WIDTH for line in text.splitlines()))
+        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), 56)
+        text = render.feedback("idk", "inversion", "Study the failure, then refuse it.")
+        self.assertTrue(text.splitlines()[0].endswith("IDK"))
+        self.assertNotIn("✓", text)
+        self.assertTrue(all(len(line) <= 56 for line in text.splitlines()))
 
 
 class ProgressTests(unittest.TestCase):
@@ -325,7 +373,7 @@ class ProgressTests(unittest.TestCase):
             self.assertEqual(summary["next"], "pick up in game theory")
             back = json.loads(run("progress.py", ["load"], path).stdout)
             self.assertIsNone(back["session"])
-            self.assertEqual(back["welcome"]["line"], "Last time: strategy, 3 scenarios.")
+            self.assertEqual(back["welcome"]["line"], "Last time: playing to win, 3 scenarios.")
             self.assertEqual(back["entries"]["tit-for-tat"]["strong"], 1)
 
             # One strong, then end, is a singular welcome. Use a fresh sitting.
@@ -497,6 +545,105 @@ class PickTests(unittest.TestCase):
             self.assertEqual({entry["category"] for entry in body["intended"]}, {"game theory"})
 
 
+class IdaCommandTests(unittest.TestCase):
+    def test_open_is_one_line_and_save_is_silent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "progress.json"
+            opened = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "open"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(opened.returncode, 0, opened.stderr)
+            self.assertEqual(len(opened.stdout.strip().splitlines()), 1)
+            self.assertTrue(opened.stdout.startswith("NEW|bars|axiom:0:0:"))
+            quiet = subprocess.run(
+                [
+                    PY,
+                    str(SCRIPTS / "ida.py"),
+                    "--path",
+                    str(path),
+                    "profile",
+                    "--role",
+                    "designer",
+                    "--interests",
+                    "climbing",
+                    "--decisions",
+                    "what to ship",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(quiet.returncode, 0, quiet.stderr)
+            self.assertEqual(quiet.stdout, "")
+            nxt = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "next", "--phylum", "strategy", "--seed", "1"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(nxt.returncode, 0, nxt.stderr)
+            fields = nxt.stdout.strip().split("\t")
+            self.assertEqual(fields[1], "playing to win")
+            saved = subprocess.run(
+                [
+                    PY,
+                    str(SCRIPTS / "ida.py"),
+                    "--path",
+                    str(path),
+                    "save",
+                    "--result",
+                    "idk",
+                    "--summary",
+                    "a stake with no answer",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(saved.returncode, 0, saved.stderr)
+            self.assertEqual(saved.stdout, "")
+            again = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "open"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertIn("strategy:0:0:", again.stdout)
+            strong = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "next", "--phylum", "strategy", "--seed", "2"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(strong.returncode, 0, strong.stderr)
+            subprocess.run(
+                [
+                    PY,
+                    str(SCRIPTS / "ida.py"),
+                    "--path",
+                    str(path),
+                    "save",
+                    "--result",
+                    "strong",
+                    "--summary",
+                    "a real stake",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            after = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "open"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertIn("strategy:1:0:", after.stdout)
+
+
 class ManifestTests(unittest.TestCase):
     def test_plugin_manifests_point_at_the_skill(self):
         marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
@@ -509,7 +656,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.0.0")
+        self.assertEqual(plugin["version"], "1.1.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 

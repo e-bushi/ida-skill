@@ -1,6 +1,6 @@
 # Library
 
-443 ways of thinking. 7 sections (the phyla, in source order). 52 category names. `reasoning tools` is filed twice, once under axiom (inversion only) and once under momentum, so the index has 53 placements. `library/phyla.json` is the menu. It is small. Read it when they ask what a section contains, or when you cannot run `render.py sections`.
+443 ways of thinking. 7 sections (the phyla, in source order). 52 category names. `reasoning tools` is filed twice, once under axiom (inversion only) and once under momentum, so the index has 53 placements. `library/phyla.json` is the menu of ids. It is small. The spoken names are in `references/format.md`. Read `phyla.json` only when they ask which categories a section holds.
 
 Do not open `library/ida-library.csv` during practice. Do not open every file in `library/index/`. The picker reads the index. If you cannot run it, read only `library/index/<phylum>.json` for the one section they named.
 
@@ -42,4 +42,4 @@ python3 skills/ida/scripts/build_library.py
 
 The script is the only writer of `phyla.json`, `exemplars.json`, and `library/index/`. It keeps the source CSV intact, including punctuation in the original notes. The exemplar file drops em dashes so the voice you read does not teach them.
 
-Sections, in menu order: axiom, kanon, bias, strategy, systema, persona, momentum. Subtitles come from the CSV. Show those names. Do not rename a section (no "Foundations"). All of them are open from the first session.
+Ids stay in this order in the data files: axiom, kanon, bias, strategy, systema, persona, momentum. On screen the names are thinking clearly, knowing what's true, blind spots, reading people, playing to win, seeing ripple effects, and deciding and acting. The menu uses that spoken order. All of them are open from the first session.

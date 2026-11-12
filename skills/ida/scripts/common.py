@@ -25,12 +25,37 @@ HISTORY_CAP = 40
 SUMMARY_LIMIT = 280
 PROMPT_LIMIT = 2000
 
-CARD_WIDTH = 44
-INNER_WIDTH = 40
-BAR_LABEL_WIDTH = 41
+# Screens are at most 56 columns. The left rail is two characters ("│ ").
+SCREEN_WIDTH = 56
+RAIL = "│ "
+CONTENT_WIDTH = SCREEN_WIDTH - len(RAIL)
 BAR_BLOCKS = 10
-PHYLUM_WIDTH = 8
-SUBTITLE_WIDTH = 31
+
+# User-facing section names. Ids stay in the library and the progress file.
+DISPLAY_ORDER = (
+    "axiom",
+    "kanon",
+    "bias",
+    "persona",
+    "strategy",
+    "systema",
+    "momentum",
+)
+DISPLAY_NAMES = {
+    "axiom": "thinking clearly",
+    "kanon": "knowing what's true",
+    "bias": "blind spots",
+    "persona": "reading people",
+    "strategy": "playing to win",
+    "systema": "seeing ripple effects",
+    "momentum": "deciding and acting",
+}
+
+# Locked. Do not rewrite these. They rotate under every screen after the first run.
+SIGNOFFS = (
+    "When it gets noisy, you can always reach for clarity.",
+    "The best ideas from the sharpest minds, ready when a decision gets hard.",
+)
 
 
 def now() -> str:

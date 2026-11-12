@@ -23,6 +23,7 @@ import sys
 
 from catalog import load_catalog
 from common import (
+    DISPLAY_NAMES,
     HISTORY_CAP,
     MODES,
     PROMPT_LIMIT,
@@ -146,15 +147,21 @@ def section_bars(session: dict | None, stats: dict, entries: list[dict], bars: l
     return rows
 
 
+def shown_name(phylum: str | None) -> str:
+    if not phylum:
+        return ""
+    return DISPLAY_NAMES.get(phylum, phylum)
+
+
 def welcome_for(data: dict) -> dict:
     session = data.get("session")
     if session and session.get("in_progress"):
         live = session["in_progress"]
-        phylum = live.get("phylum") or session.get("phylum") or "a mixed set"
+        phylum = shown_name(live.get("phylum") or session.get("phylum")) or "a mixed set"
         number = live.get("number")
         return {"kind": "resume", "line": f"Last time: {phylum}, scenario {number}."}
     if session and int(session.get("number") or 0) > 0:
-        phylum = session.get("last_phylum") or session.get("phylum")
+        phylum = shown_name(session.get("last_phylum") or session.get("phylum"))
         number = session["number"]
         if phylum:
             line = f"Last time: {phylum}, scenario {number}."
@@ -164,11 +171,11 @@ def welcome_for(data: dict) -> dict:
     history = data.get("history") or []
     if history:
         last = history[-1]
-        phylum = last.get("phylum") or last.get("last_phylum")
+        phylum = shown_name(last.get("phylum") or last.get("last_phylum"))
         count = last.get("scenarios") or 0
         noun = "scenario" if count == 1 else "scenarios"
         if last.get("phylum"):
-            line = f"Last time: {last['phylum']}, {count} {noun}."
+            line = f"Last time: {shown_name(last['phylum'])}, {count} {noun}."
         elif phylum:
             line = f"Last time: {count} {noun}, last one in {phylum}."
         else:
@@ -345,7 +352,7 @@ def _default_next(session: dict) -> str:
         return "pick up wherever you like"
     if session.get("category"):
         return f"pick up in {session['category']}"
-    return f"pick up in {session['phylum']}"
+    return f"pick up in {shown_name(session.get('phylum'))}"
 
 
 def start_session(data: dict, selection: str, phylum, category, mode: str, fresh: bool) -> dict:

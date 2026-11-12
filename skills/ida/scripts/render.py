@@ -1,76 +1,23 @@
-"""Render ida cards, bars, and the session summary at a fixed width.
+"""Terminal screens for ida.
 
-The chat should print this output as-is. Padding is spaces, never tabs.
-Every line of a card is CARD_WIDTH characters. Bar rows share one width.
+Every screen is at most 56 columns, with a left rail and no right border.
+The only accent is ■. Labels are in caps. A › line ends every screen.
+These functions are for tests and for checking the templates. During a
+sitting the agent draws the same screens from references/format.md and
+does not shell out to this file.
 """
 
 from __future__ import annotations
 
-import argparse
-import json
-import sys
-
 from common import (
     BAR_BLOCKS,
-    BAR_LABEL_WIDTH,
-    CARD_WIDTH,
-    INNER_WIDTH,
-    LIBRARY,
-    PHYLUM_WIDTH,
-    SUBTITLE_WIDTH,
-    read_json,
+    CONTENT_WIDTH,
+    DISPLAY_NAMES,
+    DISPLAY_ORDER,
+    RAIL,
+    SCREEN_WIDTH,
+    SIGNOFFS,
 )
-
-WORDMARK = "\n".join(
-    [
-        "  █  █▀▄  ▄▀█",
-        "  █  █▄▀  █▀█",
-        "  reach for clarity",
-    ]
-)
-
-MENU = "  Practice: [1] a section  [2] pick ideas  [3] random"
-
-INTRO = "\n".join(
-    [
-        "  When it gets noisy, you can always reach for clarity.",
-        "  The best ideas from the sharpest minds,",
-        "  ready when a decision gets hard.",
-        "",
-        "  01 Collect the best ideas.",
-        "  02 Connect them as you go.",
-        "  03 Reach for them when it counts.",
-        "",
-        "  Before the first scenario, three quick questions.",
-        "  A sentence each is enough.",
-        "",
-        "  1. What do you do for work?",
-        "  2. What are you into besides that?",
-        "  3. What decisions keep showing up for you?",
-    ]
-)
-
-FOOTERS = {
-    ("decide", "free"): [
-        "Which way of thinking fits here?",
-        "Name it and apply it in a sentence or two.",
-        'Type "idk" anytime.',
-    ],
-    ("spot", "free"): [
-        "What is this called?",
-        "The name is enough. Add a few words if you want.",
-        'Type "idk" anytime.',
-    ],
-    ("decide", "choice"): [
-        "Which one fits? A number is enough.",
-        "Add a sentence if you want.",
-        'Type "idk" anytime.',
-    ],
-    ("spot", "choice"): [
-        "Which name fits? A number is enough.",
-        'Type "idk" anytime.',
-    ],
-}
 
 
 def wrap(text: str, width: int) -> list[str]:
@@ -94,150 +41,167 @@ def wrap(text: str, width: int) -> list[str]:
     return lines
 
 
-def split_paragraphs(text: str) -> list[str]:
-    chunks = []
-    for part in text.replace("\r\n", "\n").split("\n\n"):
-        line = " ".join(part.split())
-        if line:
-            chunks.append(line)
-    return chunks
+def display_name(phylum: str) -> str:
+    return DISPLAY_NAMES[phylum]
 
 
-def frame(content: str, width: int = INNER_WIDTH) -> str:
-    if len(content) > width:
-        raise ValueError(f"card line is {len(content)} chars, inner width is {width}")
-    return "│ " + content.ljust(width) + " │"
+def _finish(content_lines: list[str], signoff_index: int | None) -> str:
+    lines: list[str] = []
+    for line in content_lines:
+        if line == "":
+            lines.append("")
+            continue
+        if len(line) <= CONTENT_WIDTH:
+            lines.append(RAIL + line)
+            continue
+        for part in wrap(line, CONTENT_WIDTH):
+            lines.append(RAIL + part)
+    if signoff_index is not None:
+        lines.append("")
+        for part in wrap(SIGNOFFS[signoff_index % 2], CONTENT_WIDTH):
+            lines.append(RAIL + part)
+    lines.append("")
+    lines.append(RAIL + "›")
+    for line in lines:
+        if len(line) > SCREEN_WIDTH:
+            raise ValueError(f"line is {len(line)} cols: {line!r}")
+    return "\n".join(lines)
 
 
-def top_border(number: int, phylum: str, practice: str, width: int = CARD_WIDTH) -> str:
-    shown = f"{number:02d}" if number < 100 else str(number)
-    left = f"┌─ scenario {shown} "
-    tag = phylum if practice != "spot" else f"{phylum} / spot"
-    right = f" {tag} ─┐"
-    dashes = width - len(left) - len(right)
-    if dashes < 2:
-        right = f" {phylum} ─┐"
-        dashes = width - len(left) - len(right)
-    if dashes < 2:
-        raise ValueError(f"title does not fit: scenario {shown} {tag}")
-    line = left + ("─" * dashes) + right
-    if len(line) != width:
-        raise ValueError(f"top border is {len(line)} not {width}")
+def bar_cells(strong: int, partial: int, total: int) -> tuple[str, int]:
+    """10 cells for the share of a section.
+
+    A strong idea counts as 1. A partial idea counts as half. idk and miss
+    add nothing. The caller passes partial ideas that are not already strong.
+
+    Each cell is a tenth of the section. Full tenths are █. A remainder
+    shows as ▒, including the first bit of credit so one rep is visible
+    without claiming a full tenth. The rest are ░. The percent is the
+    honest score: round(100 * credit / total).
+    """
+    if total <= 0 or (strong <= 0 and partial <= 0):
+        return "░" * BAR_BLOCKS, 0
+    credit = strong + 0.5 * partial
+    if credit > total:
+        credit = float(total)
+    percent = int(round(100 * credit / total))
+    percent = max(0, min(100, percent))
+    exact = BAR_BLOCKS * credit / total
+    full = int(exact)
+    if full > BAR_BLOCKS:
+        full = BAR_BLOCKS
+    remainder = exact - full
+    half = 1 if full < BAR_BLOCKS and remainder > 1e-9 else 0
+    if full + half > BAR_BLOCKS:
+        half = 0
+    empty = BAR_BLOCKS - full - half
+    return ("█" * full) + ("▒" * half) + ("░" * empty), percent
+
+
+def bar_line(phylum: str, strong: int, partial: int, total: int) -> str:
+    label = display_name(phylum).upper().ljust(21)
+    cells, percent = bar_cells(strong, partial, total)
+    score = f"{percent}%".rjust(4)
+    line = f"{label}  {cells}  {score}"
+    if len(line) > CONTENT_WIDTH:
+        raise ValueError(f"bar line is {len(line)} cols")
     return line
 
 
-def bottom_border(width: int = CARD_WIDTH) -> str:
-    return "└" + ("─" * (width - 2)) + "┘"
+def opening_new() -> str:
+    return _finish(
+        [
+            "■ ida",
+            "",
+            SIGNOFFS[0],
+            "",
+            "01",
+            "What do you do for work?",
+            "",
+            "02",
+            "What are you into besides that?",
+            "",
+            "03",
+            "What decisions keep showing up for you?",
+        ],
+        None,
+    )
+
+
+def menu(welcome: str = "", signoff_index: int = 1) -> str:
+    lines = ["■ ida", ""]
+    if welcome:
+        lines.extend(["WELCOME BACK", welcome, ""])
+    lines.append("PRACTICE")
+    for index, phylum in enumerate(DISPLAY_ORDER, start=1):
+        lines.append(f"{index}  {display_name(phylum).upper()}")
+    lines.extend(["", "Or name the ideas. Or say random."])
+    return _finish(lines, signoff_index)
+
+
+def resume(welcome: str, signoff_index: int = 1) -> str:
+    return _finish(
+        [
+            "■ ida",
+            "",
+            "WELCOME BACK",
+            welcome,
+            "",
+            "Continue that one, or start fresh.",
+        ],
+        signoff_index,
+    )
 
 
 def card(
     number: int,
     phylum: str,
-    practice: str,
     body: str,
+    practice: str = "decide",
     mode: str = "free",
     options: list[str] | None = None,
+    signoff_index: int = 0,
 ) -> str:
-    if practice not in ("decide", "spot"):
-        raise ValueError(practice)
-    if mode not in ("free", "choice"):
-        raise ValueError(mode)
-    inner: list[str] = []
-    for paragraph in split_paragraphs(body):
-        inner.extend(wrap(paragraph, INNER_WIDTH))
-        inner.append("")
+    lines = [f"SCENARIO {number:02d}", display_name(phylum).upper()]
+    if practice == "spot":
+        lines.append("SPOT")
+    lines.extend(["", body, ""])
     if options:
-        while inner and inner[-1] == "":
-            inner.pop()
-        inner.append("")
         for index, name in enumerate(options, start=1):
-            prefix = f"{index}  "
-            if index > 9:
-                raise ValueError("cards hold at most 9 options")
-            chunks = wrap(name, INNER_WIDTH - len(prefix))
-            inner.append(prefix + chunks[0])
-            for extra in chunks[1:]:
-                inner.append((" " * len(prefix)) + extra)
-        inner.append("")
-    while inner and inner[-1] == "":
-        inner.pop()
-    if not inner:
-        raise ValueError("scenario body is empty")
-    inner.append("")
-    for line in FOOTERS[(practice, mode)]:
-        inner.extend(wrap(line, INNER_WIDTH))
-    collapsed: list[str] = []
-    for line in inner:
-        if line == "" and collapsed and collapsed[-1] == "":
-            continue
-        collapsed.append(line)
-    lines = [top_border(number, phylum, practice)]
-    lines.extend(frame(line) for line in collapsed)
-    lines.append(bottom_border())
-    for line in lines:
-        if len(line) != CARD_WIDTH:
-            raise ValueError(f"card line width {len(line)}: {line!r}")
-    return "\n".join(lines)
-
-
-def blocks(well: int, total: int) -> str:
-    if total <= 0 or well <= 0:
-        filled = 0
+            lines.append(f"{index}  {name}")
+        lines.append("")
+    if practice == "spot" and mode == "choice":
+        lines.append("Which name fits? A number is enough. idk is fine.")
+    elif practice == "spot":
+        lines.append("What is this called? The name is enough. idk is fine.")
+    elif mode == "choice":
+        lines.append("Which one fits? A number is enough. idk is fine.")
     else:
-        filled = (well * BAR_BLOCKS + total // 2) // total
-        if filled < 1:
-            filled = 1
-        if well >= total:
-            filled = BAR_BLOCKS
-    filled = max(0, min(BAR_BLOCKS, filled))
-    return ("█" * filled) + ("░" * (BAR_BLOCKS - filled))
+        lines.append("Which way of thinking fits here? Name it and apply it in a sentence or two. idk is fine.")
+    return _finish(lines, signoff_index)
 
 
-def phylum_label(phylum: str, subtitle: str) -> str:
-    return f"{phylum.ljust(PHYLUM_WIDTH)}  {subtitle.ljust(SUBTITLE_WIDTH)}"
+def feedback(result: str, name: str, comment, signoff_index: int = 0) -> str:
+    heads = {"strong": "STRONG", "partial": "PARTIAL", "miss": "MISS", "idk": "IDK"}
+    if result not in heads:
+        raise ValueError(result)
+    if isinstance(comment, list):
+        comment = " ".join(part.strip() for part in comment if part.strip())
+    return _finish([heads[result], name, "", comment], signoff_index)
 
 
-def bar_line(label: str, well: int, total: int) -> str:
-    if len(label) > BAR_LABEL_WIDTH:
-        label = label[:BAR_LABEL_WIDTH]
-    left = label.ljust(BAR_LABEL_WIDTH)
-    count = f"{well}/{total}".rjust(7)
-    return f"{left}  {blocks(well, total)}  {count}"
-
-
-def render_bars(items: list[dict]) -> str:
-    lines = []
-    for item in items:
-        if "phylum" in item:
-            label = phylum_label(item["phylum"], item["subtitle"])
-        else:
-            label = item["label"]
-        lines.append(bar_line(label, int(item["well"]), int(item["total"])))
-    width = len(lines[0]) if lines else 0
-    for line in lines:
+def bars(rows: list[dict], signoff_index: int = 0) -> str:
+    lines = ["PROGRESS", ""]
+    rendered = [
+        bar_line(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"]))
+        for row in rows
+    ]
+    width = len(rendered[0]) if rendered else 0
+    for line in rendered:
         if len(line) != width:
             raise ValueError("bar rows are not the same width")
-    return "\n".join(lines)
-
-
-def feedback(result: str, name: str, comments: list[str]) -> str:
-    marks = {"strong": "✓", "partial": "~", "miss": "✗", "idk": "?"}
-    if result not in marks:
-        raise ValueError(result)
-    if result == "idk":
-        head = f"? {name}."
-    else:
-        tail = {"strong": "strong pick.", "partial": "partial.", "miss": "miss."}[result]
-        head = f"{marks[result]} {name}: {tail}"
-    body = " ".join(part.strip() for part in comments if part.strip())
-    body = body.replace("\u2014", ". ").replace("\u2013", "-")
-    lines = wrap(head, CARD_WIDTH)
-    for line in wrap(body, CARD_WIDTH - 2):
-        lines.append("  " + line)
-    for line in lines:
-        if len(line) > CARD_WIDTH:
-            raise ValueError(f"feedback line is {len(line)} chars")
-    return "\n".join(lines)
+        lines.append(line)
+    return _finish(lines, signoff_index)
 
 
 def summary_block(
@@ -250,9 +214,11 @@ def summary_block(
     revisit: str,
     next_line: str,
     unanswered: bool = False,
+    signoff_index: int = 0,
 ) -> str:
+    lines = ["SESSION", ""]
     if scenarios == 0:
-        lines = ["No scenarios this time."]
+        lines.append("No scenarios this time.")
     else:
         noun = "scenario" if scenarios == 1 else "scenarios"
         bits = [f"{strong} strong"]
@@ -262,150 +228,25 @@ def summary_block(
             bits.append(f"{miss} miss")
         if idk:
             bits.append(f"{idk} idk")
-        grade = " · ".join(bits)
-        one_line = f"{scenarios} {noun} · {grade}"
-        lines = [one_line] if len(one_line) <= CARD_WIDTH else [f"{scenarios} {noun}", grade]
+        lines.append(f"{scenarios} {noun}")
+        lines.append(" · ".join(bits))
     if unanswered:
         lines.append("Left the last scenario unanswered.")
-    lines.append(f"Sharpest: {sharpest or 'none yet'}")
-    lines.append(f"Revisit: {revisit or 'nothing due'}")
-    lines.append(f"Next time: {next_line}")
-    wrapped: list[str] = []
-    for line in lines:
-        wrapped.extend(wrap(line, CARD_WIDTH))
-    top = "── session "
-    top = top + ("─" * (CARD_WIDTH - len(top)))
-    bottom = "─" * CARD_WIDTH
-    output = [top, *wrapped, bottom]
-    for line in (top, bottom):
-        if len(line) != CARD_WIDTH:
-            raise ValueError("summary rule width drifted")
-    for line in wrapped:
-        if len(line) > CARD_WIDTH:
-            raise ValueError("summary line is wider than the card")
-    return "\n".join(output)
-
-
-def opening(kind: str, line: str = "") -> str:
-    parts = [WORDMARK, ""]
-    if kind == "new":
-        parts.append(INTRO)
-    elif kind == "ready":
-        parts.append('  You can say "update my profile" anytime.')
-        parts.append("")
-        parts.append(MENU)
-    elif kind in ("returning", "resume"):
-        text = line.strip() or "Good to see you."
-        parts.append(f"  Welcome back. {text}")
-        parts.append("")
-        if kind == "resume":
-            parts.append("  Continue that one, or start fresh.")
-            parts.append("")
-        parts.append(MENU)
-    else:
-        raise ValueError(kind)
-    return "\n".join(parts)
-
-
-def sections() -> str:
-    doc = read_json(LIBRARY / "phyla.json")
-    lines = ["  All sections are open.", ""]
-    for index, phylum in enumerate(doc["phyla"], start=1):
-        lines.append(f"  {index}  {phylum['id'].ljust(PHYLUM_WIDTH)}  {phylum['subtitle']}")
-    lines.append("")
-    lines.append("  A category inside one of these is fine.")
-    return "\n".join(lines)
-
-
-def self_check() -> None:
-    doc = read_json(LIBRARY / "phyla.json")
-    for phylum in doc["phyla"]:
-        for practice in ("decide", "spot"):
-            card(4, phylum["id"], practice, "A short scene with a real stake.")
-    card(
-        4,
-        "strategy",
-        "decide",
-        "Your biggest customer asks for a custom feature only they would use. They pay 40% of your revenue.",
-        mode="choice",
-        options=[
-            "inversion",
-            "second-order thinking",
-            "sunk cost fallacy",
-            "commutative / associative / distributive laws",
-        ],
+    lines.extend(
+        [
+            "",
+            "SHARPEST",
+            sharpest or "none yet",
+            "",
+            "REVISIT",
+            revisit or "nothing due",
+            "",
+            "NEXT",
+            next_line,
+        ]
     )
-    opening("new")
-    opening("resume", "Last time: strategy, scenario 3.")
-    sections()
-    print("ok")
+    return _finish(lines, signoff_index)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Render ida text blocks.")
-    sub = parser.add_subparsers(dest="cmd", required=True)
-
-    open_cmd = sub.add_parser("opening")
-    open_cmd.add_argument("--kind", required=True, choices=("new", "ready", "returning", "resume"))
-    open_cmd.add_argument("--line", default="")
-
-    sub.add_parser("sections")
-    sub.add_parser("self-check")
-
-    card_cmd = sub.add_parser("card")
-    card_cmd.add_argument("--number", type=int, required=True)
-    card_cmd.add_argument("--phylum", required=True)
-    card_cmd.add_argument("--practice", required=True, choices=("decide", "spot"))
-    card_cmd.add_argument("--mode", default="free", choices=("free", "choice"))
-    card_cmd.add_argument("--option", action="append", default=[])
-    card_cmd.add_argument("--body", default="")
-
-    feed = sub.add_parser("feedback")
-    feed.add_argument("--result", required=True, choices=("strong", "partial", "miss", "idk"))
-    feed.add_argument("--name", required=True)
-    feed.add_argument("--comment", action="append", default=[])
-
-    bars_cmd = sub.add_parser("bars")
-    summ = sub.add_parser("summary")
-    summ.add_argument("--scenarios", type=int, required=True)
-    summ.add_argument("--strong", type=int, default=0)
-    summ.add_argument("--partial", type=int, default=0)
-    summ.add_argument("--miss", type=int, default=0)
-    summ.add_argument("--idk", type=int, default=0)
-    summ.add_argument("--sharpest", default="")
-    summ.add_argument("--revisit", default="")
-    summ.add_argument("--next", required=True)
-    summ.add_argument("--unanswered", action="store_true")
-
-    args = parser.parse_args()
-    if args.cmd == "opening":
-        print(opening(args.kind, args.line))
-    elif args.cmd == "sections":
-        print(sections())
-    elif args.cmd == "self-check":
-        self_check()
-    elif args.cmd == "card":
-        body = args.body or sys.stdin.read()
-        print(card(args.number, args.phylum, args.practice, body, args.mode, args.option or None))
-    elif args.cmd == "feedback":
-        print(feedback(args.result, args.name, args.comment))
-    elif args.cmd == "bars":
-        print(render_bars(json.loads(sys.stdin.read())))
-    elif args.cmd == "summary":
-        print(
-            summary_block(
-                args.scenarios,
-                args.strong,
-                args.partial,
-                args.miss,
-                args.idk,
-                args.sharpest,
-                args.revisit,
-                args.next,
-                args.unanswered,
-            )
-        )
-
-
-if __name__ == "__main__":
-    main()
+def section_rows(order=DISPLAY_ORDER) -> list[dict]:
+    return [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in order]

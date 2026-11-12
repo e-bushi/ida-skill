@@ -1,124 +1,168 @@
 # Format
 
-`render.py` is the source of truth. Use it. The rules below are for a sitting where Python cannot run. Count characters before you send. Padding is spaces, never tabs. Treat each character as width 1, including the blocks.
+Draw these screens yourself. Do not run `render.py` during a sitting. Put each screen in a `text` fence. Every line is at most 56 columns. Content lines start with a left rail (`│ `) and have no right border. Blank lines are blank. The only accent is ■. Labels are in caps. No emoji. Every screen ends with `│ ›`.
 
-If the chat uses a proportional font, wrap the block in a fence tagged `text`. In a terminal, print it raw. Do not reflow a rendered block.
+The two sign-off lines are locked. Do not rewrite them. The first run shows the first line once, as the tagline, and does not repeat a sign-off. After that, alternate them, starting with the second line on the menu.
 
-## Wordmark
+1. When it gets noisy, you can always reach for clarity.
+2. The best ideas from the sharpest minds, ready when a decision gets hard.
 
-```
-  █  █▀▄  ▄▀█
-  █  █▄▀  █▀█
-  reach for clarity
-```
+## Names
 
-The opening kinds:
+Say the name on the right. The id is only for `ida.py`.
 
-- `new`: wordmark, blank line, then the intro (tagline, subhead, the three steps, the three questions). No practice menu yet.
-- `ready`: wordmark, the profile line, the menu.
-- `returning`: wordmark, `Welcome back.` plus the welcome line, the menu.
-- `resume`: same as returning, plus `Continue that one, or start fresh.`
+| id | name |
+| --- | --- |
+| `axiom` | thinking clearly |
+| `kanon` | knowing what's true |
+| `bias` | blind spots |
+| `persona` | reading people |
+| `strategy` | playing to win |
+| `systema` | seeing ripple effects |
+| `momentum` | deciding and acting |
 
-Menu, exact:
-
-```
-  Practice: [1] a section  [2] pick ideas  [3] random
-```
-
-Section list: `All sections are open.` Then `  N  ` + phylum padded to 8 + two spaces + subtitle. Phylum ids stay lowercase.
-
-## Cards
-
-Width 44, counting the borders. Inner width 40.
-
-```
-│ <40 characters, space-padded> │
-```
-
-That is: `│`, space, 40 characters, space, `│`.
-
-Top, for a decide card:
-
-```
-┌─ scenario NN <dashes> <phylum> ─┐
-```
-
-`NN` is two digits under 100. The dashes are `─` and the whole line is 44. A spot card puts `<phylum> / spot` in that same slot. If the tag does not fit, drop ` / spot` and put `spot` on the first inner line.
-
-Bottom is `└` + 42 `─` + `┘`.
-
-Wrap the scene on spaces to 40. A single token longer than 40 is cut into 40-character pieces. Blank line between paragraphs, collapsed so you never get two blank lines. One blank line, then the footer. No blank line above the first sentence. No blank line under the footer.
-
-Footer, each sentence wrapped on its own:
-
-- decide, free: `Which way of thinking fits here?` / `Name it and apply it in a sentence or two.` / `Type "idk" anytime.`
-- spot, free: `What is this called?` / `The name is enough. Add a few words if you want.` / `Type "idk" anytime.`
-- decide, choice: `Which one fits? A number is enough.` / `Add a sentence if you want.` / `Type "idk" anytime.`
-- spot, choice: `Which name fits? A number is enough.` / `Type "idk" anytime.`
-
-Options go after the scene, before the footer, with a blank line on each side. `1  ` then the name. Continuation lines indent three spaces. At most 9 options. This skill uses 4.
-
-Sample decide card:
-
-```
-┌─ scenario 04 ───────────────── strategy ─┐
-│ Your biggest customer asks for a custom  │
-│ feature only they would use. They pay    │
-│ 40% of your revenue.                     │
-│                                          │
-│ Which way of thinking fits here?         │
-│ Name it and apply it in a sentence or    │
-│ two.                                     │
-│ Type "idk" anytime.                      │
-└──────────────────────────────────────────┘
-```
-
-## Feedback
-
-Not a box. No line longer than 44.
-
-- strong: `✓ <name>: strong pick.`
-- partial: `~ <name>: partial.`
-- miss: `✗ <name>: miss.`
-- idk: `? <name>.`
-
-Names stay in library lowercase. Comment lines are the rest of the feedback, wrapped to 42 and indented two spaces.
-
-```
-✓ second-order thinking: strong pick.
-  You saw the roadmap cost. Also consider
-  inversion: what would make losing them
-  survivable?
-```
+Drop the old subtitle. The name already says it.
 
 ## Bars
 
-One width for every row. Label column 41, two spaces, 10 blocks, two spaces, the count right-aligned in 7 (`8/103`, `24/81`).
+Ten cells, always. A strong idea counts as 1. A partial idea counts as half. An idk or a miss adds nothing. The score on the right is the percent of the section that credit represents, rounded. It is not a fraction like 1/81.
 
-A phylum label is the id padded to 8, two spaces, the subtitle padded to 31. A category label is the category name padded to 41. Blocks are `█` and `░`. Filled count is `(well * 10 + total // 2) // total`. If they have at least one strong and that rounds to 0, show one block. If every idea in the slice has a strong, show ten.
+Each cell is one tenth of the section. Full tenths are █. Any remainder, including the first small bit of credit, is ▒. The rest are ░. One strong idea in a section of 81 is `1%` and a single half cell.
 
-`well` is how many ideas in that slice have been strong at least once. `total` is how many ideas the slice has. Partials, misses, and idk do not fill a block.
+## First run
 
+```text
+│ ■ ida
+
+│ When it gets noisy, you can always reach for clarity.
+
+│ 01
+│ What do you do for work?
+
+│ 02
+│ What are you into besides that?
+
+│ 03
+│ What decisions keep showing up for you?
+
+│ ›
 ```
-axiom     how to think clearly             ░░░░░░░░░░    0/103
-strategy  how to win when others play too  ███░░░░░░░    24/81
+
+## Menu
+
+Returning people see this, with no tagline. A resume uses the shorter screen under it.
+
+```text
+│ ■ ida
+
+│ WELCOME BACK
+│ Last time: playing to win, 4 scenarios.
+
+│ PRACTICE
+│ 1  THINKING CLEARLY
+│ 2  KNOWING WHAT'S TRUE
+│ 3  BLIND SPOTS
+│ 4  READING PEOPLE
+│ 5  PLAYING TO WIN
+│ 6  SEEING RIPPLE EFFECTS
+│ 7  DECIDING AND ACTING
+
+│ Or name the ideas. Or say random.
+
+│ The best ideas from the sharpest minds, ready when a
+│ decision gets hard.
+
+│ ›
 ```
 
-After a card, show the active slice only. At the end of a sitting, show all seven sections.
+```text
+│ ■ ida
+
+│ WELCOME BACK
+│ Last time: playing to win, scenario 3.
+
+│ Continue that one, or start fresh.
+
+│ The best ideas from the sharpest minds, ready when a
+│ decision gets hard.
+
+│ ›
+```
+
+## Scenario
+
+```text
+│ SCENARIO 04
+│ PLAYING TO WIN
+
+│ Your biggest customer asks for a custom feature only
+│ they would use. They pay 40% of your revenue.
+
+│ Which way of thinking fits here? Name it and apply it
+│ in a sentence or two. idk is fine.
+
+│ When it gets noisy, you can always reach for clarity.
+
+│ ›
+```
+
+A spot puts `SPOT` under the section name and asks what it is called.
+
+## Feedback
+
+```text
+│ STRONG
+│ second-order thinking
+
+│ You saw the roadmap cost. Also consider inversion:
+│ what would make losing them survivable?
+
+│ When it gets noisy, you can always reach for clarity.
+
+│ ›
+```
+
+`PARTIAL`, `MISS`, and `IDK` use the same shape. The label is the grade. The idea name stays lowercase.
+
+## Progress
+
+```text
+│ PROGRESS
+
+│ THINKING CLEARLY       ░░░░░░░░░░    0%
+│ PLAYING TO WIN         ▒░░░░░░░░░    1%
+
+│ When it gets noisy, you can always reach for clarity.
+
+│ ›
+```
 
 ## Summary
 
-Rules are width 44. The top is `── session ` filled with `─`. The bottom is 44 `─`. Content lines wrap at 44 and are not padded.
+```text
+│ SESSION
 
-Put the counts on one line when they fit: `6 scenarios · 4 strong · 1 partial · 1 idk`. Always include strong. Omit a grade that is zero, except strong. One scenario uses the singular. Zero scenarios is `No scenarios this time.`
+│ 6 scenarios
+│ 4 strong · 1 partial · 1 idk
 
+│ SHARPEST
+│ inversion
+
+│ REVISIT
+│ sunk cost fallacy
+
+│ NEXT
+│ pick up in playing to win
+
+│ When it gets noisy, you can always reach for clarity.
+
+│ ›
 ```
-── session ─────────────────────────────────
-6 scenarios · 4 strong · 1 partial · 1 idk
-Sharpest: inversion
-Revisit: sunk cost fallacy
-Next time: pick up in strategy
-────────────────────────────────────────────
-```
 
-Sharpest is the idea they hit strong most often this sitting, else `none yet`. Revisit is the latest idea that was partial, miss, or idk, else `nothing due`. Next time is `pick up in <section or category>`, `pick up at random`, or `pick up the ideas you chose`.
+## Machine line
+
+`python3 "$IDA/scripts/ida.py" open` prints one line. Do not show it.
+
+`NEW|bars|axiom:0:0:103,...` means the first run. `READY` means the profile exists. `BACK|Last time: ...|bars|...` is the menu. `RESUME|Last time: ...|bars|...` is an unfinished card.
+
+Each bar field is `id:strong:partial:total`. Draw the bar from the rule above.
