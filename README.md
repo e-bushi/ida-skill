@@ -67,18 +67,19 @@ A first run looks like this:
 ```text
   ida                                                                NO. 001
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+ ​
+ ​
   When it gets noisy,
   you can always reach for clarity.
-
-
+ ​
+ ​
   ■ first session · 3 quick questions · about a minute
-
+ ​
+ ​
   ────────────────────────────────────────────────────────────────────────
   01 / 03
+ ​
   W H A T   D O   Y O U   D O   F O R   W O R K
-
-  › your own words
 ```
 
 ## A session

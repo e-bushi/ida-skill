@@ -81,6 +81,9 @@ def paint(text: str, mode: str) -> str:
         if line == "":
             out.append("")
             continue
+        if set(line) <= {" ", "\u200b"}:
+            out.append(dim + line + RESET)
+            continue
         stripped = line.lstrip()
         if set(line.strip()) and set(line.strip()) <= {"█", "░", " "}:
             out.append(_paint_banner(line, mode))

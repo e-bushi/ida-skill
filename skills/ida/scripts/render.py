@@ -9,7 +9,7 @@ The heavy rule opens and closes a screen. The light rule splits inside.
 from __future__ import annotations
 
 from banner import render_name, spaced_caps
-from common import BAR_BLOCKS, DISPLAY_NAMES, DISPLAY_ORDER, RULE_WIDTH, SCREEN_WIDTH, SIGNOFFS
+from common import BAR_BLOCKS, DISPLAY_NAMES, DISPLAY_ORDER, RULE_WIDTH, SCREEN_WIDTH, SIGNOFFS, SPACER
 
 QUESTIONS = (
     "What do you do for work?",
@@ -59,6 +59,10 @@ def spread(left: str, right: str) -> str:
     if gap < 1:
         gap = 1
     return left + (" " * gap) + right
+
+
+def gap(count: int = 1) -> list[str]:
+    return [SPACER] * count
 
 
 def heavy() -> str:
@@ -117,19 +121,21 @@ def bar_line(phylum: str, strong: int, partial: int, total: int, index: int | No
 def opening(step: int = 1, issue: int = 1) -> str:
     if step < 1 or step > len(QUESTIONS):
         raise ValueError(step)
-    lines = [spread("  ida", f"NO. {issue:03d}"), heavy(), ""]
+    lines = [spread("  ida", f"NO. {issue:03d}"), heavy()]
+    lines.extend(gap(2))
     if step == 1:
         lines.extend(
             [
                 "  When it gets noisy,",
                 "  you can always reach for clarity.",
-                "",
-                "",
-                "  ■ first session · 3 quick questions · about a minute",
-                "",
             ]
         )
-    lines.extend([thin(), f"  {step:02d} / {len(QUESTIONS):02d}"])
+        lines.extend(gap(2))
+        lines.append("  ■ first session · 3 quick questions · about a minute")
+        lines.extend(gap(2))
+    lines.append(thin())
+    lines.append(f"  {step:02d} / {len(QUESTIONS):02d}")
+    lines.extend(gap(1))
     label = spaced(QUESTIONS[step - 1].rstrip("?"))
     words = label.split("   ")
     current = ""
@@ -146,7 +152,6 @@ def opening(step: int = 1, issue: int = 1) -> str:
         wrapped.append(current)
     for piece in wrapped:
         lines.append("  " + piece)
-    lines.extend(["", "  › your own words"])
     return _check(lines)
 
 
@@ -166,24 +171,22 @@ def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, t
     lines = [
         spread("  ida · practice", f"SESSION {session:02d}"),
         heavy(),
-        "",
-        "  pick a lane",
-        "",
     ]
+    lines.extend(gap(2))
+    lines.append("  pick a lane")
     if collected or streak:
         streak_bit = f" · {streak} day streak" if streak else ""
+        lines.extend(gap(1))
         lines.append(f"  ■ {collected} of {total} collected{streak_bit}")
-        lines.append("")
-    for row in rows:
+    lines.extend(gap(2))
+    for index, row in enumerate(rows):
+        if index:
+            lines.extend(gap(1))
         lines.extend(lane_lines(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"])))
-    lines.extend(
-        [
-            "",
-            f"  ■ suggested  {light_index:02d}, your lightest lane",
-            "",
-            '  › a number · daily · spot · "surprise me"',
-        ]
-    )
+    lines.extend(gap(2))
+    lines.append(f"  ■ suggested  {light_index:02d}, your lightest lane")
+    lines.extend(gap(2))
+    lines.append('  › a number · daily · spot · "surprise me"')
     return _check(lines)
 
 
@@ -214,26 +217,32 @@ def card(
     lane = DISPLAY_ORDER.index(phylum) + 1
     card_label = f"CARD {number}" if total is None else f"CARD {number} / {total}"
     lines = [spread(f"  {lane:02d} · {spaced(display_name(phylum))}", card_label), heavy()]
+    lines.extend(gap(2))
     lines.extend(_card_body(body))
-    lines.extend(["", "  ■ " + spaced("the question"), ""])
-    if practice == "spot":
+    lines.extend(gap(2))
+    lines.append("  ■ " + spaced("the question"))
+    lines.extend(gap(1))
+    if practice == "spot" and mode != "choice":
         question = "What is this called?"
-        prompt = '  › the name · "idk" · "skip"'
+        prompt = '  › "idk" · "skip"'
     elif mode == "choice":
         question = "Which one fits?"
         prompt = '  › a number · "idk" · "skip"'
     else:
         question = "Which way of thinking fits here? Name it and apply it in a sentence or two."
-        prompt = '  › your answer · "hint" · "idk" · "skip"'
+        prompt = '  › "hint" · "idk" · "skip"'
     for piece in wrap(question, 72):
         lines.append("    " + piece)
     if options:
-        lines.append("")
+        lines.extend(gap(1))
         for index, name in enumerate(options, start=1):
+            if index > 1:
+                lines.extend(gap(1))
             for piece_index, piece in enumerate(wrap(name, 66)):
                 prefix = f"    {index}  " if piece_index == 0 else "       "
                 lines.append(prefix + piece)
-    lines.extend(["", prompt])
+    lines.extend(gap(2))
+    lines.append(prompt)
     return _check(lines)
 
 
@@ -262,14 +271,21 @@ def feedback_strong(
     total: int,
     delta: str = "+1",
 ) -> str:
-    lines = ["  ■■■  " + spaced("strong"), ""]
+    lines = ["  ■■■  " + spaced("strong")]
+    lines.extend(gap(1))
     lines.extend(_prose(comment))
-    lines.extend(["", thin(), ""])
+    lines.extend(gap(2))
+    lines.append(thin())
+    lines.extend(gap(1))
     lines.extend(_field("you reached for", spaced(reached)))
+    lines.extend(gap(1))
     lines.extend(_field("one level deeper", deeper))
-    lines.extend(["", thin(), ""])
+    lines.extend(gap(2))
+    lines.append(thin())
+    lines.extend(gap(1))
     lines.extend(lane_lines(phylum, strong, partial, total, delta=delta))
-    lines.extend(["", '  › "next" · "why" · "menu"'])
+    lines.extend(gap(2))
+    lines.append('  › "next" · "why" · "menu"')
     return _check(lines)
 
 
@@ -283,29 +299,42 @@ def feedback_partial(
     total: int,
     delta: str = "+0.5",
 ) -> str:
-    lines = ["  ■■□  " + spaced("partial"), "", thin(), ""]
+    lines = ["  ■■□  " + spaced("partial")]
+    lines.extend(gap(2))
+    lines.append(thin())
+    lines.extend(gap(1))
     lines.extend(_field("what you got", reached))
+    lines.extend(gap(1))
     lines.extend(_field("what was missing", missing))
+    lines.extend(gap(1))
     lines.extend(_field("try it", try_it))
-    lines.extend(["", thin(), ""])
+    lines.extend(gap(2))
+    lines.append(thin())
+    lines.extend(gap(1))
     lines.extend(lane_lines(phylum, strong, partial, total, delta=delta))
-    lines.extend(["", '  › "retry" · "next" · "show me"'])
+    lines.extend(gap(2))
+    lines.append('  › "retry" · "next" · "show me"')
     return _check(lines)
 
 
 def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str) -> str:
-    lines = [
-        "  □□□  not yet. here's what to reach for.",
-        "",
-    ]
+    lines = ["  □□□  not yet. here's what to reach for."]
+    lines.extend(gap(2))
     for piece in render_name(name):
-        lines.append("  " + piece if piece else "")
-    lines.append("")
+        lines.append(("  " + piece) if piece.strip(" \u200b") else SPACER)
+    lines.extend(gap(2))
     lines.extend(_prose(explain))
-    lines.extend(["", thin(), ""])
+    lines.extend(gap(2))
+    lines.append(thin())
+    lines.extend(gap(1))
     for index, (title, detail) in enumerate(steps, start=1):
+        if index > 1:
+            lines.extend(gap(1))
         lines.extend(_field(f"{index:02d}  {title}", detail))
-    lines.extend(["", *_prose(closing), "", '  › "got it" · "another like this" · "menu"'])
+    lines.extend(gap(2))
+    lines.extend(_prose(closing))
+    lines.extend(gap(2))
+    lines.append('  › "got it" · "another like this" · "menu"')
     return _check(lines)
 
 
@@ -347,20 +376,26 @@ def summary_block(
     lines = [
         spread(f"  ida · session {session:02d} complete", date),
         heavy(),
-        "",
-        f"  {scenarios} {noun}  ■■■ {strong} strong  ■■□ {partial} partial  □□□ {not_yet} not yet",
-        "",
-        "",
-        "  " + spaced("lanes"),
     ]
+    lines.extend(gap(2))
+    lines.append(f"  {scenarios} {noun}  ■■■ {strong} strong  ■■□ {partial} partial  □□□ {not_yet} not yet")
+    lines.extend(gap(2))
+    lines.append("  " + spaced("lanes"))
+    lines.extend(gap(1))
     if rows is None:
         rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 10} for phylum in DISPLAY_ORDER]
-    for row in rows:
+    for index, row in enumerate(rows):
+        if index:
+            lines.extend(gap(1))
         lines.extend(lane_lines(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"])))
     names = reached if reached is not None else ([sharpest] if sharpest else [])
-    lines.extend(["", "", "  " + spaced("what you reached for")])
+    lines.extend(gap(2))
+    lines.append("  " + spaced("what you reached for"))
+    lines.extend(gap(1))
     if names:
-        for name in names:
+        for index, name in enumerate(names):
+            if index:
+                lines.extend(gap(1))
             lines.append("  ■ " + name)
     else:
         lines.append("  ■ nothing yet")
@@ -370,9 +405,16 @@ def summary_block(
         carry_line = "One card was left open. It was not graded."
     else:
         carry_line = next_line or "Name the idea, then say what it changes here."
-    lines.extend(["", "", "  " + spaced("one to carry")])
+    lines.extend(gap(2))
+    lines.append("  " + spaced("one to carry"))
+    lines.extend(gap(1))
     lines.extend(_prose(carry_line))
-    lines.extend(["", heavy(), "  " + SIGNOFFS[signoff_index % 2], "", '  › "again" · "menu" · "done"'])
+    lines.extend(gap(2))
+    lines.append(heavy())
+    lines.extend(gap(1))
+    lines.append("  " + SIGNOFFS[signoff_index % 2])
+    lines.extend(gap(2))
+    lines.append('  › "again" · "menu" · "done"')
     return _check(lines)
 
 

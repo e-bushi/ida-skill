@@ -9,6 +9,8 @@ character this font does not have, fall back to spaced caps with a ■.
 
 from __future__ import annotations
 
+from common import SPACER
+
 # Rows are top to bottom. 1 is fill. a-q are Bill's. r-z, digits, and
 # marks follow the same 5-wide grid.
 FONT = {
@@ -138,7 +140,7 @@ def render_name(name: str) -> list[str]:
     lines: list[str] = []
     for index, word in enumerate(words):
         if index:
-            lines.append("")
+            lines.append(SPACER)
         if len(word) > MAX_GLYPHS or not _supported(word):
             lines.extend(_fallback(word))
         else:

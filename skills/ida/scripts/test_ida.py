@@ -292,6 +292,39 @@ class RenderTests(unittest.TestCase):
         self.assertNotIn("✓", text)
         self.assertTrue(all(len(line) <= 76 for line in text.splitlines()))
 
+    def test_spacer_lines_survive_and_profile_has_no_prompt(self):
+        from common import SPACER
+
+        opening = render.opening(1).splitlines()
+        self.assertNotIn("", opening)
+        self.assertIn(SPACER, opening)
+        tagline = opening.index("  you can always reach for clarity.")
+        self.assertEqual(opening[tagline + 1], SPACER)
+        self.assertEqual(opening[tagline + 2], SPACER)
+        self.assertTrue(opening[tagline + 3].startswith("  ■ first session"))
+        meta = tagline + 3
+        self.assertEqual(opening[meta + 1], SPACER)
+        self.assertEqual(opening[meta + 2], SPACER)
+        counter = opening.index("  01 / 03")
+        self.assertEqual(opening[counter + 1], SPACER)
+        self.assertTrue(opening[counter + 2].startswith("  W H A T"))
+        self.assertNotIn("›", render.opening(1))
+        self.assertNotIn("›", render.opening(2))
+        self.assertNotIn("your own words", render.opening(1))
+        card = render.card(1, "bias", "A short scene with a real stake.")
+        self.assertNotIn("your answer", card)
+        self.assertIn('› "hint" · "idk" · "skip"', card)
+        self.assertTrue(card.splitlines()[-3] == SPACER and card.splitlines()[-2] == SPACER)
+        for block in (
+            render.opening(1),
+            render.menu(4),
+            card,
+            render.feedback_strong("You saw it.", "inversion", "one step further", "bias", 1, 0, 62),
+            render.summary_block(1, 1, 0, 0, 0, "inversion", "", "", carry="Keep the name."),
+        ):
+            self.assertIn(SPACER, block.splitlines())
+            self.assertNotIn("", block.splitlines())
+
 
 class ProgressTests(unittest.TestCase):
     def test_session_flow(self):
