@@ -229,15 +229,13 @@ def card(
     lines.extend(gap(2))
     lines.append("  ■ " + spaced("the question"))
     lines.extend(gap(1))
-    if practice == "spot" and mode != "choice":
+    free = mode != "choice"
+    if practice == "spot" and free:
         question = "What is this called?"
-        prompt = '  › "idk" · "skip"'
     elif mode == "choice":
         question = "Which one fits?"
-        prompt = '  › a number · "idk" · "skip"'
     else:
         question = "Which way of thinking fits here? Name it and apply it in a sentence or two."
-        prompt = '  › "hint" · "idk" · "skip"'
     for piece in wrap(question, 72):
         lines.append("    " + piece)
     if options:
@@ -248,7 +246,8 @@ def card(
             for piece_index, piece in enumerate(wrap(name, 66)):
                 prefix = f"    {index}  " if piece_index == 0 else "       "
                 lines.append(prefix + piece)
-    choices(lines, prompt, typed)
+    if mode == "choice":
+        choices(lines, '  › a number · "idk" · "skip"', typed)
     return _check(lines)
 
 

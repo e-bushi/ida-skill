@@ -30,7 +30,11 @@ The fence is plain text, with no ANSI codes. Keep every spacer line. Keep the wh
 
 The idk reveal is the case that fails if you skip this. The reply contains the block letters of the name, the two sentences, the three steps, and the prompt. A collapsed tool log does not.
 
-Every turn, in this order: one command if the turn needs one, then the visible screen or explanation in the reply, then the choice tool last. Any explanation, re-explanation, reveal, feedback, or screen is written in the chat reply before the choice tool is called. A re-explanation is a short block in a `text` fence, header `■ A N O T H E R   A N G L E`, not a sentence inside the tool. Never put that explanation in the tool's question or in an option. Never call the choice tool twice in one turn with no visible text between the calls. If a host shows text poorly after a tool call, the text still goes before the call.
+Every turn that needs a command: run that one command, then write the screen in the reply. A card is always that reply. Paste the scenario and `■ T H E   Q U E S T I O N` and the question text in a `text` fence. For a multiple-choice card, the numbered options are in that fence too. Do not leave the question only in a tool.
+
+The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card. If they type idk, hint, or skip, treat that as the reply. Do not print a line listing those words.
+
+Call the choice tool only for a menu, a multiple-choice answer, or the next step after feedback or a re-explain. It comes after the fence, never before, and never twice with nothing written between the calls. Its labels are short. The question text and the scenario stay in the fence. A re-explanation is a `text` fence headed `■ A N O T H E R   A N G L E`, not a sentence inside the tool. If a host shows text poorly after a tool call, the text still goes before the call.
 
 Do not narrate a tool call, a path, or a command.
 
@@ -66,7 +70,7 @@ Single select only. Do not turn a menu into checkboxes. One question, and do not
 
 Labels are the spoken names in lowercase: thinking clearly, knowing what's true, blind spots, reading people, playing to win, seeing ripple effects, deciding and acting. Put the percent, or a one-line reason, in the description.
 
-Use the tool for the seven lanes (plus daily, spot, and surprise me), a multiple-choice card, idk / hint / skip on a free-text card, and the actions after an answer (next, why, menu, retry, again, done). After a re-explain, the options are got it, another angle, next, and menu. The screen does not repeat those choices. The tool's question is a short label such as "next", never "Clearer now?" and never the explanation.
+Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. The tool's question is a short label such as "lane" or "next", never the card's question and never "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
 
 If the host has no choice tool, pass `--typed` on the first `ida turn` of the sitting. ida remembers it. The screen then ends with a `›` line, and that line is the choice. Do not pass `--typed` when the tool exists.
 
@@ -74,7 +78,7 @@ If the host has no choice tool, pass `--typed` on the first `ida turn` of the si
 
 1. `ida turn` shows the first profile question, or the menu. Paste stdout.
 2. Each profile answer is `ida turn` with `{"answer":"..."}` in the JSON file. After the third, the same command shows the menu.
-3. `ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout. Fill `SCENE` in the fence.
+3. `ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout, including `■ T H E   Q U E S T I O N`. Fill `SCENE` in the fence. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
 4. Grade with `references/loop.md`. `ida turn idk`, `ida turn` with `"result":"strong"`, or `ida turn` with `"result":"partial"`, and the words in the JSON file. Paste the whole stdout. The idk reply includes the banner.
 5. `ida turn next` deals another card. `ida turn done` is the summary. Paste that too.
 
