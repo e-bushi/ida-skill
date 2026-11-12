@@ -101,6 +101,7 @@ Also check:
 - After every turn, the chat reply contains the full plain screen in a text fence. For idk, that fence contains the block-letter banner of the name, the two sentences, and the three steps. A collapsed tool log ("output lines hidden") does not count.
 - At most one shell command per user message, and it is `ida turn` with at most one short choice. No `--help`. No second command to inspect flags or to show the card. The JSON line is not in the reply.
 - With a choice tool, the screen has no `›` line. The tool is single-select, section names are lowercase spoken names, and ida does not write "Question 1 of 1". `ida turn --typed` is the only path that prints a `›` line.
+- No choice-tool call without the screen or the explanation already visible in the reply before it. No back-to-back choice calls. If they say they don't understand, the reply is the another-angle block, not a question whose only content is "Clearer now?".
 - On screen the grades are STRONG, PARTIAL, and NOT YET. The session sheet rotates "Clarity is a competitive edge." and "The people who see clearly win."
 - Nothing the user reads says "mental models" or uses an em dash.
 - The wordmark reads as lowercase ida, marked with ■.

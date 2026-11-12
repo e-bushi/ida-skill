@@ -321,6 +321,17 @@ class RenderTests(unittest.TestCase):
         self.assertTrue(typed_card.splitlines()[-3] == SPACER and typed_card.splitlines()[-2] == SPACER)
         self.assertNotIn("›", render.menu(4))
         self.assertIn("›", render.menu(4, typed=True))
+        angle = render.another_angle(
+            "A sentence true either way says nothing.",
+            "Like saying the bus is on time or it is not.",
+            "The launch line did not tell you whether to ship.",
+        )
+        self.assertIn("A N O T H E R   A N G L E", angle)
+        self.assertNotIn("›", angle)
+        self.assertNotIn("Clearer now", angle)
+        self.assertTrue(all(len(line) <= 76 for line in angle.splitlines()))
+        self.assertIn(angle, (ROOT / "references" / "format.md").read_text(encoding="utf-8"))
+        self.assertIn(angle, (ROOT / "examples" / "transcripts.md").read_text(encoding="utf-8"))
         for block in (
             render.opening(1),
             render.menu(4),

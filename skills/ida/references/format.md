@@ -52,6 +52,21 @@ Claude Code, Warp, and Cursor may show command output, and they may not. Warp co
 ida turn idk
 ```
 
+## Another angle
+
+When the reveal did not land, this block is the reply. The choice tool comes after it, not instead of it.
+
+```text
+  ■ A N O T H E R   A N G L E
+ ​
+ ​
+  one line              A sentence true either way says nothing.
+ ​
+  everyday              Like saying the bus is on time or it is not.
+ ​
+  in this scene         The launch line did not tell you whether to ship.
+```
+
 ## Choices
 
 If the host has a choice tool, use it and do not print a `›` line. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `ida turn --typed` and the `›` line is the choice.

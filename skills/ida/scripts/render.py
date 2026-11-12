@@ -343,6 +343,19 @@ def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], clos
     return _check(lines)
 
 
+def another_angle(definition: str, analogy: str, scene: str, typed: bool = False) -> str:
+    """A fresh pass when they say the reveal did not land."""
+    lines = ["  ■ " + spaced("another angle")]
+    lines.extend(gap(2))
+    lines.extend(_field("one line", definition))
+    lines.extend(gap(1))
+    lines.extend(_field("everyday", analogy))
+    lines.extend(gap(1))
+    lines.extend(_field("in this scene", scene))
+    choices(lines, '  › "got it" · "another angle" · "next" · "menu"', typed)
+    return _check(lines)
+
+
 def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: str = "strategy", typed: bool = False) -> str:
     del signoff_index
     text = " ".join(comment) if isinstance(comment, list) else comment

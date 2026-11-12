@@ -93,9 +93,23 @@ The session summary counts scenarios. A strong idea fills a full share of its se
 
 `summary` is one line about the premise, not the user's wording and not the answer. The picker uses it only as a reminder not to repeat the scene.
 
+## When they don't understand
+
+"I don't get it", "still fuzzy", "explain differently", or an Other line that says they are not sure they understand is not a new card and not a grade. Do not ask "Clearer now?" as the thing they see.
+
+Write one fresh angle in the reply, before any choice tool. Do not repeat the reveal you already showed. Three parts, in the block from `references/format.md`:
+
+- one line: a plain definition, one sentence.
+- everyday: an analogy from ordinary life, not this scene.
+- in this scene: the same scenario, read through the idea.
+
+A second request gets a different analogy. No command is required. Do not hide the block in tool output, and do not paste it into the tool's question or options.
+
+The choice tool comes after the block is in the reply. Single select. Short labels only: got it, another angle, next, menu.
+
 ## After the card
 
-The screen's last line is the prompt. Honor it.
+When the screen ends in a `›` line, that line is the prompt. Honor it. When it does not, the choice tool is the prompt, and you call it only after the screen is already in the reply.
 
 - "hint" before an answer: one nudge, no `save`.
 - "idk" or "skip": the NOT YET screen, then `save --result idk`.

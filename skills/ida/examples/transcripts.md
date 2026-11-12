@@ -212,3 +212,18 @@ The person said idk. The words went into `/tmp/ida-screen.json`. The only comman
   Clarity is a competitive edge.
 ```
 
+
+## Another angle, in the reply
+
+The person said they were not sure they understood. The reply is the fence below, written before any choice tool. The tool comes after the fence, single select, with the short labels got it, another angle, next, and menu. The explanation is not inside the question. A second question is not the reply.
+
+```text
+  ■ A N O T H E R   A N G L E
+ ​
+ ​
+  one line              A sentence true either way says nothing.
+ ​
+  everyday              Like saying the bus is on time or it is not.
+ ​
+  in this scene         The launch line did not tell you whether to ship.
+```
