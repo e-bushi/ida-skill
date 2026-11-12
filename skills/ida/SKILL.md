@@ -20,7 +20,13 @@ The library has 443 ways of thinking. Seven of them have full authored text. Use
 
 Command output is invisible to the user. Every screen must be pasted into the reply. Never call a choice tool before that paste.
 
-Stdout starts with a line addressed to you, then a line `BEGIN`, then the screen, then a line `END`. Paste only the lines between `BEGIN` and `END` into a `text` fence. Do not paste the `[ida -> agent]` line. Do not paste the lines after `END`. On idk, write how it applies and three steps under that fence, and only then call the choice tool.
+Stdout starts with a line addressed to you, then a line `BEGIN`, then the screen, then a line `END`. Paste only the lines between `BEGIN` and `END` into a `text` fence. Do not paste the `[ida -> agent]` line. Do not paste the lines after `END`. On idk, write how it applies and three steps under that fence, and only then call the choice tool. The choice tool question MUST be the exact string printed after `QUESTION:`.
+
+## idk
+
+**On idk, paste the lines between BEGIN and END, write how it applies and 3 steps, then call the choice tool. The choice tool question MUST be the exact string printed after `QUESTION:`.**
+
+Do not ask "Where do you want to go from here?" If the string contains `<one-line definition you write>`, replace only those words with one sentence. Copy the rest unchanged. Strong, partial, and miss use that same rule. Their `QUESTION:` line already names the idea.
 
 ## Language
 
@@ -62,12 +68,6 @@ If this file was loaded from another directory, use that directory in the same s
 
 Leave `IDA_COLOR` unset. Stderr on a card is the idea name, then blank lines. On idk it is a reminder, then blank lines. Do not paste stderr.
 
-## idk
-
-**When they type idk, run `sh ~/.agents/skills/ida/ida turn idk`. The reply MUST paste the lines between `BEGIN` and `END` verbatim in a `text` fence before anything else. Under that fence, write how it applies to this scene and three steps. Then call the choice tool.**
-
-The screen is the banner and, when the library has one, the definition saved with the pick. Do not skip the banner. Do not put the reveal inside the choice tool. If the screen has no definition line, write the definition under the fence too, then the three steps. The choice tool may offer got it, another like this, and menu.
-
 ## Choices
 
 Use a native choice tool when the host has one. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp: `AskUserQuestion` when the host exposes it. Use the tool's own schema.
@@ -76,7 +76,7 @@ Single select only. Do not turn a menu into checkboxes. One question, and do not
 
 Labels are the spoken names in lowercase: thinking clearly, knowing what's true, blind spots, reading people, playing to win, seeing ripple effects, deciding and acting. Put the percent, or a one-line reason, in the description.
 
-Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After idk, the options are got it, another like this, and menu. After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. The tool's question is a short label such as "lane" or "next", never the card's question and never "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
+Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After idk, the options are got it, another like this, and menu. After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. On a menu, the tool's question is a short label such as "lane". On idk, strong, partial, and miss, the tool's question is the exact string after `QUESTION:`, not "Where do you want to go from here?" and not "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
 
 The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card. If they type idk, hint, or skip, treat that as the reply. Do not print a line listing those words.
 

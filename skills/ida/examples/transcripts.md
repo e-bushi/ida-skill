@@ -139,10 +139,13 @@ sh ~/.agents/skills/ida/ida turn idk
 The command output starts with a line for the agent, then `BEGIN`, then the screen, then `END`, then blank lines. The user cannot see that block. The reply pastes only the screen, before anything else:
 
 ```text
-[ida -> agent] The user cannot see this output. Paste everything between the markers into your reply in a text fence, then write how it applies + 3 steps, THEN call the choice tool.
+[ida -> agent] The user cannot see this output. Paste everything between the markers into your reply in a text fence, then write how it applies + 3 steps, THEN call the choice tool. The choice tool question MUST be the exact string after QUESTION:.
 BEGIN
 END
+QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?
 ```
+
+The choice tool question is that QUESTION line, not "Where do you want to go from here?". If the line still says `<one-line definition you write>`, replace only those words with one sentence.
 
 The screen between those markers is the next fence. Under that fence, write how the idea applies to this scene, then three short steps. If the screen had no definition line, write the definition there too. Then the choice tool, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
 

@@ -56,7 +56,7 @@ The card frame contains the word SCENE. Replace that word in the fence with the 
 | `--typed` | No choice tool on this host. Remember it. Screens then end with a `›` line. Pass it once, on the first turn. |
 | a number during a choice card | That option. A correct option is strong. |
 
-`ida turn idk` reads the pick saved in `~/.ida`. It does not take a definition from you. Seven ideas have a stored definition. The other ideas print the banner only, and you write the definition in the reply under the fence, then how it applies and three steps.
+`ida turn idk` reads the pick saved in `~/.ida`. It does not take a definition from you. After `END` it prints `QUESTION:`. The choice tool question is that string, copied exactly. Seven ideas have a stored definition, and the string includes it. The other ideas leave `<one-line definition you write>` in the string. Replace only those words with one sentence. Strong, partial, and miss print a `QUESTION:` line that names the idea. Copy that too.
 
 A card has the word SCENE in the rail. The scene is not an argument.
 

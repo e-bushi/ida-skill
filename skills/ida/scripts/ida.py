@@ -468,37 +468,73 @@ def _err(message: str) -> None:
     sys.stderr.write(TAIL)
 
 
-def _agent_preamble(screen: str) -> str:
+def _agent_preamble(screen: str, question: str = "") -> str:
     lead = (
         "[ida -> agent] The user cannot see this output. "
         "Paste everything between the markers into your reply in a ```text fence"
     )
     if screen == "idk":
-        return lead + ", then write how it applies + 3 steps, THEN call the choice tool."
-    if screen == "card":
-        return lead + ". Replace the word SCENE with the scene. Keep the question. Do not call the choice tool on a free-text card."
-    if screen in ("menu", "strong", "partial", "why"):
-        return lead + ", THEN call the choice tool."
-    if screen == "summary":
-        return lead + "."
-    return lead + ". Then stop so they can type."
+        note = lead + ", then write how it applies + 3 steps, THEN call the choice tool."
+    elif screen == "card":
+        note = lead + ". Replace the word SCENE with the scene. Keep the question. Do not call the choice tool on a free-text card."
+    elif screen in ("menu", "strong", "partial", "why", "miss"):
+        note = lead + ", THEN call the choice tool."
+    elif screen == "summary":
+        note = lead + "."
+    else:
+        note = lead + ". Then stop so they can type."
+    if question:
+        note += " The choice tool question MUST be the exact string after QUESTION:."
+    return note
 
 
-def _wrap_for_agent(text: str, screen: str) -> str:
+def _wrap_for_agent(text: str, screen: str, question: str = "") -> str:
     body = text.replace("\r\n", "\n").rstrip("\n")
-    return _agent_preamble(screen) + "\nBEGIN\n" + body + "\nEND"
+    wrapped = _agent_preamble(screen, question) + "\nBEGIN\n" + body + "\nEND"
+    if question:
+        wrapped += "\n" + question
+    return wrapped
+
+
+def _called(name: str) -> str:
+    name = " ".join(str(name).split()) or "the idea"
+    return name[0].upper() + name[1:]
+
+
+def _as_sentence(text: str) -> str:
+    text = " ".join(str(text).split())
+    if not text:
+        return ""
+    text = text[0].upper() + text[1:]
+    if text[-1] not in ".!?":
+        text += "."
+    return text
+
+
+def _question_line(result: str, name: str, definition: str = "") -> str:
+    called = _called(name)
+    if result == "idk":
+        gloss = _as_sentence(definition) if definition.strip() else "<one-line definition you write>."
+        return f"QUESTION: It's called {called}. {gloss} Where to from here?"
+    if result == "strong":
+        return f"QUESTION: That's {called}. Where to from here?"
+    if result == "partial":
+        return f"QUESTION: Close. The idea was {called}. Where to from here?"
+    if result in ("miss", "menu"):
+        return f"QUESTION: The idea was {called}. Where to from here?"
+    return ""
 
 
 def _clip(text: str, limit: int) -> str:
     return " ".join(str(text).split())[:limit]
 
 
-def emit(path, data, text: str, info: dict, reminder: str = "") -> None:
+def emit(path, data, text: str, info: dict, reminder: str = "", question: str = "") -> None:
     session = data.get("session")
     if isinstance(session, dict):
         session["await"] = info.get("await")
     save_file(path, data)
-    write_screen(_wrap_for_agent(text, str(info.get("screen") or "")), reminder)
+    write_screen(_wrap_for_agent(text, str(info.get("screen") or ""), question), reminder)
 
 
 def _is_typed(data) -> bool:
@@ -732,7 +768,10 @@ def _grade(path, data, result: str, live: dict) -> None:
         lane, _, mark = note.partition("|")
         text = text + "\n" + SPACER + "\n" + f"  ■ {lane} crossed {mark}%"
         data["practice"]["pending_note"] = None
-    emit(path, data, text, info, reminder)
+    question = ""
+    if result in ("idk", "strong", "partial", "miss"):
+        question = _question_line(result, idea, definition)
+    emit(path, data, text, info, reminder, question)
 
 
 def _spec_for(key: str, lane: str | None, entry_id: str | None, session: dict):
@@ -874,7 +913,8 @@ def cmd_turn(path, args) -> None:
             definition = screen.get("definition") or screen.get("explain") or ""
             text = _reveal_text(screen.get("name") or "", definition, _is_typed(data))
             reminder = REMIND_IDK if definition else REMIND_IDK_OPEN
-            emit(path, data, text, {"screen": "idk", "await": "next", "name": screen.get("name")}, reminder)
+            question = _question_line("idk", screen.get("name") or "", definition)
+            emit(path, data, text, {"screen": "idk", "await": "next", "name": screen.get("name")}, reminder, question)
             return
         _show_menu(path, data, catalog)
         return
