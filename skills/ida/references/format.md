@@ -1,6 +1,10 @@
 # Format
 
-Draw these screens yourself. Do not run `render.py` during a sitting. Put each screen in a `text` fence. The sheet is 54 columns. Copy the spacing, the rules, and the prompt line. Do not add a right border. No emoji.
+`ida.py show` prints the screen. Do not draw a second copy when that output is on screen and in color. If the host collapses it or strips color, copy the same screen into a `text` fence. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
+
+Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
+
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent.
 
 The headline stays on the first question of a first run only:
 
@@ -9,18 +13,16 @@ The headline stays on the first question of a first run only:
   you can always reach for clarity.
 ```
 
-Questions 02 and 03 reuse the block. Only the counter changes. There is no letter menu. They answer in their own words.
+Questions 02 and 03 reuse the block. Only the counter changes.
 
-Sign-offs are not on these screens. They rotate on the session sheet only, in this order, and the words stay exact:
+Sign-offs rotate on the session sheet only, in this order, words exact:
 
 1. Clarity is a competitive edge.
 2. The people who see clearly win.
 
-Session 1 uses the first. Session 2 uses the second. Then they alternate. One to carry is a sentence in ida's voice. Never attribute it to a real person.
+One to carry is a sentence in ida's voice. Never attribute it to a real person.
 
 ## Names
-
-Say the name on the right. The id is only for `ida.py`. Lane numbers follow this order.
 
 | id | name |
 | --- | --- |
@@ -34,17 +36,31 @@ Say the name on the right. The id is only for `ida.py`. Lane numbers follow this
 
 ## Bars
 
-Ten cells, always. A strong idea counts as 1. A partial idea counts as half. An idk or a miss adds nothing. The score is the percent of the section that credit represents, rounded. A lane with no credit yet says `new`, not `0%` and not `1/81`.
+Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss add nothing. The score is a percent. A lane with no credit says `new`. Full twentieths are █. Any remainder is ▒. A strong card adds `+1`. A partial adds `+0.5`.
 
-Each cell is one tenth of the section. Full tenths are █. Any remainder, including the first small bit of credit, is ▒. The rest are ░. One strong idea in a section of 81 is `1%` and a single half cell.
+## Hosts
 
-On a STRONG screen the lane line ends with `+1`. On a PARTIAL screen it ends with `+0.5`.
+Claude Code shows command output in the terminal and can keep ANSI color. Warp's agent mode does too, and collapses a long block ("output lines hidden", ctrl+o to expand). Keep each screen under about 40 lines so it stays open. Cursor's agent card often hides or strips that output, so also paste the plain screen in a `text` fence there.
 
-## First run
+Run show with color forced, one command, no narration:
+
+```bash
+IDA_COLOR=always python3 "$IDA/scripts/ida.py" show menu
+```
+
+`NO_COLOR` or `TERM=dumb` prints plain text. A pipe without `IDA_COLOR=always` is plain.
+
+## Choices
+
+If the host has a choice tool, use it and skip the typed prompt. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise the AskQuestion tool if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Follow that tool's own schema. Put the lane or action in the label and the percent, or a one-line reason, in the description. If there is no such tool, the `›` line is the choice.
+
+Use it for the practice menu, the seven lanes, multiple choice, and the after-answer actions (next, why, menu, retry).
+
+## Screens
 
 ```text
-  ida                                          NO. 001
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ida                                                                NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   When it gets noisy,
   you can always reach for clarity.
@@ -52,204 +68,211 @@ On a STRONG screen the lane line ends with `+1`. On a PARTIAL screen it ends wit
 
   ■ first session · 3 quick questions · about a minute
 
-  ────────────────────────────────────────────────────
-  01 / 03                      WHAT DO YOU DO FOR WORK
+  ────────────────────────────────────────────────────────────────────────
+  01 / 03
+  W H A T   D O   Y O U   D O   F O R   W O R K
 
   › your own words
 ```
 
 ```text
-  ida                                          NO. 001
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ida                                                                NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  ────────────────────────────────────────────────────
-  02 / 03               WHAT ARE YOU INTO BESIDES THAT
+  ────────────────────────────────────────────────────────────────────────
+  02 / 03
+  W H A T   A R E   Y O U   I N T O   B E S I D E S   T H A T
 
   › your own words
 ```
 
-## Menu
-
 ```text
-  ida · practice                            SESSION 04
-  ────────────────────────────────────────────────────
+  ida · practice                                                  SESSION 04
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   pick a lane
 
-
-  01   thinking clearly        ░░░░░░░░░░   new
-  02   knowing what's true     ░░░░░░░░░░   new
-  03   blind spots             ░░░░░░░░░░   new
-  04   reading people          ░░░░░░░░░░   new
-  05   playing to win          ░░░░░░░░░░   new
-  06   seeing ripple effects   ░░░░░░░░░░   new
-  07   deciding and acting     ░░░░░░░░░░   new
-
+  01  T H I N K I N G   C L E A R L Y
+      ░░░░░░░░░░░░░░░░░░░░   new
+  02  K N O W I N G   W H A T' S   T R U E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  03  B L I N D   S P O T S
+      ░░░░░░░░░░░░░░░░░░░░   new
+  04  R E A D I N G   P E O P L E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  05  P L A Y I N G   T O   W I N
+      ░░░░░░░░░░░░░░░░░░░░   new
+  06  S E E I N G   R I P P L E   E F F E C T S
+      ░░░░░░░░░░░░░░░░░░░░   new
+  07  D E C I D I N G   A N D   A C T I N G
+      ░░░░░░░░░░░░░░░░░░░░   new
 
   ■ suggested  01, your lightest lane
 
-  › a number, or "surprise me"
+  › a number · daily · spot · "surprise me"
 ```
 
-`suggested` is the lightest lane, the lowest percent, earliest number on a tie.
-
-## Card
-
 ```text
-  05 · PLAYING TO WIN                          CARD 02
+  05 · P L A Y I N G   T O   W I N                                    CARD 2
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ┃
-  ┃  A seed-stage startup offers you a role. The
-  ┃  equity is generous, the salary is 30% lower,
-  ┃  and the founder says they'll raise in six
+  ┃  A seed-stage startup offers you a role. The equity is generous, the
+  ┃  salary is 30% lower, and the founder says they'll raise in six
   ┃  months.
   ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  ■ THE QUESTION
+  ■ T H E   Q U E S T I O N
 
-    Which way of thinking fits here? Name it and apply
-    it in a sentence or two.
-
+    Which way of thinking fits here? Name it and apply it in a sentence or
+    two.
 
   › your answer · "hint" · "idk" · "skip"
 ```
 
-A spot card asks "What is this called?" and the prompt is `› the name · "idk" · "skip"`. Choice mode numbers the options and the prompt is `› a number · "idk" · "skip"`.
-
-## Strong
-
 ```text
-  ■■■  STRONG
-  ────────────────────────────────────────────────────
+  ■■■  S T R O N G
 
-  You asked what happens if the raise doesn't come,
-  and you priced the downside before the upside.
-  That's the move.
+  You asked what happens if the raise doesn't come, and you priced the
+  downside before the upside. That's the move.
 
-  what you reached for    downside first, base rates
-  one level deeper        most seed rounds slip, so
-                          plan for 12 months, not 6
+  ────────────────────────────────────────────────────────────────────────
 
-  05   playing to win          ▒░░░░░░░░░    4%   +1
+  you reached for       D O W N S I D E F I R S T , B A S E R A T E S
+  one level deeper      most seed rounds slip, so plan for 12 months, not 6
+
+  ────────────────────────────────────────────────────────────────────────
+
+  05  P L A Y I N G   T O   W I N
+      ▒░░░░░░░░░░░░░░░░░░░    4%  +1
 
   › "next" · "why" · "menu"
 ```
 
-## Partial
-
 ```text
-  ■■□  PARTIAL
-  ────────────────────────────────────────────────────
+  ■■□  P A R T I A L
 
-  what you reached for    the meeting place
-  what was missing        what each side expects the
-                          other to expect
-  try it                  Say the place, then say why
-                          both would pick it.
+  ────────────────────────────────────────────────────────────────────────
 
-  05   playing to win          ▒░░░░░░░░░    1%   +0.5
+  what you got          the meeting place
+  what was missing      what each side expects the other to expect
+  try it                Say the place, then say why both would pick it.
+
+  ────────────────────────────────────────────────────────────────────────
+
+  05  P L A Y I N G   T O   W I N
+      ▒░░░░░░░░░░░░░░░░░░░    1%  +0.5
 
   › "retry" · "next" · "show me"
 ```
 
-## Not yet
-
-idk and a miss both use this header. The file still stores them apart.
-
 ```text
-  □□□  NOT YET
-  ────────────────────────────────────────────────────
+  □□□  not yet. here's what to reach for.
+
+  █████ █   █ █   █ █████ ████   ████ █████  ███  █   █
+   ░█░░░██  █░█░  █░█░░░░░█░░░█ █ ░░░░ ░█░░░█ ░░█ ██  █░
+    █░  █░█ █░█░  █░████  ████ ░ ███    █░  █░  █░█░█ █░
+    █░  █░ ██░ █ █ ░█░░░░ █░░█░   ░░█   █░  █░  █░█░ ██░
+  █████ █░  █░  █ ░ █████ █░  █ ████ ░█████  ███ ░█░  █░
+   ░░░░░ ░   ░   ░   ░░░░░ ░   ░ ░░░░  ░░░░░  ░░░  ░   ░
 
   Saying so is the honest start. Here's one way in.
 
-  01  name the bad case       the raise does not come
-  02  price that year         salary gap times twelve
-  03  then decide             only if that year is
-                              survivable
+  ────────────────────────────────────────────────────────────────────────
+
+  01  name the bad case  the raise does not come
+  02  price that year   salary gap times twelve
+  03  then decide       only if that year is survivable
 
   Name the failure before you admire the offer.
 
   › "got it" · "another like this" · "menu"
 ```
 
-## Lanes
-
 ```text
-  LANES
-  01   thinking clearly        ░░░░░░░░░░   new
-  05   playing to win          ▒░░░░░░░░░    1%
+  L A N E S
+  01  T H I N K I N G   C L E A R L Y
+      ░░░░░░░░░░░░░░░░░░░░   new
+  05  P L A Y I N G   T O   W I N
+      ▒░░░░░░░░░░░░░░░░░░░    1%
 ```
 
-## Session
-
 ```text
-  ida · session 04 complete                12 NOV 2026
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ida · session 04 complete                                      12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  5 cards     ■■■ 3     ■■□ 1     □□□ 1
-
-
-  LANES
-  01   thinking clearly        ▒░░░░░░░░░    1%
-  02   knowing what's true     ░░░░░░░░░░   new
-  03   blind spots             ▒░░░░░░░░░    1%
-  04   reading people          ░░░░░░░░░░   new
-  05   playing to win          ▒░░░░░░░░░    4%
-  06   seeing ripple effects   ░░░░░░░░░░   new
-  07   deciding and acting     ░░░░░░░░░░   new
+  5 cards  ■■■ 3 strong  ■■□ 1 partial  □□□ 1 not yet
 
 
-  WHAT YOU REACHED FOR
-  · downside first   · base rates
+  L A N E S
+  01  T H I N K I N G   C L E A R L Y
+      ▒░░░░░░░░░░░░░░░░░░░    1%
+  02  K N O W I N G   W H A T' S   T R U E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  03  B L I N D   S P O T S
+      ▒░░░░░░░░░░░░░░░░░░░    1%
+  04  R E A D I N G   P E O P L E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  05  P L A Y I N G   T O   W I N
+      ▒░░░░░░░░░░░░░░░░░░░    4%
+  06  S E E I N G   R I P P L E   E F F E C T S
+      ░░░░░░░░░░░░░░░░░░░░   new
+  07  D E C I D I N G   A N D   A C T I N G
+      ░░░░░░░░░░░░░░░░░░░░   new
 
 
-  ONE TO CARRY
+  W H A T   Y O U   R E A C H E D   F O R
+  ■ downside first
+  ■ base rates
+
+
+  O N E   T O   C A R R Y
   Price the bad case before you fall for the good one.
 
-
-  ────────────────────────────────────────────────────
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Clarity is a competitive edge.
 
   › "again" · "menu" · "done"
 ```
 
-The other sign-off, on the next session:
-
 ```text
-  ida · session 05 complete                12 NOV 2026
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ida · session 05 complete                                      12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  5 cards     ■■■ 3     ■■□ 1     □□□ 1
-
-
-  LANES
-  01   thinking clearly        ▒░░░░░░░░░    1%
-  02   knowing what's true     ░░░░░░░░░░   new
-  03   blind spots             ▒░░░░░░░░░    1%
-  04   reading people          ░░░░░░░░░░   new
-  05   playing to win          ▒░░░░░░░░░    4%
-  06   seeing ripple effects   ░░░░░░░░░░   new
-  07   deciding and acting     ░░░░░░░░░░   new
+  5 cards  ■■■ 3 strong  ■■□ 1 partial  □□□ 1 not yet
 
 
-  WHAT YOU REACHED FOR
-  · downside first
+  L A N E S
+  01  T H I N K I N G   C L E A R L Y
+      ▒░░░░░░░░░░░░░░░░░░░    1%
+  02  K N O W I N G   W H A T' S   T R U E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  03  B L I N D   S P O T S
+      ▒░░░░░░░░░░░░░░░░░░░    1%
+  04  R E A D I N G   P E O P L E
+      ░░░░░░░░░░░░░░░░░░░░   new
+  05  P L A Y I N G   T O   W I N
+      ▒░░░░░░░░░░░░░░░░░░░    4%
+  06  S E E I N G   R I P P L E   E F F E C T S
+      ░░░░░░░░░░░░░░░░░░░░   new
+  07  D E C I D I N G   A N D   A C T I N G
+      ░░░░░░░░░░░░░░░░░░░░   new
 
 
-  ONE TO CARRY
+  W H A T   Y O U   R E A C H E D   F O R
+  ■ downside first
+
+
+  O N E   T O   C A R R Y
   Name the idea, then say what it changes here.
 
-
-  ────────────────────────────────────────────────────
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   The people who see clearly win.
 
   › "again" · "menu" · "done"
 ```
 
+
 ## Machine line
 
-`python3 "$IDA/scripts/ida.py" open` prints one line. Do not show it.
-
-`NEW|bars|axiom:0:0:103,...` means the first run. `READY` means the profile exists. `BACK|Last time: ...|bars|...` is the menu. `RESUME|Last time: ...|bars|...` is an unfinished card.
-
-Each bar field is `id:strong:partial:total`. Draw the bar from the rule above.
+`ida.py open` still prints one machine line for you. Do not show it. `ida.py show` is what the person sees.

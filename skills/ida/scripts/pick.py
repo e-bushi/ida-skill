@@ -121,12 +121,14 @@ def canonical_section(catalog, phylum, category):
     return phylum, category
 
 
-def choose_pool(catalog, phylum, category, avoided: set[str]) -> list[dict]:
+def choose_pool(catalog, phylum, category, avoided: set[str], practice: str | None = None) -> list[dict]:
     pool = catalog
     if phylum:
         pool = [entry for entry in pool if entry["phylum"] == phylum]
     if category:
         pool = [entry for entry in pool if entry["category"] == category]
+    if practice:
+        pool = [entry for entry in pool if entry["practice"] == practice]
     if not pool:
         die("nothing in that section")
     fresh = [entry for entry in pool if entry["id"] not in avoided]
@@ -210,6 +212,7 @@ def main() -> None:
     parser.add_argument("--choices", action="store_true")
     parser.add_argument("--pair", choices=("auto", "yes", "no"), default="auto")
     parser.add_argument("--seed", type=int)
+    parser.add_argument("--practice", choices=("spot", "decide"))
     args = parser.parse_args()
 
     queries = list(args.name)
@@ -250,7 +253,7 @@ def main() -> None:
         intended = []
     else:
         phylum, category = canonical_section(catalog, args.phylum, args.category)
-        pool = choose_pool(catalog, phylum, category, avoided)
+        pool = choose_pool(catalog, phylum, category, avoided, args.practice)
         primary = pick_scored(pool, stats, rng)
         intended = [primary]
         want_pair = args.pair == "yes" or (args.pair == "auto" and primary["practice"] == "decide" and rng.random() < PAIR_CHANCE)

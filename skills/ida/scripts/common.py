@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LIBRARY = ROOT / "library"
-VERSION = 1
+VERSION = 2
 RESULTS = ("strong", "partial", "miss", "idk")
 MODES = ("free", "choice")
 SELECTIONS = ("section", "pick", "random")
@@ -25,9 +25,10 @@ HISTORY_CAP = 40
 SUMMARY_LIMIT = 280
 PROMPT_LIMIT = 2000
 
-# Sheet width, counting the two-space indent. Rules run to this edge.
-SCREEN_WIDTH = 54
-BAR_BLOCKS = 10
+# Page is 76 columns. Rules are 72 characters after a 2-space indent.
+SCREEN_WIDTH = 76
+RULE_WIDTH = 72
+BAR_BLOCKS = 20
 
 # User-facing section names. Ids stay in the library and the progress file.
 DISPLAY_ORDER = (
