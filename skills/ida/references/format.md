@@ -1,16 +1,16 @@
 # Format
 
-`ida turn` prints the screen in plain text on stdout. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The flags are in `references/commands.md`.
+`sh ~/.agents/skills/ida/ida turn` prints the screen in plain text on stdout. One command. No fallback chain. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The flags are in `references/commands.md`.
 
 Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Stderr is one JSON line for the agent. It is not part of the fence.
 
 A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
 
-Do not pass the scene, the explanation, or the steps as command flags. Write `/tmp/ida-screen.json` and run `ida turn idk < /tmp/ida-screen.json`.
+Do not pass the scene, the explanation, or the steps as command flags. Write `/tmp/ida-screen.json` and run `sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json`.
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
-The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `sh ~/.agents/skills/ida/ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
 The headline stays on the first question of a first run only:
 
@@ -49,7 +49,7 @@ Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss 
 Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line. That is why the reply fence is required even when you also see color. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
 
 ```bash
-ida turn idk
+sh ~/.agents/skills/ida/ida turn idk
 ```
 
 ## Another angle
@@ -69,7 +69,7 @@ When the reveal did not land, this block is the reply. The choice tool comes aft
 
 ## Choices
 
-If the host has a choice tool, use it for a menu, a multiple-choice answer, or the next step after feedback. Do not use it to ask a free-text question. The card's question stays in the fence. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names, and on a multiple-choice card they are only the short option names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `ida turn --typed` and the `›` line is the choice.
+If the host has a choice tool, use it for a menu, a multiple-choice answer, or the next step after feedback. Do not use it to ask a free-text question. The card's question stays in the fence. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names, and on a multiple-choice card they are only the short option names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `sh ~/.agents/skills/ida/ida turn --typed` and the `›` line is the choice.
 
 Use it for the practice menu, the seven lanes, multiple choice, and the after-answer actions (next, why, menu, retry).
 

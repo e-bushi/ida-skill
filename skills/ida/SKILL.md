@@ -42,23 +42,23 @@ At the start of a sitting, read these once: `references/format.md`, `references/
 
 ## One command
 
-One shell command per user message. Never two. Never `--help`. Never `next` and then `show`.
+One shell command per user message. Never two. Never a fallback chain. Never `--help`. Never `next` and then `show`.
 
-The command is `ida turn`, plus at most one short choice:
+The folder that contains this file is the skill directory. Write it with `~` when it sits under your home directory. For the usual install the only command is:
 
 ```bash
-ida turn
-ida turn 3
-ida turn idk
-ida turn next
-ida turn done
+sh ~/.agents/skills/ida/ida turn
+sh ~/.agents/skills/ida/ida turn 3
+sh ~/.agents/skills/ida/ida turn idk
+sh ~/.agents/skills/ida/ida turn next
+sh ~/.agents/skills/ida/ida turn done
 ```
 
-If `ida` is not on the path, use `python3 "$IDA/ida" turn` and the same choice. `$IDA` is the folder that contains this file. Do not call `scripts/ida.py`.
+If this file was loaded from another directory, use that directory in the same shape, still with `sh` and still one command. Do not search for a binary. Do not chain a second command. Do not run this file with `python3`.
 
 Stdout is the plain screen. Paste it. Stderr is one JSON line for you: the idea, the section, the options. Do not paste stderr. Do not quote it. Do not narrate the command.
 
-Leave `IDA_COLOR` unset. Do not put a sentence, a scene, or an explanation on the command line. Write `/tmp/ida-screen.json` with the file tool, then `ida turn idk < /tmp/ida-screen.json`. No heredoc.
+Leave `IDA_COLOR` unset. Do not put a sentence, a scene, or an explanation on the command line. Write `/tmp/ida-screen.json` with the file tool, then `sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json`. No heredoc.
 
 If the card rail contains `SCENE`, replace that word in the fence with the scene you write. That is not a second command.
 
@@ -72,15 +72,15 @@ Labels are the spoken names in lowercase: thinking clearly, knowing what's true,
 
 Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. The tool's question is a short label such as "lane" or "next", never the card's question and never "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
 
-If the host has no choice tool, pass `--typed` on the first `ida turn` of the sitting. ida remembers it. The screen then ends with a `›` line, and that line is the choice. Do not pass `--typed` when the tool exists.
+If the host has no choice tool, the first command of the sitting is `sh ~/.agents/skills/ida/ida turn --typed`. ida remembers it. The screen then ends with a `›` line, and that line is the choice. Do not pass `--typed` when the tool exists.
 
 ## Session
 
-1. `ida turn` shows the first profile question, or the menu. Paste stdout.
-2. Each profile answer is `ida turn` with `{"answer":"..."}` in the JSON file. After the third, the same command shows the menu.
-3. `ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout, including `■ T H E   Q U E S T I O N`. Fill `SCENE` in the fence. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
-4. Grade with `references/loop.md`. `ida turn idk`, `ida turn` with `"result":"strong"`, or `ida turn` with `"result":"partial"`, and the words in the JSON file. Paste the whole stdout. The idk reply includes the banner.
-5. `ida turn next` deals another card. `ida turn done` is the summary. Paste that too.
+1. `sh ~/.agents/skills/ida/ida turn` shows the first profile question, or the menu. Paste stdout.
+2. Each profile answer is that same command with `{"answer":"..."}` in the JSON file. After the third, the menu shows.
+3. `sh ~/.agents/skills/ida/ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout, including `■ T H E   Q U E S T I O N`. Fill `SCENE` in the fence. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
+4. Grade with `references/loop.md`. `sh ~/.agents/skills/ida/ida turn idk`, or the same command with `"result":"strong"` or `"result":"partial"` in the JSON file. Paste the whole stdout. The idk reply includes the banner.
+5. `sh ~/.agents/skills/ida/ida turn next` deals another card. `sh ~/.agents/skills/ida/ida turn done` is the summary. Paste that too.
 
 ## Privacy
 

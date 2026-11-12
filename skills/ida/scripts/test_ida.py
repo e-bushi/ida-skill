@@ -832,6 +832,32 @@ class IdaCommandTests(unittest.TestCase):
             self.assertIn("›", remembered.stdout)
 
 
+class ShimTests(unittest.TestCase):
+    def test_one_command_and_shim_accepts_python(self):
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("sh ~/.agents/skills/ida/ida turn", skill)
+        self.assertNotIn("command -v", skill)
+        self.assertNotIn("||", skill)
+        self.assertNotIn("&&", skill)
+        checklist = (ROOT / "evals" / "checklist.md").read_text(encoding="utf-8")
+        self.assertIn("no chained fallbacks", checklist)
+        self.assertIn("command -v", checklist)
+        shim = ROOT / "ida"
+        with tempfile.TemporaryDirectory() as tmp:
+            env = os.environ.copy()
+            env["IDA_PROGRESS"] = str(Path(tmp) / "progress.json")
+            env.pop("IDA_COLOR", None)
+            for argv in (["sh", str(shim), "turn"], [PY, str(shim), "turn"]):
+                proc = subprocess.run(argv, text=True, capture_output=True, env=env, check=False)
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                self.assertIn("01 / 03", proc.stdout)
+                self.assertNotIn("SyntaxError", proc.stderr)
+                self.assertNotIn("Traceback", proc.stderr)
+                self.assertEqual(len(proc.stderr.strip().splitlines()), 1)
+                info = json.loads(proc.stderr)
+                self.assertEqual(info["screen"], "opening")
+
+
 class ColorAndBannerTests(unittest.TestCase):
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name
