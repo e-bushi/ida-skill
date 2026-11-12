@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date, timedelta
 
 from catalog import load_catalog
 from common import (
@@ -41,6 +42,17 @@ from common import (
 )
 
 
+def blank_practice() -> dict:
+    return {
+        "streak": 0,
+        "last_day": None,
+        "milestones": {},
+        "daily_id": None,
+        "daily_day": None,
+        "pending_note": None,
+    }
+
+
 def empty() -> dict:
     return {
         "version": VERSION,
@@ -49,7 +61,33 @@ def empty() -> dict:
         "entries": {},
         "recent_scenarios": [],
         "history": [],
+        "practice": blank_practice(),
     }
+
+
+def _migrate(data: dict) -> bool:
+    version = data.get("version", 1)
+    if version not in (1, 2):
+        die(f"progress file version {version!r} is not supported (expected {VERSION}): keep the file and update ida")
+    changed = False
+    if version == 1:
+        data["version"] = 2
+        changed = True
+    practice = data.get("practice")
+    if not isinstance(practice, dict):
+        data["practice"] = blank_practice()
+        changed = True
+    else:
+        base = blank_practice()
+        for key, value in base.items():
+            if key not in practice:
+                practice[key] = value
+                changed = True
+    for key, default in empty().items():
+        if key not in data:
+            data[key] = default() if callable(default) else default
+            changed = True
+    return changed
 
 
 def load_file(path) -> dict:
@@ -61,17 +99,17 @@ def load_file(path) -> dict:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         die(f"progress file is not valid json: {path}")
-    version = data.get("version")
-    if version != VERSION:
-        die(f"progress file version {version!r} is not supported (expected {VERSION}): {path}")
-    for key, default in empty().items():
-        data.setdefault(key, default() if callable(default) else default)
-    if data["profile"] is not None and not isinstance(data["profile"], dict):
+    if data.get("profile") is not None and not isinstance(data.get("profile"), dict):
         die("profile must be an object or null")
+    if _migrate(data):
+        save_file(path, data)
     return data
 
 
 def save_file(path, data: dict) -> None:
+    practice = data.get("practice")
+    if not isinstance(practice, dict):
+        practice = blank_practice()
     stored = {
         "version": VERSION,
         "profile": data.get("profile"),
@@ -79,6 +117,7 @@ def save_file(path, data: dict) -> None:
         "entries": data.get("entries") or {},
         "recent_scenarios": data.get("recent_scenarios") or [],
         "history": data.get("history") or [],
+        "practice": practice,
     }
     write_json(path, stored)
 
@@ -94,6 +133,42 @@ def blank_stats(name: str) -> dict:
         "last_practiced": None,
         "last_result": None,
     }
+
+
+def today() -> str:
+    return date.today().isoformat()
+
+
+def touch_streak(data: dict, day: str | None = None) -> None:
+    practice = data.setdefault("practice", blank_practice())
+    day = day or today()
+    last = practice.get("last_day")
+    if last == day:
+        return
+    if last:
+        previous = (date.fromisoformat(day) - timedelta(days=1)).isoformat()
+        practice["streak"] = int(practice.get("streak") or 0) + 1 if last == previous else 1
+    else:
+        practice["streak"] = 1
+    practice["last_day"] = day
+
+
+def note_milestone(data: dict, phylum: str, strong: int, partial: int, total: int) -> int:
+    if total <= 0:
+        return 0
+    credit = min(total, strong + 0.5 * partial)
+    percent = int(round(100 * credit / total))
+    practice = data.setdefault("practice", blank_practice())
+    milestones = practice.setdefault("milestones", {})
+    current = int(milestones.get(phylum) or 0)
+    crossed = 0
+    for mark in (25, 50, 75, 100):
+        if percent >= mark and current < mark:
+            crossed = mark
+    if crossed:
+        milestones[phylum] = crossed
+        practice["pending_note"] = f"{DISPLAY_NAMES.get(phylum, phylum)}|{crossed}"
+    return crossed
 
 
 def catalog_index():
@@ -519,6 +594,19 @@ def record_attempt(data: dict, attempt: dict) -> dict:
     if live.get("phylum"):
         session["last_phylum"] = live["phylum"]
     session["updated_at"] = now()
+    touch_streak(data)
+    phylum = live.get("phylum") or primary["phylum"]
+    strong_n = partial_n = total_n = 0
+    for entry in entries:
+        if entry["phylum"] != phylum:
+            continue
+        total_n += 1
+        state = data["entries"].get(entry["id"]) or {}
+        if int(state.get("strong") or 0) >= 1:
+            strong_n += 1
+        elif int(state.get("partial") or 0) >= 1:
+            partial_n += 1
+    note_milestone(data, phylum, strong_n, partial_n, total_n)
     bars = phylum_bars(data["entries"], catalog_index()[0], entries)
     return {
         "ok": True,

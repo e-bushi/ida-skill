@@ -89,10 +89,10 @@ class RenderTests(unittest.TestCase):
         for phylum in render.DISPLAY_ORDER:
             for practice in ("decide", "spot"):
                 text = render.card(4, phylum, "A short scene with a real stake.", practice=practice)
-                self.assertTrue(all(len(line) <= 54 for line in text.splitlines()), text)
+                self.assertTrue(all(len(line) <= 76 for line in text.splitlines()), text)
                 self.assertTrue(text.strip().endswith('"skip"'))
                 self.assertNotIn("✓", text)
-                self.assertIn(render.display_name(phylum).upper(), text)
+                self.assertIn(render.spaced(render.display_name(phylum)), text)
                 self.assertIn("┃", text)
         long_name = "commutative / associative / distributive laws"
         text = render.card(
@@ -103,37 +103,38 @@ class RenderTests(unittest.TestCase):
             mode="choice",
             options=[long_name, "tautology", "contradiction", "validity"],
         )
-        self.assertTrue(all(len(line) <= 54 for line in text.splitlines()))
+        self.assertTrue(all(len(line) <= 76 for line in text.splitlines()))
         self.assertIn("commutative", text)
         self.assertNotIn("Clarity is a competitive edge.", text)
 
     def test_bars_are_ten_cells_and_partials_are_half(self):
         empty, pct = render.bar_cells(0, 0, 81)
-        self.assertEqual(empty, "░" * 10)
+        self.assertEqual(empty, "░" * 20)
         self.assertEqual(pct, 0)
         full, pct = render.bar_cells(81, 0, 81)
-        self.assertEqual(full, "█" * 10)
+        self.assertEqual(full, "█" * 20)
         self.assertEqual(pct, 100)
         one, pct = render.bar_cells(1, 0, 81)
-        self.assertEqual(len(one), 10)
-        self.assertEqual(one, "▒" + "░" * 9)
+        self.assertEqual(len(one), 20)
+        self.assertEqual(one, "▒" + "░" * 19)
         self.assertEqual(pct, 1)
-        half, pct = render.bar_cells(0, 1, 10)
+        half, pct = render.bar_cells(0, 1, 81)
         self.assertEqual(half[0], "▒")
-        self.assertEqual(pct, 5)
+        self.assertNotIn("█", half)
+        self.assertEqual(pct, 1)
         mixed, pct = render.bar_cells(8, 1, 10)
-        self.assertEqual(mixed, "████████▒░")
+        self.assertEqual(mixed, "█" * 17 + "░" * 3)
         self.assertEqual(pct, 85)
         untouched, pct = render.bar_cells(0, 0, 62)
         self.assertEqual(set(untouched), {"░"})
         self.assertEqual(pct, 0)
-        lines = [render.bar_line(phylum, 8, 0, 40) for phylum in render.DISPLAY_ORDER]
+        lines = [render.lane_lines(phylum, 8, 0, 40)[1] for phylum in render.DISPLAY_ORDER]
         self.assertEqual(len({len(line) for line in lines}), 1)
         self.assertEqual(len({line.index("█") for line in lines}), 1)
-        self.assertTrue(all(len(line) <= 54 for line in lines))
+        self.assertTrue(all(len(line) <= 76 for line in lines))
         fresh = [render.bar_line(phylum, 0, 0, 10) for phylum in render.DISPLAY_ORDER]
-        self.assertTrue(all(line.endswith(" new") for line in fresh))
-        self.assertEqual(len({line.index("░") for line in fresh}), 1)
+        self.assertTrue(all(line.splitlines()[-1].endswith(" new") for line in fresh))
+        self.assertEqual(len({line.splitlines()[-1].index("░") for line in fresh}), 1)
         one = render.bar_line("strategy", 1, 0, 81)
         self.assertIn("1%", one)
         self.assertIn("▒", one)
@@ -141,7 +142,7 @@ class RenderTests(unittest.TestCase):
         screen = render.bars(
             [{"phylum": phylum, "strong": 1, "partial": 0, "total": 81} for phylum in render.DISPLAY_ORDER]
         )
-        self.assertTrue(all(len(line) <= 54 for line in screen.splitlines()))
+        self.assertTrue(all(len(line) <= 76 for line in screen.splitlines()))
         self.assertNotIn("1/81", screen)
         self.assertNotIn("axiom", screen)
         self.assertIn("1%", screen)
@@ -160,7 +161,7 @@ class RenderTests(unittest.TestCase):
             ],
         )
         menu = render.menu(4)
-        self.assertIn("playing to win", menu)
+        self.assertIn("P L A Y I N G   T O   W I N", menu)
         self.assertNotIn("PLAYING TO WIN", menu)
         self.assertNotIn("how to win", menu)
         self.assertNotIn("axiom", menu)
@@ -170,7 +171,7 @@ class RenderTests(unittest.TestCase):
         self.assertIn("When it gets noisy,", opening)
         self.assertIn("you can always reach for clarity.", opening)
         self.assertIn("01 / 03", opening)
-        self.assertIn("WHAT DO YOU DO FOR WORK", opening)
+        self.assertIn("W H A T   D O   Y O U   D O   F O R   W O R K", opening)
         self.assertNotIn("Clarity is a competitive edge.", opening)
         self.assertNotIn("The people who see clearly win.", opening)
         later = render.opening(3)
@@ -209,6 +210,7 @@ class RenderTests(unittest.TestCase):
             81,
         )
         not_yet = render.feedback_not_yet(
+            "inversion",
             "Saying so is the honest start. Here's one way in.",
             [
                 ("name the bad case", "the raise does not come"),
@@ -280,15 +282,15 @@ class RenderTests(unittest.TestCase):
     def test_opening_and_summary_edges(self):
         opening = render.opening_new()
         self.assertNotIn("pick a lane", opening)
-        self.assertLessEqual(max(len(line) for line in opening.splitlines()), 54)
+        self.assertLessEqual(max(len(line) for line in opening.splitlines()), 76)
         quiet = render.summary_block(0, 0, 0, 0, 0, "", "", "pick up wherever you like")
         self.assertIn("0 cards", quiet)
         self.assertIn("Clarity is a competitive edge.", quiet)
-        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), 54)
+        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), 76)
         text = render.feedback("idk", "inversion", "Study the failure, then refuse it.")
-        self.assertIn("NOT YET", text.splitlines()[0])
+        self.assertIn("not yet", text.splitlines()[0])
         self.assertNotIn("✓", text)
-        self.assertTrue(all(len(line) <= 54 for line in text.splitlines()))
+        self.assertTrue(all(len(line) <= 76 for line in text.splitlines()))
 
 
 class ProgressTests(unittest.TestCase):
@@ -302,7 +304,7 @@ class ProgressTests(unittest.TestCase):
             self.assertEqual(len(view["bars"]), 7)
             stored = json.loads(path.read_text(encoding="utf-8"))
             self.assertNotIn("welcome", stored)
-            self.assertEqual(stored["version"], 1)
+            self.assertEqual(stored["version"], 2)
 
             saved = run(
                 "progress.py",
@@ -459,7 +461,7 @@ class ProgressTests(unittest.TestCase):
     def test_refuses_bad_version_and_open_card(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "progress.json"
-            path.write_text('{"version": 2}\n', encoding="utf-8")
+            path.write_text('{"version": 9}\n', encoding="utf-8")
             bad = run("progress.py", ["load"], path)
             self.assertNotEqual(bad.returncode, 0)
             self.assertIn("not supported", bad.stderr)
@@ -697,6 +699,90 @@ class IdaCommandTests(unittest.TestCase):
             self.assertIn("strategy:1:0:", after.stdout)
 
 
+class ColorAndBannerTests(unittest.TestCase):
+    def test_every_name_fits_the_banner_width(self):
+        from banner import render_name
+
+        _doc, catalog = load_catalog()
+        self.assertEqual(len(catalog), 443)
+        for entry in catalog:
+            for line in render_name(entry["name"]):
+                self.assertLessEqual(len(line), 72, entry["name"])
+
+    def test_color_falls_back(self):
+        from color import color_mode, paint
+
+        plain = render.opening(1)
+        self.assertNotIn("\033", paint(plain, "plain"))
+        colored = paint(plain, "truecolor")
+        self.assertIn("\033[38;2;10;132;255m", colored)
+        indexed = paint(plain, "256")
+        self.assertIn("\033[38;5;", indexed)
+        with tempfile.TemporaryDirectory() as tmp:
+            progress = str(Path(tmp) / "progress.json")
+            env = os.environ.copy()
+            env["NO_COLOR"] = "1"
+            env.pop("IDA_COLOR", None)
+            proc = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", progress, "show", "opening"],
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertNotIn("\033", proc.stdout)
+            env = os.environ.copy()
+            env.pop("NO_COLOR", None)
+            env["TERM"] = "dumb"
+            proc = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", progress, "show", "opening"],
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
+            self.assertNotIn("\033", proc.stdout)
+            env = {"PATH": os.environ.get("PATH", ""), "IDA_COLOR": "always"}
+            proc = subprocess.run(
+                [PY, str(SCRIPTS / "ida.py"), "--path", progress, "show", "opening"],
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("\033[38;2;", proc.stdout)
+        self.assertFalse(proc.stdout.startswith("\n"))
+
+    def test_version_1_progress_migrates_without_losing_entries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "progress.json"
+            original = {
+                "version": 1,
+                "profile": {"role": "nurse", "interests": "climbing", "decisions": "shifts", "updated_at": "2026-01-01T00:00:00Z"},
+                "session": None,
+                "entries": {"inversion": {"name": "inversion", "attempts": 2, "strong": 1, "partial": 0, "miss": 0, "idk": 1, "last_practiced": "2026-01-01T00:00:00Z", "last_result": "strong"}},
+                "recent_scenarios": [{"entry_ids": ["inversion"], "summary": "a launch", "result": "strong"}],
+                "history": [{"scenarios": 1, "strong": 1}],
+            }
+            path.write_text(json.dumps(original), encoding="utf-8")
+            proc = subprocess.run(
+                [PY, str(SCRIPTS / "progress.py"), "--path", str(path), "load"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            stored = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(stored["version"], 2)
+            self.assertEqual(stored["entries"]["inversion"]["strong"], 1)
+            self.assertEqual(stored["profile"]["role"], "nurse")
+            self.assertEqual(stored["recent_scenarios"][0]["summary"], "a launch")
+            self.assertEqual(stored["history"][0]["scenarios"], 1)
+            self.assertIn("streak", stored["practice"])
+
+
 class ManifestTests(unittest.TestCase):
     def test_plugin_manifests_point_at_the_skill(self):
         marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
@@ -709,7 +795,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.1.0")
+        self.assertEqual(plugin["version"], "1.2.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 
