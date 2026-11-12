@@ -165,19 +165,67 @@ def opening_new() -> str:
     return opening(1)
 
 
-def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, total: int = 443, streak: int = 0, typed: bool = False) -> str:
-    if rows is None:
-        rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in DISPLAY_ORDER]
+LANE_TRAINS = {
+    "axiom": "reason without fooling yourself",
+    "kanon": "weigh evidence and claims",
+    "bias": "catch the biases in your own head",
+    "persona": "understand what drives others",
+    "strategy": "make moves when others move too",
+    "systema": "spot second-order consequences",
+    "momentum": "choose and follow through",
+}
+LANE_INTRO = (
+    "Lanes are the seven kinds of thinking ida trains. "
+    "Each holds ways of thinking from the sharpest minds, turned into scenes from your work and life. "
+    "Practice one until it sticks, and you will reach for the right idea when it counts."
+)
+LANE_ASK = "Which lane do you want to start with?"
+
+
+def _lightest(rows: list[dict]) -> int:
     ranked = []
     for row in rows:
         index = DISPLAY_ORDER.index(row["phylum"]) + 1
         _cells, percent = bar_cells(int(row["strong"]), int(row["partial"]), int(row["total"]))
         ranked.append((percent, index))
     _low, light_index = min(ranked, key=lambda item: (item[0], item[1]))
+    return light_index
+
+
+def menu_prompt(rows: list[dict] | None = None) -> tuple[str, list[str]]:
+    if rows is None:
+        rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in DISPLAY_ORDER]
+    light = _lightest(rows)
+    labels = []
+    for row in rows:
+        phylum = row["phylum"]
+        index = DISPLAY_ORDER.index(phylum) + 1
+        strong, partial, total = int(row["strong"]), int(row["partial"]), int(row["total"])
+        _cells, percent = bar_cells(strong, partial, total)
+        state = "new" if strong <= 0 and partial <= 0 else f"{percent}%"
+        if index == light:
+            state += ", suggested"
+        labels.append(f"{DISPLAY_NAMES[phylum]}: {LANE_TRAINS[phylum]} ({state})")
+    labels.extend(
+        [
+            "daily: one card picked for today",
+            "spot: a quick multiple choice",
+            "surprise me: ida picks the idea",
+        ]
+    )
+    return f"{LANE_INTRO} {LANE_ASK}", labels
+
+
+def menu(session: int = 1, rows: list[dict] | None = None, collected: int = 0, total: int = 443, streak: int = 0, typed: bool = False) -> str:
+    if rows is None:
+        rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in DISPLAY_ORDER]
+    light_index = _lightest(rows)
     lines = [
         spread("  ida · practice", f"SESSION {session:02d}"),
         heavy(),
     ]
+    lines.extend(gap(2))
+    lines.extend("  " + piece for piece in wrap(LANE_INTRO, 72))
     lines.extend(gap(2))
     lines.append("  pick a lane")
     if collected or streak:

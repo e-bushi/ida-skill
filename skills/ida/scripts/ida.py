@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -518,11 +519,41 @@ def _as_sentence(text: str) -> str:
     return text
 
 
+def _banner_mode() -> str:
+    mode = os.environ.get("IDA_QUESTION_BANNER", "spaced").strip().lower()
+    return "block" if mode == "block" else "spaced"
+
+
+def _name_mark(name: str, mode: str) -> str:
+    from banner import render_name, spaced_caps
+
+    if mode == "block":
+        return "\n".join(render_name(name))
+    return spaced_caps(name)
+
+
+def _idk_question(name: str, definition: str) -> str:
+    """Name mark, definition, then the ask.
+
+    Default is spaced caps. Cursor's AskQuestion prompt is a plain string and
+    has shipped with newlines shown as the two characters backslash-n. Claude
+    Code's AskUserQuestion keeps newlines in the question, but the body is bold
+    proportional text, not a monospace grid, so a 3-row banner will not stay
+    aligned. Option descriptions there also flatten newlines. Monospace is only
+    an optional per-option preview, which is not the question the person always
+    sees. Spaced caps survive wrapping. IDA_QUESTION_BANNER=block switches to
+    the 3-row banner for a host that keeps a grid.
+    """
+    mode = _banner_mode()
+    gloss = _as_sentence(definition) if definition.strip() else "<one-line definition you write>."
+    mark = _name_mark(name, mode)
+    return f"QUESTION_BANNER: {mode}\nQUESTION:\n{mark}\n{gloss}\nWhere to from here?"
+
+
 def _question_line(result: str, name: str, definition: str = "") -> str:
     called = _called(name)
     if result == "idk":
-        gloss = _as_sentence(definition) if definition.strip() else "<one-line definition you write>."
-        return f"QUESTION: It's called {called}. {gloss} Where to from here?"
+        return _idk_question(name, definition)
     if result == "strong":
         return f"QUESTION: That's {called}. Where to from here?"
     if result == "partial":
@@ -708,7 +739,10 @@ def _show_card(path, data, info: dict) -> None:
 
 
 def _show_menu(path, data, catalog) -> None:
-    emit(path, data, _menu_text(data, catalog), {"screen": "menu", "await": "lane"})
+    rows = _rows(data, catalog)
+    question, options = render.menu_prompt(rows)
+    block = "QUESTION: " + question + "\nOPTIONS:\n" + "\n".join(options)
+    emit(path, data, _menu_text(data, catalog), {"screen": "menu", "await": "lane"}, "", block)
 
 
 def _idea_name(live: dict, payload: dict) -> str:

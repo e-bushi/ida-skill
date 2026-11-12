@@ -833,6 +833,10 @@ class IdaCommandTests(unittest.TestCase):
             menu = run(["turn", "what to ship"])
             self.assertIn("pick a lane", menu.stdout)
             self.assertIn("THEN call the choice tool.", menu.stdout)
+            self.assertIn("Lanes are the seven kinds of thinking ida trains.", menu.stdout)
+            self.assertIn("thinking clearly: reason without fooling yourself (new, suggested)", menu.stdout)
+            self.assertIn("daily: one card picked for today", menu.stdout)
+            self.assertIn("surprise me: ida picks the idea", menu.stdout)
             assert_blank_tail(self, menu.stdout)
             deal = "sh ~/.agents/skills/ida/ida turn deal inversion"
             self.assertLessEqual(len(deal), 48)
@@ -852,10 +856,9 @@ class IdaCommandTests(unittest.TestCase):
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
             self.assertNotIn("FROM STDIN", reveal.stdout)
             self.assertIn("THEN call the choice tool.", reveal.stdout)
-            self.assertIn(
-                "QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?",
-                reveal.stdout,
-            )
+            self.assertIn("QUESTION_BANNER: spaced", reveal.stdout)
+            self.assertIn("I N V E R S I O N", reveal.stdout)
+            self.assertIn("To master a problem, study how to fail at it, then refuse to.", reveal.stdout)
             self.assertLess(reveal.stdout.index("\nEND"), reveal.stdout.index("\nQUESTION:"))
             explained = run(["turn", "explain"])
             self.assertIn("QUESTION: Inversion. In plain words: To master a problem", explained.stdout)
@@ -962,17 +965,16 @@ class IdaRevealTests(unittest.TestCase):
             self.assertNotIn("{", reveal.stderr)
             self.assertIn("three steps", reveal.stderr.splitlines()[0])
             self.assertIn("THEN call the choice tool.", reveal.stdout)
-            self.assertIn(
-                "QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?",
-                reveal.stdout,
-            )
+            self.assertIn("QUESTION_BANNER: spaced", reveal.stdout)
+            self.assertIn("I N V E R S I O N", reveal.stdout)
+            self.assertIn("To master a problem, study how to fail at it, then refuse to.", reveal.stdout)
             self.assertLess(reveal.stdout.index("[ida -> agent]"), reveal.stdout.index("BEGIN"))
             assert_blank_tail(self, reveal.stdout)
             assert_blank_tail(self, reveal.stderr)
             self.assertIn("not yet", reveal.stdout)
             self.assertIn("study how to fail", reveal.stdout.lower())
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
-            self.assertLess(len(reveal.stdout.splitlines()), 20)
+            self.assertLess(len(reveal.stdout.splitlines()), 28)
             for line in render_name(name):
                 if line.strip(" \u200b"):
                     self.assertIn(line, reveal.stdout)
@@ -983,10 +985,19 @@ class IdaRevealTests(unittest.TestCase):
             open_reveal = run(["turn", "idk"])
             self.assertIn("no stored definition", open_reveal.stderr)
             self.assertNotIn("to master a problem", open_reveal.stdout)
-            self.assertIn(
-                "QUESTION: It's called Contingency. <one-line definition you write>. Where to from here?",
-                open_reveal.stdout,
-            )
+            self.assertIn("C O N T I N G E N C Y", open_reveal.stdout)
+            self.assertIn("<one-line definition you write>.", open_reveal.stdout)
+            blocked_env = env.copy()
+            blocked_env["IDA_QUESTION_BANNER"] = "block"
+            saved_env = env.copy()
+            env.clear()
+            env.update(blocked_env)
+            blocked = run(["turn", "idk"])
+            env.clear()
+            env.update(saved_env)
+            self.assertIn("QUESTION_BANNER: block", blocked.stdout)
+            chunk = blocked.stdout.split("\nQUESTION:\n", 1)[1]
+            self.assertIn("█", chunk.split("Where to from here?")[0])
             self.assertIn("█", open_reveal.stdout)
             again = run(["turn", "deal", "via-negativa"])
             self.assertEqual(again.returncode, 0, again.stderr)
@@ -1111,7 +1122,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.7.0")
+        self.assertEqual(plugin["version"], "1.8.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 
