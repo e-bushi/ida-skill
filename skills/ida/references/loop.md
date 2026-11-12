@@ -83,7 +83,7 @@ Prefer a neighbor that is actually in the library when you say "also consider". 
 
 One command, after the answer:
 
-`python3 "$IDA/scripts/ida.py" save --result strong --summary "one line about the premise"`
+`sh ~/.agents/skills/ida/ida turn` with the grade in `/tmp/ida-screen.json`
 
 Add `--id <id>` when they practiced a different library idea than the one `next` stored. For `idk`, or a miss that named nothing in the library, omit `--id` so the stored idea takes the grade. Do not put a miss on an idea they never mentioned.
 

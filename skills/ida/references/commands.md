@@ -1,25 +1,25 @@
 # Commands
 
-Read this instead of `--help`. `--help` is refused on purpose. One shell command per user message, and that command is `ida turn`.
+Read this instead of `--help`. `--help` is refused on purpose. One shell command per user message. No fallback chain.
 
-The shim is `ida` next to this skill. From a sitting, the visible line is:
+The shim is `ida` next to this skill. Run it with `sh`. The usual install:
 
 ```bash
-ida turn
-ida turn 3
-ida turn idk
-ida turn next
-ida turn done
+sh ~/.agents/skills/ida/ida turn
+sh ~/.agents/skills/ida/ida turn 3
+sh ~/.agents/skills/ida/ida turn idk
+sh ~/.agents/skills/ida/ida turn next
+sh ~/.agents/skills/ida/ida turn done
 ```
 
-If `ida` is not on the path, the same command is `python3 "$IDA/ida" turn`. Do not call `scripts/ida.py` directly. Do not pass `--help`. Do not explore flags.
+If SKILL.md was loaded from another directory, use that directory, still with `sh`, still one command. Do not search for a binary. Do not pass `--help`. Do not explore flags.
 
 Stdout is the plain screen. Paste it into a `text` fence. Stderr is one JSON line for you. Never paste stderr. Never quote it. Never narrate the command.
 
 A long answer, a scene, or an idk reveal does not go on the command line. Write `/tmp/ida-screen.json` with the file tool, then:
 
 ```bash
-ida turn idk < /tmp/ida-screen.json
+sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json
 ```
 
 That is still one command. No heredoc.

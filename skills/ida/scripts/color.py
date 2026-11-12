@@ -85,7 +85,8 @@ def paint(text: str, mode: str) -> str:
             out.append(dim + line + RESET)
             continue
         stripped = line.lstrip()
-        if set(line.strip()) and set(line.strip()) <= {"█", "░", " "}:
+        marks = set(line.strip())
+        if marks and marks <= {"█", "▀", "▄", "░", " "} and marks & {"█", "▀", "▄"}:
             out.append(_paint_banner(line, mode))
             continue
         if any(ch in line for ch in "█▒░"):
@@ -140,7 +141,7 @@ def _paint_banner(line: str, mode: str) -> str:
     bg = _bg(mode)
     parts = []
     for ch in line:
-        if ch == "█":
+        if ch in "█▀▄":
             parts.append(bg + accent + ch)
         elif ch == "░":
             parts.append(bg + dim + ch)
