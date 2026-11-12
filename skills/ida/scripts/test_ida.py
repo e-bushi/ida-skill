@@ -858,6 +858,46 @@ class ShimTests(unittest.TestCase):
                 self.assertEqual(info["screen"], "opening")
 
 
+class IdaRevealTests(unittest.TestCase):
+    def test_turn_idk_prints_the_saved_name(self):
+        from banner import render_name
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env = os.environ.copy()
+            env["IDA_PROGRESS"] = str(Path(tmp) / "progress.json")
+            env.pop("IDA_COLOR", None)
+            shim = str(ROOT / "ida")
+
+            def run(args, payload=None):
+                return subprocess.run(
+                    ["sh", shim, *args],
+                    input=json.dumps(payload) if payload else None,
+                    text=True,
+                    capture_output=True,
+                    env=env,
+                    check=False,
+                )
+
+            run(["turn"], {"answer": "designer"})
+            run(["turn"], {"answer": "climbing"})
+            self.assertEqual(run(["turn"], {"answer": "shipping"}).returncode, 0)
+            card = run(["turn", "1"])
+            self.assertEqual(card.returncode, 0, card.stderr)
+            name = json.loads(card.stderr)["name"]
+            reveal = run(["turn", "idk"])
+            self.assertEqual(reveal.returncode, 0, reveal.stderr)
+            info = json.loads(reveal.stderr)
+            self.assertEqual(info["screen"], "idk")
+            self.assertEqual(info["name"], name)
+            self.assertEqual(info.get("fill"), "explain")
+            self.assertIn("not yet", reveal.stdout)
+            for line in render_name(name):
+                if line.strip(" \u200b"):
+                    self.assertIn(line, reveal.stdout)
+            self.assertLessEqual(max(len(line) for line in render_name(name)), 72)
+            self.assertEqual(len(render_name("or")), 3)
+
+
 class ColorAndBannerTests(unittest.TestCase):
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name

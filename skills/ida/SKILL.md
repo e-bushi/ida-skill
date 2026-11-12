@@ -34,6 +34,8 @@ Every turn that needs a command: run that one command, then write the screen in 
 
 The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card. If they type idk, hint, or skip, treat that as the reply. Do not print a line listing those words.
 
+When they type idk, run `sh ~/.agents/skills/ida/ida turn idk` and paste its entire stdout in a `text` fence before any choice tool. That stdout is the reveal: the not-yet line and the banner of the idea's name, taken from the saved card. If stderr has `"fill":"explain"`, write the two sentences and the three steps under that fence. Do not skip the banner. Do not put the reveal inside the choice tool. After the fence, the choice tool may offer got it, another like this, and menu.
+
 Call the choice tool only for a menu, a multiple-choice answer, or the next step after feedback or a re-explain. It comes after the fence, never before, and never twice with nothing written between the calls. Its labels are short. The question text and the scenario stay in the fence. A re-explanation is a `text` fence headed `■ A N O T H E R   A N G L E`, not a sentence inside the tool. If a host shows text poorly after a tool call, the text still goes before the call.
 
 Do not narrate a tool call, a path, or a command.
@@ -79,7 +81,7 @@ If the host has no choice tool, the first command of the sitting is `sh ~/.agent
 1. `sh ~/.agents/skills/ida/ida turn` shows the first profile question, or the menu. Paste stdout.
 2. Each profile answer is that same command with `{"answer":"..."}` in the JSON file. After the third, the menu shows.
 3. `sh ~/.agents/skills/ida/ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout, including `■ T H E   Q U E S T I O N`. Fill `SCENE` in the fence. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
-4. Grade with `references/loop.md`. `sh ~/.agents/skills/ida/ida turn idk`, or the same command with `"result":"strong"` or `"result":"partial"` in the JSON file. Paste the whole stdout. The idk reply includes the banner.
+4. Grade with `references/loop.md`. For idk, `sh ~/.agents/skills/ida/ida turn idk` and paste the banner before the choice tool. For a strong or partial, the same command with `"result"` in the JSON file. Paste the whole stdout.
 5. `sh ~/.agents/skills/ida/ida turn next` deals another card. `sh ~/.agents/skills/ida/ida turn done` is the summary. Paste that too.
 
 ## Privacy

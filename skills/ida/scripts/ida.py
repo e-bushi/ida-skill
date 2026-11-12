@@ -508,6 +508,20 @@ def _show_menu(path, data, catalog) -> None:
     emit(path, data, _menu_text(data, catalog), {"screen": "menu", "await": "lane"})
 
 
+def _idea_name(live: dict, payload: dict) -> str:
+    if payload.get("name"):
+        return str(payload["name"])
+    names = [item for item in (live.get("names") or []) if item]
+    if names:
+        return names[0]
+    for eid in live.get("entry_ids") or []:
+        _doc, catalog = load_catalog()
+        for entry in catalog:
+            if entry["id"] == eid:
+                return entry["name"]
+    return ""
+
+
 def _grade(path, data, result: str, payload: dict, live: dict) -> None:
     intended = live.get("entry_ids") or []
     credited = payload.get("id") or (intended[0] if intended else None)
@@ -520,17 +534,17 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
         data,
         {"session_result": result, "updates": [{"id": credited, "result": result}], "summary": summary},
     )
-    names = live.get("names") or []
+    idea = _idea_name(live, payload)
     screen = {
         "result": result,
         "summary": summary,
-        "name": payload.get("name") or (names[0] if names else ""),
+        "name": idea,
         "phylum": payload.get("phylum") or live.get("phylum") or "",
         "explain": payload.get("explain") or "",
         "moves": [list(pair) for pair in _moves(payload, [])],
         "closing": payload.get("closing") or "",
         "comment": payload.get("comment") or "",
-        "reached": payload.get("reached") or (names[0] if names else ""),
+        "reached": payload.get("reached") or idea,
         "deeper": payload.get("deeper") or "",
         "got": payload.get("got") or "",
         "missing": payload.get("missing") or "",
@@ -548,17 +562,29 @@ def _grade(path, data, result: str, payload: dict, live: dict) -> None:
     phylum = screen["phylum"] or "axiom"
     row = next(item for item in rows if item["phylum"] == phylum)
     if result == "idk":
-        moves = _moves(screen, [])
-        while len(moves) < 3:
-            moves.append(("keep going", "one concrete note"))
-        text = render.feedback_not_yet(
-            screen["name"] or "the idea",
-            screen["explain"] or "Saying so is the honest start. Here's one way in.",
-            moves[:3],
-            screen["closing"] or "Name the idea, then say what it changes here.",
-            typed=_is_typed(data),
-        )
-        info = {"screen": "idk", "await": "next", "name": screen["name"], "id": credited}
+        supplied = bool(str(payload.get("explain") or "").strip() or payload.get("moves"))
+        if supplied:
+            moves = _moves(screen, [])
+            while len(moves) < 3:
+                moves.append(("keep going", "one concrete note"))
+            text = render.feedback_not_yet(
+                screen["name"] or "the idea",
+                screen["explain"] or "Saying so is the honest start. Here's one way in.",
+                moves[:3],
+                screen["closing"] or "Name the idea, then say what it changes here.",
+                typed=_is_typed(data),
+            )
+            info = {"screen": "idk", "await": "next", "name": screen["name"], "id": credited, "phylum": phylum}
+        else:
+            text = render.reveal_banner(screen["name"] or "the idea")
+            info = {
+                "screen": "idk",
+                "await": "next",
+                "name": screen["name"],
+                "id": credited,
+                "phylum": phylum,
+                "fill": "explain",
+            }
     elif result == "partial":
         text = render.feedback_partial(
             screen["got"] or "the neighborhood",

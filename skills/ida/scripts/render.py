@@ -322,11 +322,17 @@ def feedback_partial(
     return _check(lines)
 
 
-def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str, typed: bool = False) -> str:
+def reveal_banner(name: str) -> str:
+    """The name, large enough to read, short enough to stay on screen."""
     lines = ["  □□□  not yet. here's what to reach for."]
     lines.extend(gap(2))
     for piece in render_name(name):
         lines.append(("  " + piece) if piece.strip(" \u200b") else SPACER)
+    return _check(lines)
+
+
+def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str, typed: bool = False) -> str:
+    lines = reveal_banner(name).split("\n")
     lines.extend(gap(2))
     lines.extend(_prose(explain))
     lines.extend(gap(2))

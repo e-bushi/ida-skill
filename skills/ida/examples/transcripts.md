@@ -130,7 +130,7 @@ Illustrations. During practice, do not open this file.
 
 ## Not yet, in the reply
 
-The person said idk. The words went into `/tmp/ida-screen.json`. The only command was `sh ~/.agents/skills/ida/ida turn idk`. The chat reply is the fence below, banner included. The tool log is not the reply. If Warp says "output lines hidden", the fence is still the whole screen. Stderr's JSON line is not in the reply.
+The person typed idk. The only command was `sh ~/.agents/skills/ida/ida turn idk`. The chat reply pastes the fence below, banner included, before any choice tool. If that command stopped at the banner, the two sentences and the three steps are written under the fence. The choice tool comes after that, with got it, another like this, and menu. The reveal is not inside the tool.
 
 ## Not yet
 
@@ -138,12 +138,9 @@ The person said idk. The words went into `/tmp/ida-screen.json`. The only comman
   □□□  not yet. here's what to reach for.
  ​
  ​
-  █████ █   █ █   █ █████ ████   ████ █████  ███  █   █
-   ░█░░░██  █░█░  █░█░░░░░█░░░█ █ ░░░░ ░█░░░█ ░░█ ██  █░
-    █░  █░█ █░█░  █░████  ████ ░ ███    █░  █░  █░█░█ █░
-    █░  █░ ██░ █ █ ░█░░░░ █░░█░   ░░█   █░  █░  █░█░ ██░
-  █████ █░  █░  █ ░ █████ █░  █ ████ ░█████  ███ ░█░  █░
-   ░░░░░ ░   ░   ░   ░░░░░ ░   ░ ░░░░  ░░░░░  ░░░  ░   ░
+  ▀█▀░█▀█░█░█░█▀▀░█▀▄░▄▀▀░▀█▀░▄▀▄░█▀█░
+   █░ ███░█░█░█▀░ █▀█░▀▀▄░ █░ █░█░███░
+  ▄█▄░█░█░ ▀░ █▄▄░█░█░▀▄▀░▄█▄░▀▄▀░█░█░
  ​
  ​
   Saying so is the honest start. Here's one way in.

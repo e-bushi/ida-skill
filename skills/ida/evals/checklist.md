@@ -103,6 +103,7 @@ Also check:
 - With a choice tool, the screen has no `›` line. The tool is single-select, section names are lowercase spoken names, and ida does not write "Question 1 of 1". `sh ~/.agents/skills/ida/ida turn --typed` is the only path that prints a `›` line.
 - No choice-tool call without the screen or the explanation already visible in the reply before it. No back-to-back choice calls. If they say they don't understand, the reply is the another-angle block, not a question whose only content is "Clearer now?".
 - A card reply includes the scenario, `■ T H E   Q U E S T I O N`, and the question text in a text fence, and a free-text card ends there. It does not call the choice tool, and it does not print a line of idk, hint, and skip. Those words still count if the person types them. A multiple-choice card shows the question and the options in the fence. The tool, if used, lists only the short option labels.
+- After idk, the reply fence contains the banner of that card's name before any choice tool. The explanation is in the reply, under the banner if the command stopped there. The reveal is not only inside the tool.
 - On screen the grades are STRONG, PARTIAL, and NOT YET. The session sheet rotates "Clarity is a competitive edge." and "The people who see clearly win."
 - Nothing the user reads says "mental models" or uses an em dash.
 - The wordmark reads as lowercase ida, marked with ■.
