@@ -91,7 +91,8 @@ Scene: "The build passed. If the build passes, we can ship. So we can ship."
 
 Also check:
 
-- First run asks the three profile questions, in the 01 / 02 / 03 blocks, and does not start a card before saving them.
+- First run asks the three profile questions, in the 01 / 02 / 03 blocks, under a block-letter ida header, and does not start a card before saving them. Work is one role plus Other. Interests is multiSelect plus Other. The question text is the line after QUESTION:.
+- A question typed in Other, or a request to explain it another way, is `ida turn explain`, not a grade. The explanation is the next choice tool's question, built from the QUESTION line. It is not a separate message.
 - Returning run goes to the menu, or to resume, with no tagline.
 - Sections use the spoken names (playing to win, blind spots, and the rest), not the ids.
 - Random does not repeat an id from the last few scenarios when others are available.

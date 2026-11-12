@@ -28,6 +28,24 @@ Stdout starts with a line addressed to you, then a line `BEGIN`, then the screen
 
 Do not ask "Where do you want to go from here?" If the string contains `<one-line definition you write>`, replace only those words with one sentence. Copy the rest unchanged. Strong, partial, and miss use that same rule. Their `QUESTION:` line already names the idea.
 
+## explain
+
+**When they ask for more, or type a question in Other, run `sh ~/.agents/skills/ida/ida turn explain`. Do not grade it. Do not answer in a separate message.**
+
+The next choice tool's question MUST be the exact string after `QUESTION:`. Replace each `<placeholder>` with your words. Keep the idea name the script filled in. If the tool allows line breaks, break after each sentence. Then the options are got it, another angle, next, and menu.
+
+A hint before they answer is `sh ~/.agents/skills/ida/ida turn hint`. That question must not name the idea.
+
+## First questions
+
+The first three questions use the choice tool. The question text is the exact string after `QUESTION:`.
+
+1. What do you do for work? One role: designer, engineer, founder, operator, student, plus Other.
+2. What are you into besides that? multiSelect: climbing, music, cooking, games, reading, plus Other.
+3. What decisions keep showing up for you? One pick: what to ship, who to hire, where to spend, what to cut, plus Other.
+
+Then save it with a short command, such as `sh ~/.agents/skills/ida/ida turn designer`.
+
 ## Language
 
 Say "ways of thinking", "ideas", and "clarity". Never write "mental models", even if the user does. The wordmark is lowercase `ida`. No em dashes. No emoji. On screen, use the spoken section names. Never show an id.
@@ -58,6 +76,7 @@ sh ~/.agents/skills/ida/ida turn 1
 sh ~/.agents/skills/ida/ida turn next
 sh ~/.agents/skills/ida/ida turn deal inversion
 sh ~/.agents/skills/ida/ida turn idk
+sh ~/.agents/skills/ida/ida turn explain
 sh ~/.agents/skills/ida/ida turn strong
 sh ~/.agents/skills/ida/ida turn done
 ```
