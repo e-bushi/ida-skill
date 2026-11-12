@@ -238,9 +238,6 @@ def card(
         question = "Which way of thinking fits here? Name it and apply it in a sentence or two."
     for piece in wrap(question, 72):
         lines.append("    " + piece)
-    if free:
-        lines.extend(gap(1))
-        lines.append("  type your answer · idk · hint · skip")
     if options:
         lines.extend(gap(1))
         for index, name in enumerate(options, start=1):

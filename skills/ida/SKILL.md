@@ -32,7 +32,7 @@ The idk reveal is the case that fails if you skip this. The reply contains the b
 
 Every turn that needs a command: run that one command, then write the screen in the reply. A card is always that reply. Paste the scenario and `■ T H E   Q U E S T I O N` and the question text in a `text` fence. For a multiple-choice card, the numbered options are in that fence too. Do not leave the question only in a tool.
 
-The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card, including for idk, hint, or skip. Those words sit in the card, on the line `type your answer · idk · hint · skip` under the question. Leave that line in the fence.
+The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card. If they type idk, hint, or skip, treat that as the reply. Do not print a line listing those words.
 
 Call the choice tool only for a menu, a multiple-choice answer, or the next step after feedback or a re-explain. It comes after the fence, never before, and never twice with nothing written between the calls. Its labels are short. The question text and the scenario stay in the fence. A re-explanation is a `text` fence headed `■ A N O T H E R   A N G L E`, not a sentence inside the tool. If a host shows text poorly after a tool call, the text still goes before the call.
 

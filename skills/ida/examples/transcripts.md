@@ -85,8 +85,6 @@ Illustrations. During practice, do not open this file.
  ​
     Which way of thinking fits here? Name it and apply it in a sentence or
     two.
- ​
-  type your answer · idk · hint · skip
 ```
 
 ```text

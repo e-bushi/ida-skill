@@ -10,7 +10,7 @@ Do not pass the scene, the explanation, or the steps as command flags. Write `/t
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
-The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card does not call the choice tool. Under the question it has `type your answer · idk · hint · skip`, and the reply ends. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
 The headline stays on the first question of a first run only:
 
@@ -154,8 +154,6 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
     Which way of thinking fits here? Name it and apply it in a sentence or
     two.
- ​
-  type your answer · idk · hint · skip
 ```
 
 ```text
