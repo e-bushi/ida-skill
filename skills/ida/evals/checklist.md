@@ -98,6 +98,8 @@ Also check:
 - Choice mode accepts a bare correct number as strong. Free text still wants a sentence on the stake for strong.
 - `idk` teaches in about two sentences and does not fill the bar.
 - Screens stay within 76 columns. Rules are 72 characters. Bars are 20 cells with a percent, or `new`, not a fraction like 1/81.
+- After every turn, the chat reply contains the full plain screen in a text fence. For idk, that fence contains the block-letter banner of the name, the two sentences, and the three steps. A collapsed tool log ("output lines hidden") does not count.
+- At most one shell command per user message, and it is `ida turn` with at most one short choice. No `--help`. No second command to inspect flags or to show the card. The JSON line is not in the reply.
 - On screen the grades are STRONG, PARTIAL, and NOT YET. The session sheet rotates "Clarity is a competitive edge." and "The people who see clearly win."
 - Nothing the user reads says "mental models" or uses an em dash.
 - The wordmark reads as lowercase ida, marked with ■.

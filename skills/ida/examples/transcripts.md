@@ -140,6 +140,10 @@ Illustrations. During practice, do not open this file.
   › "retry" · "next" · "show me"
 ```
 
+## Not yet, in the reply
+
+The person said idk. The words went into `/tmp/ida-screen.json`. The only command was `ida turn idk`. The chat reply is the fence below, banner included. The tool log is not the reply. If Warp says "output lines hidden", the fence is still the whole screen. Stderr's JSON line is not in the reply.
+
 ## Not yet
 
 ```text

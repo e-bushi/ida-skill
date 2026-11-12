@@ -645,7 +645,9 @@ class IdaCommandTests(unittest.TestCase):
             )
             self.assertEqual(opened.returncode, 0, opened.stderr)
             self.assertEqual(len(opened.stdout.strip().splitlines()), 1)
-            self.assertTrue(opened.stdout.startswith("NEW|bars|axiom:0:0:"))
+            opened_info = json.loads(opened.stdout)
+            self.assertEqual(opened_info["kind"], "new")
+            self.assertEqual(opened_info["bars"]["axiom"][0], 0)
             quiet = subprocess.run(
                 [
                     PY,
@@ -673,8 +675,9 @@ class IdaCommandTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(nxt.returncode, 0, nxt.stderr)
-            fields = nxt.stdout.strip().split("\t")
-            self.assertEqual(fields[1], "playing to win")
+            fields = json.loads(nxt.stdout)
+            self.assertEqual(fields["section"], "playing to win")
+            self.assertNotIn("\t", nxt.stdout)
             saved = subprocess.run(
                 [
                     PY,
@@ -699,7 +702,7 @@ class IdaCommandTests(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertIn("strategy:0:0:", again.stdout)
+            self.assertEqual(json.loads(again.stdout)["bars"]["strategy"][0], 0)
             strong = subprocess.run(
                 [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "next", "--phylum", "strategy", "--seed", "2"],
                 text=True,
@@ -729,7 +732,53 @@ class IdaCommandTests(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertIn("strategy:1:0:", after.stdout)
+            self.assertEqual(json.loads(after.stdout)["bars"]["strategy"][0], 1)
+
+    def test_turn_is_one_command_and_help_is_one_line(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = str(Path(tmp) / "progress.json")
+            def run(args, payload=None):
+                return subprocess.run(
+                    [PY, str(SCRIPTS / "ida.py"), "--path", path, *args],
+                    input=json.dumps(payload) if payload is not None else None,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+            opening = run(["turn"])
+            self.assertEqual(opening.returncode, 0, opening.stderr)
+            self.assertIn("01 / 03", opening.stdout)
+            self.assertNotIn("\033", opening.stdout)
+            self.assertEqual(len(opening.stderr.strip().splitlines()), 1)
+            self.assertEqual(json.loads(opening.stderr)["screen"], "opening")
+            run(["turn"], {"answer": "designer"})
+            run(["turn"], {"answer": "climbing"})
+            menu = run(["turn"], {"answer": "what to ship"})
+            self.assertIn("pick a lane", menu.stdout)
+            card = run(["turn", "1"])
+            self.assertEqual(card.returncode, 0, card.stderr)
+            info = json.loads(card.stderr)
+            self.assertEqual(info["screen"], "card")
+            self.assertIn("SCENE", card.stdout)
+            self.assertNotIn("\t", card.stderr)
+            reveal = run(
+                ["turn", "idk"],
+                {
+                    "summary": "they could not name it",
+                    "explain": "Two sentences on the idea, tied to this stake.",
+                    "moves": [["name it", "say the name"], ["apply it", "one change"], ["keep it", "one sentence"]],
+                    "closing": "Name the idea, then say what it changes here.",
+                },
+            )
+            self.assertEqual(reveal.returncode, 0, reveal.stderr)
+            self.assertIn("█", reveal.stdout)
+            self.assertIn("not yet", reveal.stdout)
+            self.assertNotIn("\033", reveal.stdout)
+            self.assertEqual(json.loads(reveal.stderr)["screen"], "idk")
+            helped = run(["show", "card", "--help"])
+            self.assertNotEqual(helped.returncode, 0)
+            self.assertEqual(helped.stderr.strip().splitlines(), ["commands are in references/commands.md"])
+            self.assertEqual(helped.stdout, "")
 
 
 class ColorAndBannerTests(unittest.TestCase):

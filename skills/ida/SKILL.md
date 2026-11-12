@@ -20,28 +20,41 @@ The library has 443 ways of thinking. Seven of them have full authored text. Use
 
 Say "ways of thinking", "ideas", and "clarity". Never write "mental models", even if the user does. The wordmark is lowercase `ida`. No em dashes. No emoji. On screen, use the spoken section names. Never show an id.
 
-## What the person sees
+## The screen is the reply
+
+After every `ida turn`, paste its plain stdout into a `text` fence in the chat reply. Every time. Every host. Warp, Cursor, and Claude Code.
+
+Tool output is not the screen. Warp collapses it ("19 output lines hidden · ctrl+o to expand") and the person only sees the last prompt. Color in that log is optional extra. It is never the only copy.
+
+The fence is plain text, with no ANSI codes. Keep every spacer line. Keep the whole banner. Do not describe the banner. Do not shorten it. Do not restack the blocks.
+
+The idk reveal is the case that fails if you skip this. The reply contains the block letters of the name, the two sentences, the three steps, and the prompt. A collapsed tool log does not.
 
 Do not narrate a tool call, a path, or a command.
 
-At the start of a sitting, read these once: `references/format.md`, `references/loop.md`, `references/voice.md`, `library/exemplars.json`. Do not open the CSV, the examples, the evals, or every index file.
+At the start of a sitting, read these once: `references/format.md`, `references/commands.md`, `references/loop.md`, `references/voice.md`, `library/exemplars.json`. Do not open the CSV, the examples, the evals, or every index file. Do not run `--help`. Do not run a command to discover flags. `references/commands.md` already lists them.
 
-Show a screen by running `ida.py show`, then reproduce that screen verbatim in your reply inside a `text` fence. Keep every line, including the spacer lines that look blank. Do not drop them, and do not restack the blocks. A spacer is a space followed by a zero-width space, so a host that strips empty lines (Warp agent mode does this to command output) still keeps the gap. The fence is the copy that preserves the spacing. Where the colored command output is also visible, leave it. Do not draw a second, tighter version.
+## One command
 
-## Commands
+One shell command per user message. Never two. Never `--help`. Never `next` and then `show`.
 
-The skill directory is the folder that contains this file. Call it `$IDA`. One command, no `cd`, no `&&`.
+The command is `ida turn`, plus at most one short choice:
 
 ```bash
-IDA_COLOR=always python3 "$IDA/scripts/ida.py" show menu
-IDA_COLOR=always python3 "$IDA/scripts/ida.py" show opening --beat 1
-IDA_COLOR=always python3 "$IDA/scripts/ida.py" show card --phylum bias --number 2
-IDA_COLOR=always python3 "$IDA/scripts/ida.py" next --random
-python3 "$IDA/scripts/ida.py" save --result strong --summary "one line"
-python3 "$IDA/scripts/ida.py" end
+ida turn
+ida turn 3
+ida turn idk
+ida turn next
+ida turn done
 ```
 
-`open`, `next`, `profile`, `save`, and `end` stay quiet except `open` and `next`, which print one machine line. Do not show that line. `show` is the only command whose output the person should see. Pass the scene on stdin for `show card`, and pass `--comment`, `--reached`, `--deeper`, `--name`, and `--move` for feedback. Details are in `references/format.md`.
+If `ida` is not on the path, use `python3 "$IDA/ida" turn` and the same choice. `$IDA` is the folder that contains this file. Do not call `scripts/ida.py`.
+
+Stdout is the plain screen. Paste it. Stderr is one JSON line for you: the idea, the section, the options. Do not paste stderr. Do not quote it. Do not narrate the command.
+
+Leave `IDA_COLOR` unset. Do not put a sentence, a scene, or an explanation on the command line. Write `/tmp/ida-screen.json` with the file tool, then `ida turn idk < /tmp/ida-screen.json`. No heredoc.
+
+If the card rail contains `SCENE`, replace that word in the fence with the scene you write. That is not a second command.
 
 ## Choices
 
@@ -51,11 +64,11 @@ Use it for the practice menu, the seven lanes, a multiple-choice card, and the a
 
 ## Session
 
-1. `show opening` for a first run, one question at a time (`--beat 1`, then 2, then 3). Save with `profile`. The headline is only on beat 1.
-2. `show menu` after that. `next --phylum <id>`, `next --daily`, `next --spot`, or `next --random`.
-3. Write the scene. `show card`. Wait.
-4. Grade with `references/loop.md`. `save` once. `show strong`, `show partial`, or `show idk`.
-5. On stop, `end`, then `show summary`.
+1. `ida turn` shows the first profile question, or the menu. Paste stdout.
+2. Each profile answer is `ida turn` with `{"answer":"..."}` in the JSON file. After the third, the same command shows the menu.
+3. `ida turn 3` (or `daily`, `spot`, `surprise`) saves nothing and deals a card. Paste stdout. Fill `SCENE` in the fence.
+4. Grade with `references/loop.md`. `ida turn idk`, `ida turn` with `"result":"strong"`, or `ida turn` with `"result":"partial"`, and the words in the JSON file. Paste the whole stdout. The idk reply includes the banner.
+5. `ida turn next` deals another card. `ida turn done` is the summary. Paste that too.
 
 ## Privacy
 
