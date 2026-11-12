@@ -1,6 +1,12 @@
 # Format
 
-`ida.py show` prints the screen. Reproduce it verbatim in a `text` fence, including every spacer line. A spacer looks blank and is not an empty line, so a host that drops empty lines still keeps the gap. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
+`ida turn` prints the screen in plain text on stdout. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The flags are in `references/commands.md`.
+
+Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Stderr is one JSON line for the agent. It is not part of the fence.
+
+A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
+
+Do not pass the scene, the explanation, or the steps as command flags. Write `/tmp/ida-screen.json` and run `ida turn idk < /tmp/ida-screen.json`.
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
@@ -40,15 +46,11 @@ Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss 
 
 ## Hosts
 
-Claude Code can keep ANSI color in the terminal. Warp's agent mode can too, and it drops empty lines from command output, which is why spacers are not empty. Cursor often hides or strips that output. In every host, paste the screen verbatim in a `text` fence and keep every spacer line.
-
-Run show with color forced, one command, no narration:
+Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line. That is why the reply fence is required even when you also see color. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
 
 ```bash
-IDA_COLOR=always python3 "$IDA/scripts/ida.py" show menu
+ida turn idk
 ```
-
-`NO_COLOR` or `TERM=dumb` prints plain text. A pipe without `IDA_COLOR=always` is plain.
 
 ## Choices
 
