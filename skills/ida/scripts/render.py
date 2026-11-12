@@ -337,15 +337,16 @@ def reveal_banner(name: str) -> str:
     return _check(lines)
 
 
-def feedback_not_yet(name: str, explain: str, apply: str, typed: bool = False) -> str:
-    """Compact reveal: the name, a 3-row banner, a short explanation, how to apply it."""
+def feedback_not_yet(name: str, definition: str = "", typed: bool = False) -> str:
+    """Banner, and the library definition when this idea has one.
+
+    The scenario-specific explanation and the three steps are written in
+    the reply, under this screen. They are not printed here.
+    """
     lines = reveal_banner(name).split("\n")
-    lines.extend(gap(2))
-    lines.extend(_prose(explain))
-    lines.extend(gap(2))
-    lines.append("  ■ " + spaced("how to apply it"))
-    lines.extend(gap(1))
-    lines.extend(_prose(apply))
+    if definition.strip():
+        lines.extend(gap(2))
+        lines.extend(_prose(definition.strip()))
     choices(lines, '  › "got it" · "another like this" · "menu"', typed)
     return _check(lines)
 
@@ -370,12 +371,7 @@ def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: st
         return feedback_strong(text, name, text, phylum, 1, 0, 81, typed=typed)
     if result == "partial":
         return feedback_partial(name, text, text, phylum, 0, 1, 81, typed=typed)
-    return feedback_not_yet(
-        name,
-        "Saying so is the honest start. Here's one way in.",
-        text or "Name the idea, then say what it changes here.",
-        typed=typed,
-    )
+    return feedback_not_yet(name, text or "", typed=typed)
 
 
 def summary_block(

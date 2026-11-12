@@ -136,7 +136,7 @@ The person typed idk. The only command was:
 sh ~/.agents/skills/ida/ida turn idk
 ```
 
-The reply pastes that stdout verbatim in a text fence before anything else. Nothing comes before the fence. The choice tool comes after it, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
+The reply pastes that stdout verbatim in a text fence before anything else. Nothing comes before the fence. Under the fence, write how the idea applies to this scene, then three short steps. If the screen had no definition line, write the definition there too. Then the choice tool, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
 
 ```text
   □□□  not yet. here's what to reach for.
@@ -147,12 +147,17 @@ The reply pastes that stdout verbatim in a text fence before anything else. Noth
   ▄█▄░█░█░ ▀░ █▄▄░█░█░▀▄▀░▄█▄░▀▄▀░█░█░
  ​
  ​
-  Saying so is the honest start. Here's one way in.
- ​
- ​
-  ■ H O W   T O   A P P L Y   I T
- ​
-  Name the failure before you admire the offer.
+  to master a problem, study how to fail at it, then refuse to.
+```
+
+Under that fence:
+
+```text
+  Study the failure on this launch, then refuse it.
+
+  01  name the bad case
+  02  price that case
+  03  decide only if that case is survivable
 ```
 
 ## End

@@ -140,7 +140,7 @@ def deal(path, data, args) -> dict:
         args.choices = True
         if not args.phylum and not args.name and not getattr(args, "ids", None):
             args.random = True
-    if args.name:
+    if args.name or getattr(args, "ids", None):
         selection = "pick"
     elif args.random or not args.phylum:
         selection = "random"
@@ -361,8 +361,7 @@ def cmd_show(path, args) -> None:
     elif screen == "idk":
         text = render.feedback_not_yet(
             args.name or spec.get("name") or "the idea",
-            args.explain or spec.get("explain") or "Saying so is the honest start. Here's one way in.",
-            args.closing or spec.get("apply") or spec.get("closing") or "Name the idea, then say what it changes here.",
+            args.explain or spec.get("explain") or spec.get("definition") or "",
             typed=typed,
         )
     elif screen == "summary":
@@ -418,7 +417,8 @@ def cmd_show(path, args) -> None:
     write_screen(text)
 
 
-REMIND_IDK = "paste this reveal in a text fence before the choice tool"
+REMIND_IDK = "paste this reveal, then write how it applies in three steps, then the choice tool"
+REMIND_IDK_OPEN = "no stored definition. paste the banner, write the definition and three steps, then the choice tool"
 NAV = {
     "menu",
     "back to the menu",
@@ -441,6 +441,7 @@ NAV = {
     "got it",
     "another angle",
     "explain it another way",
+    "deal",
 }
 NEXT_KEYS = {"next", "again", "another", "another like this", "retry", "got it"}
 
@@ -541,60 +542,17 @@ def _find_entry(query: str) -> dict | None:
     return None
 
 
-def _split_teaching(text: str) -> tuple[str, str]:
-    cleaned = " ".join(str(text).split())
-    if not cleaned:
-        return "", ""
-    for mark in (". ", "? ", "! "):
-        at = cleaned.find(mark)
-        if at != -1:
-            head = cleaned[: at + 1].strip()
-            rest = cleaned[at + len(mark) :].strip()
-            if rest:
-                return head, rest
-    return cleaned, "Name the idea, then say what it changes here."
-
-
-def _fallback_teaching(name: str, entry_id: str) -> tuple[str, str, str]:
-    scenario = "A decision is on the table, and something specific can be lost."
-    explain = f"{name} is the idea to reach for here."
-    apply = "Name the idea, then say what it changes in the scene."
+def _library_definition(entry_id: str) -> str:
+    """The stored one-line law, or empty when this idea has no authored text."""
     path = ROOT / "library" / "exemplars.json"
     try:
         doc = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return scenario, explain, apply
+        return ""
     for entry in doc.get("entries") or []:
         if entry.get("id") == entry_id:
-            law = " ".join(str(entry.get("law") or "").split())
-            notes = " ".join(str(entry.get("notes") or "").split())
-            if law:
-                explain = law
-            if notes:
-                apply = notes
-            break
-    return scenario, explain, apply
-
-
-def _content_from(texts: list[str]) -> dict:
-    items = [" ".join(part.split()) for part in texts if part.strip()]
-    found = _find_entry(items[0]) if items else None
-    name = ""
-    if found:
-        name = found["name"]
-        items = items[1:]
-    scenario = summary = explain = apply = ""
-    if len(items) >= 3:
-        scenario, summary, blob = items[0], items[1], " ".join(items[2:])
-        explain, apply = _split_teaching(blob)
-    elif len(items) == 2:
-        scenario, blob = items[0], items[1]
-        summary = scenario
-        explain, apply = _split_teaching(blob)
-    elif len(items) == 1:
-        scenario = items[0]
-        summary = scenario
-    return {"name": name, "scenario": scenario, "summary": summary, "explain": explain, "apply": apply}
+            return " ".join(str(entry.get("law") or "").split())
+    return ""
 
 
 def _parse_turn(choice: list[str]) -> tuple[str, list[str]]:
@@ -623,18 +581,14 @@ def _held(live: dict) -> dict:
     }
 
 
-def _show_card(path, data, info: dict, body: str, nudge: str = "") -> None:
-    scene = (body or "").strip()
-    if not scene:
-        scene, _explain, _apply = _fallback_teaching(info.get("name") or "the idea", info.get("id") or "")
+def _show_card(path, data, info: dict) -> None:
     text = render.card(
         int(info.get("number") or 1),
         info.get("phylum") or "axiom",
-        scene,
+        "SCENE",
         practice=info.get("practice") or "decide",
         mode=info.get("mode") or "free",
         options=info.get("options") or None,
-        nudge=nudge,
         typed=_is_typed(data),
     )
     emit(
@@ -642,6 +596,7 @@ def _show_card(path, data, info: dict, body: str, nudge: str = "") -> None:
         data,
         text,
         {"screen": "card", "await": "answer", "name": info.get("name"), "id": info.get("id")},
+        info.get("name") or "",
     )
 
 
@@ -663,41 +618,26 @@ def _idea_name(live: dict, payload: dict) -> str:
     return ""
 
 
-def _remember_card(path, info: dict, content: dict) -> dict:
+def _remember_card(path, info: dict) -> dict:
     data = load_file(path)
     live = (data.get("session") or {}).get("in_progress") or {}
-    scenario = _clip(content.get("scenario") or "", PROMPT_LIMIT)
-    explain = _clip(content.get("explain") or "", 500)
-    apply = _clip(content.get("apply") or "", 500)
-    summary = _clip(content.get("summary") or "", SUMMARY_LIMIT)
-    if not scenario or not explain or not apply:
-        fb_scene, fb_explain, fb_apply = _fallback_teaching(info.get("name") or "the idea", info.get("id") or "")
-        scenario = scenario or fb_scene
-        explain = explain or fb_explain
-        apply = apply or fb_apply
-    if not summary:
-        summary = _clip(scenario, SUMMARY_LIMIT)
+    name = info.get("name") or ""
     if info.get("names"):
         live["names"] = info["names"]
-    live["scenario"] = scenario
-    live["summary"] = summary
-    live["explain"] = explain
-    live["apply"] = apply
+    elif name:
+        live["names"] = [name]
+    live["definition"] = _library_definition(info.get("id") or "")
+    live["summary"] = _clip(name or "card", SUMMARY_LIMIT)
     data["session"]["in_progress"] = live
     save_file(path, data)
     return live
 
 
-def _reveal(name: str, explain: str, apply: str, typed: bool) -> str:
-    return render.feedback_not_yet(
-        name or "the idea",
-        explain or "Saying so is the honest start. Here's one way in.",
-        apply or "Name the idea, then say what it changes here.",
-        typed=typed,
-    )
+def _reveal_text(name: str, definition: str, typed: bool) -> str:
+    return render.feedback_not_yet(name or "the idea", definition or "", typed=typed)
 
 
-def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> None:
+def _grade(path, data, result: str, live: dict) -> None:
     intended = live.get("entry_ids") or []
     credited = intended[0] if intended else None
     if not credited:
@@ -705,14 +645,10 @@ def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> No
         _show_menu(path, data, catalog)
         return
     idea = _idea_name(live, {})
-    explain = _clip(live.get("explain") or "", 500)
-    apply = _clip(live.get("apply") or "", 500)
-    scenario = _clip(live.get("scenario") or "", PROMPT_LIMIT)
-    if not explain or not apply:
-        _scene, fb_explain, fb_apply = _fallback_teaching(idea or "the idea", credited)
-        explain = explain or fb_explain
-        apply = apply or fb_apply
-    summary = _clip(live.get("summary") or answer or result, SUMMARY_LIMIT) or result
+    definition = _clip(live.get("definition") or "", 500)
+    if not definition:
+        definition = _library_definition(credited)
+    summary = _clip(live.get("summary") or idea or result, SUMMARY_LIMIT) or result
     record_attempt(
         data,
         {"session_result": result, "updates": [{"id": credited, "result": result}], "summary": summary},
@@ -722,18 +658,12 @@ def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> No
         "summary": summary,
         "name": idea,
         "phylum": live.get("phylum") or "",
-        "explain": explain,
-        "apply": apply,
-        "closing": apply,
-        "comment": comment,
+        "definition": definition,
+        "explain": definition,
+        "apply": definition,
+        "closing": definition,
         "reached": idea,
-        "deeper": apply,
-        "got": answer,
-        "missing": "how it changes the stake",
-        "try": apply,
-        "carry": apply,
-        "body": scenario,
-        "scenario": scenario,
+        "deeper": definition,
         "number": live.get("number"),
         "mode": live.get("mode") or "free",
         "kind": live.get("practice") or "decide",
@@ -744,16 +674,17 @@ def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> No
     rows = _rows(data, catalog)
     phylum = screen["phylum"] or "axiom"
     row = next((item for item in rows if item["phylum"] == phylum), {"strong": 0, "partial": 0, "total": 1})
+    deeper = definition or "Say what it changes in this scene."
     reminder = ""
     if result == "idk":
-        text = _reveal(idea, explain, apply, _is_typed(data))
+        text = _reveal_text(idea, definition, _is_typed(data))
         info = {"screen": "idk", "await": "next", "name": idea, "id": credited, "phylum": phylum}
-        reminder = REMIND_IDK
+        reminder = REMIND_IDK if definition else REMIND_IDK_OPEN
     elif result == "partial":
         text = render.feedback_partial(
-            answer or "the neighborhood",
-            "how it changes the stake",
-            apply or "Name it, then say what it changes.",
+            "the neighborhood",
+            "the stake",
+            deeper,
             phylum,
             row["strong"],
             row["partial"],
@@ -763,9 +694,9 @@ def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> No
         info = {"screen": "partial", "await": "next", "name": idea, "id": credited}
     elif result == "strong":
         text = render.feedback_strong(
-            comment or "That's the move.",
+            "That's the move.",
             idea or "the idea",
-            apply or "Say what it changes in this scene.",
+            deeper,
             phylum,
             row["strong"],
             row["partial"],
@@ -784,35 +715,30 @@ def _grade(path, data, result: str, answer: str, comment: str, live: dict) -> No
     emit(path, data, text, info, reminder)
 
 
-def _spec_for(key: str, lane: str | None, content: dict, session: dict):
+def _spec_for(key: str, lane: str | None, entry_id: str | None, session: dict):
     screen = session.get("screen") or {}
-    named = bool(content.get("name"))
-    if key == "retry" and screen.get("id") and not named:
+    if entry_id:
+        spec = _pick_spec(ids=entry_id, fresh=False)
+    elif key == "retry" and screen.get("id"):
         spec = _pick_spec(ids=screen["id"], fresh=False)
-    elif key == "daily" and not named:
+    elif key == "daily":
         spec = _pick_spec(daily=True, fresh=False)
-    elif key == "spot" and not named:
+    elif key == "spot":
         spec = _pick_spec(spot=True, choices=True, fresh=False)
-    elif key in ("surprise", "surprise me", "random") and not named:
+    elif key in ("surprise", "surprise me", "random"):
         spec = _pick_spec(random=True, fresh=False)
     elif lane:
         spec = _pick_spec(phylum=lane, fresh=False)
-    elif named:
-        spec = _pick_spec(fresh=False)
     else:
         phylum = session.get("last_phylum") or session.get("phylum")
         spec = _pick_spec(phylum=phylum, random=not phylum, fresh=False)
-    if named:
-        spec.name = [content["name"]]
-        spec.random = False
-        spec.ids = None
     if key == "spot":
         spec.spot = True
         spec.choices = True
     return spec
 
 
-def _deal_and_show(path, data, spec, content: dict) -> None:
+def _deal_and_show(path, data, spec) -> None:
     if data.get("session") and data["session"].get("in_progress") and not getattr(spec, "fresh", False):
         data["session"]["in_progress"] = None
         save_file(path, data)
@@ -824,13 +750,22 @@ def _deal_and_show(path, data, spec, content: dict) -> None:
         _show_menu(path, data, catalog)
         _err("no idea under that name")
         return
-    live = _remember_card(path, info, content)
+    _remember_card(path, info)
     data = load_file(path)
-    _show_card(path, data, info, live.get("scenario") or "")
+    _show_card(path, data, info)
 
 
 def _is_next(key: str) -> bool:
     return key in NEXT_KEYS or key.startswith("got it")
+
+
+def _deal_id(texts: list[str]) -> str | None:
+    if not texts:
+        return None
+    found = _find_entry(texts[0])
+    if not found:
+        return ""
+    return found["id"]
 
 
 def cmd_turn(path, args) -> None:
@@ -839,7 +774,6 @@ def cmd_turn(path, args) -> None:
     _remember_typed(data, bool(getattr(args, "typed", False)))
     action, texts = _parse_turn(list(args.choice or []))
     key = action.lower()
-    content = _content_from(texts)
     _doc, catalog = load_catalog()
     if not data.get("profile"):
         practice = data.setdefault("practice", {})
@@ -848,7 +782,7 @@ def cmd_turn(path, args) -> None:
         fields = ("role", "interests", "decisions")
         spoken = " ".join(args.choice or []).strip()
         if spoken and step <= 3:
-            draft[fields[step - 1]] = spoken
+            draft[fields[step - 1]] = _clip(spoken, 80)
             step += 1
             draft["step"] = step
         if step > 3:
@@ -870,7 +804,6 @@ def cmd_turn(path, args) -> None:
                     if update.get("result") == "strong" and update.get("name"):
                         reached.append(update["name"])
             counts = data["session"].get("counts") or {}
-            carry = " ".join(texts).strip() or ((session.get("screen") or {}).get("apply") or "")
             end_session(data)
             session_n = len(data.get("history") or [])
             text = render.summary_block(
@@ -884,7 +817,7 @@ def cmd_turn(path, args) -> None:
                 "",
                 session=session_n or 1,
                 reached=reached,
-                carry=carry or "Name the idea, then say what it changes here.",
+                carry=(session.get("screen") or {}).get("definition") or "Name the idea, then say what it changes here.",
                 signoff_index=(session_n - 1) % 2,
                 rows=_rows(data, catalog),
                 typed=_is_typed(data),
@@ -901,9 +834,9 @@ def cmd_turn(path, args) -> None:
         phylum = screen.get("phylum") or "axiom"
         row = next(item for item in _rows(data, catalog) if item["phylum"] == phylum)
         text = render.feedback_strong(
-            screen.get("comment") or "One more pass at the same stake.",
+            "One more pass at the same stake.",
             screen.get("reached") or screen.get("name") or "the idea",
-            screen.get("deeper") or screen.get("apply") or "Say what it changes here.",
+            screen.get("definition") or screen.get("deeper") or "Say what it changes here.",
             phylum,
             row["strong"],
             row["partial"],
@@ -915,65 +848,51 @@ def cmd_turn(path, args) -> None:
     result = key if key in RESULTS else ""
     if key == "skip":
         result = "miss"
-    answer = texts[0] if texts else ""
-    comment = texts[1] if len(texts) > 1 else ""
     if key == "idk" and not live:
         screen = session.get("screen") or {}
         if screen.get("name"):
-            text = _reveal(
-                screen.get("name") or "",
-                screen.get("explain") or "",
-                screen.get("apply") or screen.get("closing") or "",
-                _is_typed(data),
-            )
-            emit(path, data, text, {"screen": "idk", "await": "next", "name": screen.get("name")}, REMIND_IDK)
+            definition = screen.get("definition") or screen.get("explain") or ""
+            text = _reveal_text(screen.get("name") or "", definition, _is_typed(data))
+            reminder = REMIND_IDK if definition else REMIND_IDK_OPEN
+            emit(path, data, text, {"screen": "idk", "await": "next", "name": screen.get("name")}, reminder)
             return
         _show_menu(path, data, catalog)
         return
-    if live and not result and key not in NAV:
+    if live and key.isdigit() and (live.get("options") or []):
         options = live.get("options") or []
-        if key.isdigit() and options:
-            number = int(key)
-            chosen = None
-            for index, item in enumerate(options, start=1):
-                if int(item.get("n") or index) == number:
-                    chosen = item
-                    break
-            result = "strong" if chosen and chosen.get("id") in (live.get("entry_ids") or []) else "miss"
-            answer = (chosen or {}).get("name") or key
-        elif answer or key:
-            _grade(path, data, "strong", answer or action, comment, live)
-            return
+        number = int(key)
+        chosen = None
+        for index, item in enumerate(options, start=1):
+            if int(item.get("n") or index) == number:
+                chosen = item
+                break
+        result = "strong" if chosen and chosen.get("id") in (live.get("entry_ids") or []) else "miss"
+        _grade(path, data, result, live)
+        return
     if live and result:
-        _grade(path, data, result, answer, comment, live)
+        _grade(path, data, result, live)
         return
     if live and key in ("hint", "another angle", "explain it another way"):
-        nudge, _rest = _split_teaching(live.get("explain") or live.get("apply") or "")
-        _show_card(path, data, _held(live), live.get("scenario") or "", nudge=nudge)
+        _show_card(path, data, _held(live))
         return
-    if _is_next(key) or (not live and result):
-        screen = session.get("screen") or {}
-        if key == "retry":
-            reused = content
-            if not content.get("scenario") and not content.get("explain"):
-                reused = {
-                    "name": content.get("name") or "",
-                    "scenario": screen.get("scenario") or screen.get("body") or "",
-                    "summary": screen.get("summary") or "",
-                    "explain": screen.get("explain") or "",
-                    "apply": screen.get("apply") or screen.get("closing") or "",
-                }
-            content = reused
-        spec = _spec_for(key if key == "retry" else "next", None, content, session)
-        _deal_and_show(path, data, spec, content)
+    if live and key not in NAV and not _is_next(key):
+        _show_card(path, data, _held(live))
+        if key or texts:
+            _err("use strong partial miss or idk")
         return
-    lane = _lane_phylum(action) if action else None
-    if key in ("daily", "spot", "surprise", "surprise me", "random") or lane or content.get("name"):
-        spec = _spec_for(key, lane, content, session)
-        _deal_and_show(path, data, spec, content)
+    entry_id = None
+    if key == "deal":
+        entry_id = _deal_id(texts)
+        if entry_id is None or entry_id == "":
+            _show_menu(path, data, catalog)
+            _err("no idea under that name" if entry_id == "" else "need an idea id")
+            return
+    lane = _lane_phylum(action) if action and key != "deal" else None
+    if key == "deal" or _is_next(key) or key in ("daily", "spot", "surprise", "surprise me", "random") or lane:
+        spec = _spec_for(key if key != "deal" else "next", lane, entry_id, session)
+        _deal_and_show(path, data, spec)
         return
     _show_menu(path, data, catalog)
-
 
 def cmd_end(path) -> None:
     data = load_file(path)

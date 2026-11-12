@@ -6,50 +6,53 @@ The shim is `ida` next to this skill. Run it with `sh`. The usual install:
 
 ```bash
 sh ~/.agents/skills/ida/ida turn
-sh ~/.agents/skills/ida/ida turn "their answer"
-sh ~/.agents/skills/ida/ida turn 1 "inversion" "the scene" "one-line summary" "short explanation. How to apply it here."
+sh ~/.agents/skills/ida/ida turn 1
+sh ~/.agents/skills/ida/ida turn next
+sh ~/.agents/skills/ida/ida turn deal inversion
 sh ~/.agents/skills/ida/ida turn idk
-sh ~/.agents/skills/ida/ida turn next "next idea" "the scene" "one-line summary" "short explanation. How to apply it here."
+sh ~/.agents/skills/ida/ida turn strong
 sh ~/.agents/skills/ida/ida turn done
 ```
 
 If SKILL.md was loaded from another directory, use that directory, still with `sh`, still one command. Do not search for a binary. Do not pass `--help`. Do not explore flags.
 
-Do not write a temp file. Do not use a file-edit tool. Do not use a heredoc. Do not pipe stdin. Do not chain commands. The words the command needs are quoted arguments on that one command.
+Do not write a temp file. Do not use a file-edit tool. Do not use a heredoc. Do not pipe stdin. Do not chain commands. Do not put prose on a command. No scene, no summary, no explanation, no answer sentence. A command is a few words, short enough to stay on one line.
 
 Stdout is the plain screen. Paste it into a `text` fence. Its last line is a spacer, so a collapsed tail is empty. Keep that spacer in the fence.
 
-Stderr stays empty, except after `ida turn idk`, which prints one reminder and then a spacer. Do not paste stderr. Do not quote it. There is no JSON line.
+On a card, stderr is one line, the idea name, then a spacer. Do not paste stderr. Do not show the name. On `idk`, stderr is one reminder, then a spacer. Do not paste that either. There is no JSON line.
+
+The card frame contains the word SCENE. Replace that word in the fence with the scene you write. Keep `■ T H E   Q U E S T I O N` and the question text.
 
 ## ida turn
 
 | Argument | Meaning |
 | --- | --- |
 | (none) | First run: the next profile question. Otherwise the menu. |
-| `1` to `7`, then quotes | Deal a card in that lane. 1 thinking clearly, 2 knowing what's true, 3 blind spots, 4 reading people, 5 playing to win, 6 seeing ripple effects, 7 deciding and acting. |
-| a spoken lane name, then quotes | Same as the number. |
-| `"idea"` | First quote. A library name. ida deals that idea. |
-| `"scenario"` | Second quote. The scene the person reads. Saved in `~/.ida`. |
-| `"summary"` | Third quote. One line about the premise. Saved. |
-| `"explanation"` | Fourth quote. One or two sentences: the idea, then how to apply it. Saved. `idk` and `hint` reuse it. |
-| `daily`, `spot`, `surprise` | Same quotes when you already know the idea. With no quotes, ida picks and saves a short explanation from the library. |
-| `next` | The next card. Pass a new idea and the same three quotes. |
-| `retry` | The same idea again. The saved scene is reused when you pass no quotes. |
-| `"their answer"` | A free-text answer while a card is open. One quoted argument. Recorded as strong. |
-| `partial "their answer"` | A thin answer. |
-| `miss "their answer"` | A wrong answer. Returns to the menu. |
-| `idk` | Save idk and print the full reveal from the saved card: the name, the 3-row banner, the short explanation, how to apply it. No other arguments. |
-| `hint` | The card again, plus one nudge from the saved explanation. No banner. |
+| a few words | A profile answer, only before the profile is saved. Keep it short. |
+| `1` to `7` | Deal a card in that lane. ida picks the idea. 1 thinking clearly, 2 knowing what's true, 3 blind spots, 4 reading people, 5 playing to win, 6 seeing ripple effects, 7 deciding and acting. |
+| a spoken lane name | Same as the number. |
+| `deal <id>` | Deal that library id. Example: `deal inversion`. The id is short. Not a sentence. |
+| `next` | The next card in the same lane. ida picks. |
+| `retry` | The same idea again. You write a new scene in the reply. |
+| `daily` | One card chosen for today. |
+| `spot` | A quick multiple-choice card. |
+| `surprise` | A random card. |
+| `strong` | Save strong and show that screen. No answer text on the command. |
+| `partial` | Save partial. |
+| `miss` | Save a miss and return to the menu. |
+| `idk` | Save idk. Print the banner and the library definition when this idea has one. No other arguments. |
+| `hint` | The card frame again. Write one nudge in the reply. Do not name the idea. |
 | `skip` | Save a miss and return to the menu. |
 | `why` | The last feedback, one level down. |
 | `menu` | The seven lanes. |
 | `done` | End the sitting and show the summary. |
-| `--typed` | No choice tool on this host. Remember it for the sitting. Screens then end with a `›` line. Pass it once, on the first turn. |
+| `--typed` | No choice tool on this host. Remember it. Screens then end with a `›` line. Pass it once, on the first turn. |
 | a number during a choice card | That option. A correct option is strong. |
 
-`ida turn idk` does not take the explanation again. If you did not pass one when you dealt the card, ida uses the library line it saved at deal time.
+`ida turn idk` reads the pick saved in `~/.ida`. It does not take a definition from you. Seven ideas have a stored definition. The other ideas print the banner only, and you write the definition in the reply under the fence, then how it applies and three steps.
 
-A card has no `SCENE` token. The scene you quoted is already on the screen.
+A card has the word SCENE in the rail. The scene is not an argument.
 
 ## Other commands
 

@@ -241,8 +241,7 @@ class RenderTests(unittest.TestCase):
         )
         not_yet = render.feedback_not_yet(
             "inversion",
-            "Saying so is the honest start. Here's one way in.",
-            "Name the failure before you admire the offer.",
+            "to master a problem, study how to fail at it, then refuse to.",
         )
         bars = render.bars(
             [
@@ -799,32 +798,25 @@ class IdaCommandTests(unittest.TestCase):
             menu = run(["turn", "what to ship"])
             self.assertIn("pick a lane", menu.stdout)
             self.assertEqual(menu.stdout.splitlines()[-1], " \u200b")
-            card = run(
-                [
-                    "turn",
-                    "1",
-                    "inversion",
-                    "A launch plan that only lists how to succeed.",
-                    "launch plan",
-                    "To master a problem, study how to fail at it, then refuse to. Name the failure before you fund the plan.",
-                ]
-            )
+            deal = "sh ~/.agents/skills/ida/ida turn deal inversion"
+            self.assertLessEqual(len(deal), 48)
+            card = run(["turn", "deal", "inversion"])
             self.assertEqual(card.returncode, 0, card.stderr)
-            self.assertEqual(card.stderr, "")
-            self.assertIn("A launch plan that only lists how to succeed.", card.stdout)
-            self.assertNotIn("SCENE", card.stdout)
+            self.assertEqual(card.stderr.splitlines()[0], "inversion")
+            self.assertEqual(card.stderr.splitlines()[-1], " \u200b")
+            self.assertIn("SCENE", card.stdout)
             self.assertIn("T H E   Q U E S T I O N", card.stdout)
+            self.assertNotIn("study how to fail", card.stdout.lower())
             reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
             self.assertEqual(reveal.returncode, 0, reveal.stderr)
             self.assertIn("█", reveal.stdout)
             self.assertIn("not yet", reveal.stdout)
             self.assertIn("study how to fail", reveal.stdout.lower())
-            self.assertIn("Name the failure before you fund the plan.", reveal.stdout)
-            self.assertIn("H O W   T O   A P P L Y   I T", reveal.stdout)
+            self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
             self.assertNotIn("FROM STDIN", reveal.stdout)
             self.assertNotIn("\033", reveal.stdout)
             self.assertNotIn("{", reveal.stderr)
-            self.assertIn("paste this reveal in a text fence before the choice tool", reveal.stderr)
+            self.assertIn("three steps", reveal.stderr)
             self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
             self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
             helped = run(["show", "card", "--help"])
@@ -850,6 +842,11 @@ class ShimTests(unittest.TestCase):
         self.assertNotIn("command -v", skill)
         self.assertNotIn("||", skill)
         self.assertNotIn("&&", skill)
+        for line in skill.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("sh ~/.agents/skills/ida/ida "):
+                self.assertLessEqual(len(stripped), 48, stripped)
+                self.assertNotIn(" the ", stripped)
         commands = (ROOT / "references" / "commands.md").read_text(encoding="utf-8")
         self.assertIn("heredoc", commands)
         self.assertIn("Do not pipe stdin.", commands)
@@ -898,50 +895,45 @@ class IdaRevealTests(unittest.TestCase):
             run(["turn", "climbing"])
             self.assertEqual(run(["turn", "shipping"]).returncode, 0)
             name = "inversion"
-            card = run(
-                [
-                    "turn",
-                    "1",
-                    name,
-                    "A launch plan that only lists how to succeed.",
-                    "launch plan",
-                    "To master a problem, study how to fail at it, then refuse to. Name the failure before you fund the plan.",
-                ]
-            )
+            card = run(["turn", "deal", name])
             self.assertEqual(card.returncode, 0, card.stderr)
-            self.assertIn("A launch plan that only lists how to succeed.", card.stdout)
+            self.assertIn("SCENE", card.stdout)
+            self.assertEqual(card.stderr.splitlines()[0], name)
             reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
             self.assertEqual(reveal.returncode, 0, reveal.stderr)
             self.assertNotIn("FROM STDIN", reveal.stdout + reveal.stderr)
             self.assertNotIn("{", reveal.stderr)
-            self.assertIn("paste this reveal in a text fence before the choice tool", reveal.stderr.splitlines()[0])
+            self.assertIn("three steps", reveal.stderr.splitlines()[0])
             self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
             self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
             self.assertIn("not yet", reveal.stdout)
             self.assertIn("study how to fail", reveal.stdout.lower())
-            self.assertIn("H O W   T O   A P P L Y   I T", reveal.stdout)
-            self.assertLess(len(reveal.stdout.splitlines()), 24)
+            self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
+            self.assertLess(len(reveal.stdout.splitlines()), 16)
             for line in render_name(name):
                 if line.strip(" \u200b"):
                     self.assertIn(line, reveal.stdout)
             self.assertLessEqual(max(len(line) for line in render_name(name)), 72)
             self.assertEqual(len(render_name("or")), 3)
-            again = run(
-                [
-                    "turn",
-                    "next",
-                    "via negativa",
-                    "The weekly report gains a section every month.",
-                    "report that nobody reads",
-                    "The surest improvement is removing what is wrong. Cut a section before you add one.",
-                ]
-            )
+            bare = run(["turn", "deal", "contingency"])
+            self.assertEqual(bare.stderr.splitlines()[0], "contingency")
+            open_reveal = run(["turn", "idk"])
+            self.assertIn("no stored definition", open_reveal.stderr)
+            self.assertNotIn("to master a problem", open_reveal.stdout)
+            self.assertIn("█", open_reveal.stdout)
+            again = run(["turn", "deal", "via-negativa"])
             self.assertEqual(again.returncode, 0, again.stderr)
-            answered = run(["turn", "Cut the sections nobody reads."])
+            answered = run(["turn", "strong"])
             self.assertIn("S T R O N G", answered.stdout)
             self.assertIn("N E G A T I V A", answered.stdout)
             self.assertEqual(answered.stdout.splitlines()[-1], " \u200b")
             self.assertEqual(answered.stderr, "")
+            prose = run(["turn", "deal", "inversion"])
+            ignored = run(["turn", "Cut the sections nobody reads."])
+            self.assertIn("SCENE", ignored.stdout)
+            self.assertNotIn("S T R O N G", ignored.stdout)
+            self.assertIn("use strong partial miss or idk", ignored.stderr)
+            self.assertEqual(prose.returncode, 0)
 
 
 class ColorAndBannerTests(unittest.TestCase):
@@ -1040,7 +1032,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.3.0")
+        self.assertEqual(plugin["version"], "1.4.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 

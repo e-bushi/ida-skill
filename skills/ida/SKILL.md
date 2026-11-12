@@ -26,7 +26,7 @@ After every `ida turn`, paste its plain stdout into a `text` fence in the chat r
 
 Tool output is not the screen. Warp collapses it ("output lines hidden") and the person only sees a dim last line. That last line is a spacer, so the preview is empty. Color in that log is optional extra. It is never the only copy.
 
-The fence is plain text, with no ANSI codes. Keep every spacer line, including the last one. Keep the whole banner. Do not describe the banner. Do not shorten it. Do not restack the blocks.
+The fence is plain text, with no ANSI codes. Keep every spacer line, including the last one. Keep the whole banner. Do not describe the banner. Do not shorten it. Do not restack the blocks. On a card, replace the word SCENE with the scene you write, and keep the question.
 
 Do not narrate a tool call, a path, or a command.
 
@@ -42,11 +42,15 @@ The folder that contains this file is the skill directory. Write it with `~` whe
 
 ```bash
 sh ~/.agents/skills/ida/ida turn
-sh ~/.agents/skills/ida/ida turn "their answer"
-sh ~/.agents/skills/ida/ida turn 1 "inversion" "the scene" "one-line summary" "short explanation. How to apply it here."
+sh ~/.agents/skills/ida/ida turn 1
+sh ~/.agents/skills/ida/ida turn next
+sh ~/.agents/skills/ida/ida turn deal inversion
 sh ~/.agents/skills/ida/ida turn idk
+sh ~/.agents/skills/ida/ida turn strong
 sh ~/.agents/skills/ida/ida turn done
 ```
+
+No prose on a command. No scene, no summary, no explanation, no answer sentence. A command is a few words. Profile answers are a few words too.
 
 If this file was loaded from another directory, use that directory in the same shape, still with `sh` and still one command. Do not search for a binary. Do not run this file with `python3`.
 
@@ -54,9 +58,9 @@ Stdout is the plain screen. Paste it. Leave `IDA_COLOR` unset. Stderr is empty, 
 
 ## idk
 
-**When they type idk, run `sh ~/.agents/skills/ida/ida turn idk`. The reply MUST paste the full reveal screen verbatim in a `text` fence before anything else, and only then call the choice tool.**
+**When they type idk, run `sh ~/.agents/skills/ida/ida turn idk`. The reply MUST paste the full reveal screen verbatim in a `text` fence before anything else. Under that fence, write how it applies to this scene and three steps. Then call the choice tool.**
 
-That screen is the whole reveal: the idea name, the 3-row banner, the short explanation, and how to apply it. It was saved in `~/.ida` when you dealt the card. Do not write it again. Do not skip the banner. Do not put the reveal inside the choice tool. The choice tool, after the fence, may offer got it, another like this, and menu.
+The screen is the banner and, when the library has one, the definition saved with the pick. Do not skip the banner. Do not put the reveal inside the choice tool. If the screen has no definition line, write the definition under the fence too, then the three steps. The choice tool may offer got it, another like this, and menu.
 
 ## Choices
 
@@ -74,19 +78,13 @@ If the host has no choice tool, the first command of the sitting is `sh ~/.agent
 
 ## Session
 
-1. `sh ~/.agents/skills/ida/ida turn` shows the first profile question, or the menu. Paste stdout. Each profile answer is `sh ~/.agents/skills/ida/ida turn "their answer"`. After the third, the menu shows.
-2. Pick an idea you can teach in the lane they chose. Deal it in that same command. The quotes are the idea name, the scene, a one-line summary, and a short explanation that says how to apply it:
+1. `sh ~/.agents/skills/ida/ida turn` shows the first profile question, or the menu. Paste stdout. Each profile answer is a few words: `sh ~/.agents/skills/ida/ida turn designer`. After the third, the menu shows.
+2. `sh ~/.agents/skills/ida/ida turn 1` (or 2 through 7) lets ida pick in that lane. `sh ~/.agents/skills/ida/ida turn deal inversion` deals that id. `sh ~/.agents/skills/ida/ida turn next` deals the next card in the same lane. Stderr is the idea name. Do not paste stderr. Do not show the name.
+3. Paste the card frame, including `■ T H E   Q U E S T I O N`. Replace the word SCENE with the scene you write for that idea. Do not name the idea in the scene. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
+4. Grade with `references/loop.md`. Strong is `sh ~/.agents/skills/ida/ida turn strong`. Thin is `sh ~/.agents/skills/ida/ida turn partial`. Wrong is `sh ~/.agents/skills/ida/ida turn miss`. For idk, the bold rule above.
+5. `sh ~/.agents/skills/ida/ida turn done` is the summary. Paste that too.
 
-```bash
-sh ~/.agents/skills/ida/ida turn 1 "inversion" "the scene" "one-line summary" "short explanation. How to apply it here."
-```
-
-Paste stdout, including the scene and `■ T H E   Q U E S T I O N`. The scene is already in the screen. Do not swap in a placeholder. If the card is free text, stop. If it lists options, the choice tool may follow, with the short labels only.
-
-3. Grade with `references/loop.md`. A strong answer is `sh ~/.agents/skills/ida/ida turn "their answer"`. A thin one is `sh ~/.agents/skills/ida/ida turn partial "their answer"`. A wrong one is `sh ~/.agents/skills/ida/ida turn miss "their answer"`. For idk, the bold rule above. Paste the whole stdout.
-4. `sh ~/.agents/skills/ida/ida turn next "idea" "the scene" "one-line summary" "short explanation. How to apply it here."` deals another card. `sh ~/.agents/skills/ida/ida turn done` is the summary. Paste that too.
-
-`daily`, `spot`, and `surprise` take the same quotes when you know the idea. With no quotes, ida picks and saves a short explanation from the library. `hint` reuses the saved explanation. `retry` reuses the saved scene.
+`daily`, `spot`, and `surprise` are the same short commands. ida picks. `hint` reprints the frame. Write one nudge in the reply and do not name the idea. `retry` deals the same idea again. The scene is still yours to write in the reply.
 
 ## Privacy
 
