@@ -4,7 +4,7 @@
 
 Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Do not paste stderr.
 
-A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji. Every command that prints ends with one more spacer, so the collapsed tail is empty.
+A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji. After `END`, three concealed braille blanks keep Warp's preview empty. The trick is in `references/commands.md`. Do not paste those lines.
 
 Commands stay short. No prose on the command line. `ida turn deal <id>` or `ida turn next` saves the idea. The card frame prints the word SCENE. In the reply, replace that word with the scene you write. `ida turn idk` prints the banner and the library definition when one is stored. Under that fence, write how it applies to the scene and three steps. If no definition was printed, write the definition there too. Do not write a temp file. Do not use a heredoc. Do not pipe stdin. Do not use a file-edit tool.
 
@@ -46,7 +46,7 @@ Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss 
 
 ## Hosts
 
-Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line as a dim preview. That last line is a spacer, so the preview is empty. The reply fence is still required. On idk the fence is the whole reveal, and it comes before the choice tool. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
+Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden". The reply fence is still required. Paste the lines between `BEGIN` and `END`. On idk that fence comes before the three steps and before the choice tool. Leave `IDA_COLOR` unset so the screen stays plain and can be pasted. Set it only if you still paste the plain fence.
 
 ```bash
 sh ~/.agents/skills/ida/ida turn idk
@@ -314,4 +314,4 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
 
 ## Machine line
 
-A sitting runs `ida turn` only. `open` and `next` print one JSON line for tests, then a spacer. Do not show that JSON.
+A sitting runs `ida turn` only. `open` and `next` print one JSON line for tests, then the blank tail. Do not show that JSON.

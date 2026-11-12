@@ -22,6 +22,7 @@ from common import (
     ROOT,
     SPACER,
     SUMMARY_LIMIT,
+    TAIL,
     progress_path,
 )
 from color import color_mode, paint
@@ -447,26 +448,45 @@ NEXT_KEYS = {"next", "again", "another", "another like this", "retry", "got it"}
 
 
 def write_machine(text: str) -> None:
-    sys.stdout.write(text.rstrip("\n") + "\n" + SPACER + "\n")
+    sys.stdout.write(text.rstrip("\n") + "\n" + TAIL)
 
 
 def write_screen(text: str, reminder: str = "") -> None:
     painted = paint(text.replace("\r\n", "\n").rstrip("\n"), color_mode())
     sys.stdout.write(painted + "\n")
     if reminder:
-        sys.stderr.write(reminder.rstrip("\n") + "\n")
-    sys.stdout.write(SPACER + "\n")
-    sys.stdout.flush()
-    if reminder:
-        sys.stderr.write(SPACER + "\n")
+        sys.stderr.write(reminder.rstrip("\n") + "\n" + TAIL)
         sys.stderr.flush()
+    sys.stdout.write(TAIL)
+    sys.stdout.flush()
 
 
 def _err(message: str) -> None:
     text = (message or "").rstrip("\n")
     if text:
         sys.stderr.write(text + "\n")
-    sys.stderr.write(SPACER + "\n")
+    sys.stderr.write(TAIL)
+
+
+def _agent_preamble(screen: str) -> str:
+    lead = (
+        "[ida -> agent] The user cannot see this output. "
+        "Paste everything between the markers into your reply in a ```text fence"
+    )
+    if screen == "idk":
+        return lead + ", then write how it applies + 3 steps, THEN call the choice tool."
+    if screen == "card":
+        return lead + ". Replace the word SCENE with the scene. Keep the question. Do not call the choice tool on a free-text card."
+    if screen in ("menu", "strong", "partial", "why"):
+        return lead + ", THEN call the choice tool."
+    if screen == "summary":
+        return lead + "."
+    return lead + ". Then stop so they can type."
+
+
+def _wrap_for_agent(text: str, screen: str) -> str:
+    body = text.replace("\r\n", "\n").rstrip("\n")
+    return _agent_preamble(screen) + "\nBEGIN\n" + body + "\nEND"
 
 
 def _clip(text: str, limit: int) -> str:
@@ -478,7 +498,7 @@ def emit(path, data, text: str, info: dict, reminder: str = "") -> None:
     if isinstance(session, dict):
         session["await"] = info.get("await")
     save_file(path, data)
-    write_screen(text, reminder)
+    write_screen(_wrap_for_agent(text, str(info.get("screen") or "")), reminder)
 
 
 def _is_typed(data) -> bool:
