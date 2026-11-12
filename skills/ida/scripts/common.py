@@ -29,6 +29,9 @@ PROMPT_LIMIT = 2000
 SCREEN_WIDTH = 76
 RULE_WIDTH = 72
 BAR_BLOCKS = 20
+# A blank line that is not empty. A space keeps the gap. The zero-width
+# space keeps the line when a host drops lines that are only whitespace.
+SPACER = " \u200b"
 
 # User-facing section names. Ids stay in the library and the progress file.
 DISPLAY_ORDER = (

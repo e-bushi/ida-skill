@@ -26,7 +26,7 @@ Do not narrate a tool call, a path, or a command.
 
 At the start of a sitting, read these once: `references/format.md`, `references/loop.md`, `references/voice.md`, `library/exemplars.json`. Do not open the CSV, the examples, the evals, or every index file.
 
-Show a screen by running `ida.py show`. That output is the screen when the host paints ANSI and does not collapse it (Claude Code, and Warp when the screen stays under about 40 lines). In Cursor, and anywhere the output is collapsed or uncolored, also put the same screen in a `text` fence in your reply. Do not do both when the colored output is already visible.
+Show a screen by running `ida.py show`, then reproduce that screen verbatim in your reply inside a `text` fence. Keep every line, including the spacer lines that look blank. Do not drop them, and do not restack the blocks. A spacer is a space followed by a zero-width space, so a host that strips empty lines (Warp agent mode does this to command output) still keeps the gap. The fence is the copy that preserves the spacing. Where the colored command output is also visible, leave it. Do not draw a second, tighter version.
 
 ## Commands
 
