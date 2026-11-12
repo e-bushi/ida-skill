@@ -1,0 +1,440 @@
+{
+  "phylum": "bias",
+  "subtitle": "where your mind tricks you",
+  "entries": [
+    {
+      "id": "curse-of-knowledge",
+      "name": "curse of knowledge",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "hindsight-bias",
+      "name": "hindsight bias",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "peak-end-rule",
+      "name": "peak-end rule",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 3
+    },
+    {
+      "id": "recency-bias",
+      "name": "recency bias",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "spotlight-effect",
+      "name": "spotlight effect",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 5
+    },
+    {
+      "id": "zeigarnik-effect",
+      "name": "zeigarnik effect",
+      "category": "memory & attention",
+      "practice": "decide",
+      "n": 6
+    },
+    {
+      "id": "affect-heuristic",
+      "name": "affect heuristic",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "availability-heuristic",
+      "name": "availability heuristic",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "confirmation-bias",
+      "name": "confirmation bias",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "conjunction-fallacy",
+      "name": "conjunction fallacy",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "gamblers-fallacy",
+      "name": "gambler's fallacy",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "hot-hand-fallacy",
+      "name": "hot hand fallacy",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "representativeness-heuristic",
+      "name": "representativeness heuristic",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "survivorship-bias",
+      "name": "survivorship bias",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "texas-sharpshooter-fallacy",
+      "name": "texas sharpshooter fallacy",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "anchoring-bias",
+      "name": "anchoring bias",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "decoy-effect",
+      "name": "decoy effect",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "default-effect",
+      "name": "default effect",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "endowment-effect",
+      "name": "endowment effect",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "framing-effect",
+      "name": "framing effect",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "hyperbolic-discounting",
+      "name": "hyperbolic discounting",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "loss-aversion",
+      "name": "loss aversion",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "paradox-of-choice",
+      "name": "paradox of choice",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "prospect-theory",
+      "name": "prospect theory",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "status-quo-bias",
+      "name": "status quo bias",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "sunk-cost-fallacy",
+      "name": "sunk cost fallacy",
+      "category": "decision distortions",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "actor-observer-bias",
+      "name": "actor-observer bias",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "dunning-kruger-effect",
+      "name": "dunning-kruger effect",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "fundamental-attribution-error",
+      "name": "fundamental attribution error",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "hofstadters-law",
+      "name": "hofstadter's law",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "illusion-of-control",
+      "name": "illusion of control",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "impostor-syndrome",
+      "name": "impostor syndrome",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "optimism-bias",
+      "name": "optimism bias",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "overconfidence-effect",
+      "name": "overconfidence effect",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "planning-fallacy",
+      "name": "planning fallacy",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "self-serving-bias",
+      "name": "self-serving bias",
+      "category": "self-perception",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "bandwagon-effect",
+      "name": "bandwagon effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "false-consensus-effect",
+      "name": "false consensus effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 38
+    },
+    {
+      "id": "golem-effect",
+      "name": "golem effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 39
+    },
+    {
+      "id": "halo-effect",
+      "name": "halo effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 40
+    },
+    {
+      "id": "horns-effect",
+      "name": "horns effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 41
+    },
+    {
+      "id": "ingroup-outgroup-bias",
+      "name": "ingroup / outgroup bias",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 42
+    },
+    {
+      "id": "just-world-hypothesis",
+      "name": "just-world hypothesis",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 43
+    },
+    {
+      "id": "negativity-bias",
+      "name": "negativity bias",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 44
+    },
+    {
+      "id": "pygmalion-effect",
+      "name": "pygmalion effect",
+      "category": "social perception",
+      "practice": "decide",
+      "n": 45
+    },
+    {
+      "id": "backfire-effect",
+      "name": "backfire effect",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 46
+    },
+    {
+      "id": "belief-perseverance",
+      "name": "belief perseverance",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 47
+    },
+    {
+      "id": "ben-franklin-effect",
+      "name": "ben franklin effect",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 48
+    },
+    {
+      "id": "cognitive-dissonance",
+      "name": "cognitive dissonance",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 49
+    },
+    {
+      "id": "ikea-effect",
+      "name": "ikea effect",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 50
+    },
+    {
+      "id": "moral-licensing",
+      "name": "moral licensing",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 51
+    },
+    {
+      "id": "not-invented-here-syndrome",
+      "name": "not-invented-here syndrome",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 52
+    },
+    {
+      "id": "pratfall-effect",
+      "name": "pratfall effect",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 53
+    },
+    {
+      "id": "reactance",
+      "name": "reactance",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 54
+    },
+    {
+      "id": "streisand-effect",
+      "name": "streisand effect",
+      "category": "action & belief persistence",
+      "practice": "decide",
+      "n": 55
+    },
+    {
+      "id": "cargo-cult",
+      "name": "cargo cult",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 56
+    },
+    {
+      "id": "generals-fighting-the-last-war",
+      "name": "generals fighting the last war",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 57
+    },
+    {
+      "id": "grass-is-greener-mentality",
+      "name": "grass-is-greener mentality",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 58
+    },
+    {
+      "id": "lollapalooza-effect",
+      "name": "lollapalooza effect",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 59
+    },
+    {
+      "id": "maslows-hammer",
+      "name": "maslow's hammer",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 60
+    },
+    {
+      "id": "mcnamara-fallacy",
+      "name": "mcnamara fallacy",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 61
+    },
+    {
+      "id": "streetlight-effect",
+      "name": "streetlight effect",
+      "category": "old-paradigm traps",
+      "practice": "decide",
+      "n": 62
+    }
+  ]
+}

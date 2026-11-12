@@ -1,0 +1,727 @@
+{
+  "phylum": "axiom",
+  "subtitle": "how to think clearly",
+  "entries": [
+    {
+      "id": "contingency",
+      "name": "contingency",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 1
+    },
+    {
+      "id": "contradiction",
+      "name": "contradiction",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 2
+    },
+    {
+      "id": "logical-equivalence",
+      "name": "logical equivalence",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 3
+    },
+    {
+      "id": "soundness",
+      "name": "soundness",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 4
+    },
+    {
+      "id": "tautology",
+      "name": "tautology",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 5
+    },
+    {
+      "id": "truth-value",
+      "name": "truth value",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 6
+    },
+    {
+      "id": "vacuously-true",
+      "name": "vacuously true",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 7
+    },
+    {
+      "id": "validity",
+      "name": "validity",
+      "category": "statement properties",
+      "practice": "spot",
+      "n": 8
+    },
+    {
+      "id": "categorical-syllogism",
+      "name": "categorical syllogism",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "constructive-dilemma",
+      "name": "constructive dilemma",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "contraposition",
+      "name": "contraposition",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "destructive-dilemma",
+      "name": "destructive dilemma",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "disjunctive-syllogism",
+      "name": "disjunctive syllogism",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "hypothetical-syllogism",
+      "name": "hypothetical syllogism",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "modus-ponens",
+      "name": "modus ponens",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "modus-tollens",
+      "name": "modus tollens",
+      "category": "argument forms (valid)",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "abductive-reasoning",
+      "name": "abductive reasoning (inference to the best explanation)",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "analogical-reasoning",
+      "name": "analogical reasoning",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "counterfactual-thinking",
+      "name": "counterfactual thinking",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "deductive-reasoning",
+      "name": "deductive reasoning",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "inductive-reasoning",
+      "name": "inductive reasoning",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "thought-experiment",
+      "name": "thought experiment",
+      "category": "reasoning types",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "biconditional",
+      "name": "biconditional (↔)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 23
+    },
+    {
+      "id": "conjunction",
+      "name": "conjunction (and)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 24
+    },
+    {
+      "id": "disjunction",
+      "name": "disjunction (or)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 25
+    },
+    {
+      "id": "exclusive-disjunction",
+      "name": "exclusive disjunction (xor)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 26
+    },
+    {
+      "id": "material-conditional",
+      "name": "material conditional (→)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 27
+    },
+    {
+      "id": "negation",
+      "name": "negation (not)",
+      "category": "logical operators",
+      "practice": "spot",
+      "n": 28
+    },
+    {
+      "id": "existential-quantifier",
+      "name": "existential quantifier (∃, \"there exists\")",
+      "category": "quantifiers",
+      "practice": "spot",
+      "n": 29
+    },
+    {
+      "id": "universal-quantifier",
+      "name": "universal quantifier (∀, \"for all\")",
+      "category": "quantifiers",
+      "practice": "spot",
+      "n": 30
+    },
+    {
+      "id": "antecedent-consequent",
+      "name": "antecedent / consequent",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "contrapositive",
+      "name": "contrapositive",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "converse",
+      "name": "converse",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "inverse",
+      "name": "inverse",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "necessary-and-sufficient",
+      "name": "necessary and sufficient",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "necessary-condition",
+      "name": "necessary condition",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "sufficient-condition",
+      "name": "sufficient condition",
+      "category": "conditional relationships",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "commutative-associative-distributive-laws",
+      "name": "commutative / associative / distributive laws",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 38
+    },
+    {
+      "id": "de-morgans-laws",
+      "name": "de morgan's laws",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 39
+    },
+    {
+      "id": "double-negation",
+      "name": "double negation",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 40
+    },
+    {
+      "id": "law-of-excluded-middle",
+      "name": "law of excluded middle",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 41
+    },
+    {
+      "id": "law-of-identity",
+      "name": "law of identity",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 42
+    },
+    {
+      "id": "law-of-non-contradiction",
+      "name": "law of non-contradiction",
+      "category": "laws of logic",
+      "practice": "spot",
+      "n": 43
+    },
+    {
+      "id": "counterexample",
+      "name": "counterexample",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 44
+    },
+    {
+      "id": "direct-proof",
+      "name": "direct proof",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 45
+    },
+    {
+      "id": "mathematical-induction",
+      "name": "mathematical induction",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 46
+    },
+    {
+      "id": "proof-by-cases",
+      "name": "proof by cases",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 47
+    },
+    {
+      "id": "proof-by-contradiction",
+      "name": "proof by contradiction (reductio ad absurdum)",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 48
+    },
+    {
+      "id": "proof-by-contrapositive",
+      "name": "proof by contrapositive",
+      "category": "proof techniques",
+      "practice": "spot",
+      "n": 49
+    },
+    {
+      "id": "ad-hoc-hypothesis",
+      "name": "ad hoc hypothesis",
+      "category": "argumentation vocabulary",
+      "practice": "spot",
+      "n": 50
+    },
+    {
+      "id": "burden-of-proof",
+      "name": "burden of proof",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 51
+    },
+    {
+      "id": "hitchenss-razor",
+      "name": "hitchens's razor",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 52
+    },
+    {
+      "id": "non-sequitur",
+      "name": "non sequitur",
+      "category": "argumentation vocabulary",
+      "practice": "spot",
+      "n": 53
+    },
+    {
+      "id": "occams-razor",
+      "name": "occam's razor",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 54
+    },
+    {
+      "id": "premise-conclusion",
+      "name": "premise / conclusion",
+      "category": "argumentation vocabulary",
+      "practice": "spot",
+      "n": 55
+    },
+    {
+      "id": "prima-facie",
+      "name": "prima facie",
+      "category": "argumentation vocabulary",
+      "practice": "spot",
+      "n": 56
+    },
+    {
+      "id": "principle-of-charity",
+      "name": "principle of charity",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 57
+    },
+    {
+      "id": "sagan-standard",
+      "name": "sagan standard",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 58
+    },
+    {
+      "id": "steelman",
+      "name": "steelman",
+      "category": "argumentation vocabulary",
+      "practice": "decide",
+      "n": 59
+    },
+    {
+      "id": "ad-hominem",
+      "name": "ad hominem",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 60
+    },
+    {
+      "id": "appeal-to-authority",
+      "name": "appeal to authority",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 61
+    },
+    {
+      "id": "appeal-to-emotion",
+      "name": "appeal to emotion",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 62
+    },
+    {
+      "id": "appeal-to-ignorance",
+      "name": "appeal to ignorance",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 63
+    },
+    {
+      "id": "appeal-to-nature",
+      "name": "appeal to nature",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 64
+    },
+    {
+      "id": "appeal-to-novelty",
+      "name": "appeal to novelty",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 65
+    },
+    {
+      "id": "appeal-to-tradition",
+      "name": "appeal to tradition",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 66
+    },
+    {
+      "id": "begging-the-question",
+      "name": "begging the question",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 67
+    },
+    {
+      "id": "cherry-picking",
+      "name": "cherry-picking",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 68
+    },
+    {
+      "id": "composition-division-fallacy",
+      "name": "composition / division fallacy",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 69
+    },
+    {
+      "id": "equivocation",
+      "name": "equivocation",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 70
+    },
+    {
+      "id": "false-dilemma",
+      "name": "false dilemma",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 71
+    },
+    {
+      "id": "false-equivalence",
+      "name": "false equivalence",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 72
+    },
+    {
+      "id": "genetic-fallacy",
+      "name": "genetic fallacy",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 73
+    },
+    {
+      "id": "gish-gallop",
+      "name": "gish gallop",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 74
+    },
+    {
+      "id": "hasty-generalization",
+      "name": "hasty generalization",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 75
+    },
+    {
+      "id": "motte-and-bailey",
+      "name": "motte and bailey",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 76
+    },
+    {
+      "id": "no-true-scotsman",
+      "name": "no true scotsman",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 77
+    },
+    {
+      "id": "red-herring",
+      "name": "red herring",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 78
+    },
+    {
+      "id": "slippery-slope-argument",
+      "name": "slippery slope argument",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 79
+    },
+    {
+      "id": "straw-man",
+      "name": "straw man",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 80
+    },
+    {
+      "id": "tu-quoque",
+      "name": "tu quoque",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 81
+    },
+    {
+      "id": "whataboutism",
+      "name": "whataboutism",
+      "category": "logical fallacies",
+      "practice": "decide",
+      "n": 82
+    },
+    {
+      "id": "barber-paradox",
+      "name": "barber paradox",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 83
+    },
+    {
+      "id": "grandfather-paradox",
+      "name": "grandfather paradox",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 84
+    },
+    {
+      "id": "liars-paradox",
+      "name": "liar's paradox",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 85
+    },
+    {
+      "id": "monty-hall-problem",
+      "name": "monty hall problem",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 86
+    },
+    {
+      "id": "russells-paradox",
+      "name": "russell's paradox",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 87
+    },
+    {
+      "id": "ship-of-theseus",
+      "name": "ship of theseus",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 88
+    },
+    {
+      "id": "sorites-paradox",
+      "name": "sorites paradox",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 89
+    },
+    {
+      "id": "zenos-paradoxes",
+      "name": "zeno's paradoxes",
+      "category": "logical paradoxes",
+      "practice": "spot",
+      "n": 90
+    },
+    {
+      "id": "a-priori-vs-a-posteriori",
+      "name": "a priori vs. a posteriori",
+      "category": "modal & philosophical distinctions",
+      "practice": "spot",
+      "n": 91
+    },
+    {
+      "id": "analytic-vs-synthetic",
+      "name": "analytic vs. synthetic",
+      "category": "modal & philosophical distinctions",
+      "practice": "spot",
+      "n": 92
+    },
+    {
+      "id": "counterfactual",
+      "name": "counterfactual",
+      "category": "modal & philosophical distinctions",
+      "practice": "decide",
+      "n": 93
+    },
+    {
+      "id": "necessity-vs-possibility",
+      "name": "necessity vs. possibility",
+      "category": "modal & philosophical distinctions",
+      "practice": "spot",
+      "n": 94
+    },
+    {
+      "id": "possible-worlds",
+      "name": "possible worlds",
+      "category": "modal & philosophical distinctions",
+      "practice": "decide",
+      "n": 95
+    },
+    {
+      "id": "usemention-distinction",
+      "name": "use–mention distinction",
+      "category": "modal & philosophical distinctions",
+      "practice": "spot",
+      "n": 96
+    },
+    {
+      "id": "distribution-of-terms",
+      "name": "distribution of terms",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 97
+    },
+    {
+      "id": "particular-affirmative",
+      "name": "particular affirmative (i)",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 98
+    },
+    {
+      "id": "particular-negative",
+      "name": "particular negative (o)",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 99
+    },
+    {
+      "id": "square-of-opposition",
+      "name": "square of opposition",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 100
+    },
+    {
+      "id": "universal-affirmative",
+      "name": "universal affirmative (a)",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 101
+    },
+    {
+      "id": "universal-negative",
+      "name": "universal negative (e)",
+      "category": "categorical (aristotelian) logic",
+      "practice": "spot",
+      "n": 102
+    },
+    {
+      "id": "inversion",
+      "name": "inversion",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 103
+    }
+  ]
+}

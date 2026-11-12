@@ -1,0 +1,503 @@
+{
+  "phylum": "persona",
+  "subtitle": "why people do what they do",
+  "entries": [
+    {
+      "id": "cognitive-load",
+      "name": "cognitive load",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "flow",
+      "name": "flow",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "hedonic-treadmill",
+      "name": "hedonic treadmill",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 3
+    },
+    {
+      "id": "maslows-hierarchy-of-needs",
+      "name": "maslow's hierarchy of needs",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "mimetic-desire",
+      "name": "mimetic desire",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 5
+    },
+    {
+      "id": "procrastination-equation",
+      "name": "procrastination equation",
+      "category": "individual psychology",
+      "practice": "decide",
+      "n": 6
+    },
+    {
+      "id": "aesthetic-usability-effect",
+      "name": "aesthetic-usability effect",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "beginners-mind",
+      "name": "beginner's mind",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "blooms-taxonomy",
+      "name": "bloom's taxonomy",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "classical-conditioning",
+      "name": "classical conditioning",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "deliberate-practice",
+      "name": "deliberate practice",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "desirable-difficulties",
+      "name": "desirable difficulties",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "forgetting-curve",
+      "name": "forgetting curve",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "interleaving",
+      "name": "interleaving",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "operant-conditioning",
+      "name": "operant conditioning",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "spacing-effect",
+      "name": "spacing effect",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "testing-effect",
+      "name": "testing effect",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "zone-of-proximal-development",
+      "name": "zone of proximal development",
+      "category": "learning & memory",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "fittss-law",
+      "name": "fitts's law",
+      "category": "cognitive limits (ux/hci)",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "hicks-law",
+      "name": "hick's law",
+      "category": "cognitive limits (ux/hci)",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "millers-law",
+      "name": "miller's law (7 ± 2)",
+      "category": "cognitive limits (ux/hci)",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "abilene-paradox",
+      "name": "abilene paradox",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "asch-conformity",
+      "name": "asch conformity",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "bike-shedding",
+      "name": "bike-shedding (law of triviality)",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "bystander-effect",
+      "name": "bystander effect",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "diffusion-of-responsibility",
+      "name": "diffusion of responsibility",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "group-polarization",
+      "name": "group polarization",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "groupthink",
+      "name": "groupthink",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "pluralistic-ignorance",
+      "name": "pluralistic ignorance",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "power-vacuum",
+      "name": "power vacuum",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "preference-falsification",
+      "name": "preference falsification",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "social-loafing",
+      "name": "social loafing",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "stockholm-syndrome",
+      "name": "stockholm syndrome",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "tuckmans-stages",
+      "name": "tuckman's stages",
+      "category": "group dynamics",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "10x-engineer",
+      "name": "10x engineer",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "10x-team",
+      "name": "10x team",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "commandos-infantry-and-police",
+      "name": "commandos, infantry, and police",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "foxes-vs-hedgehogs",
+      "name": "foxes vs. hedgehogs",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 38
+    },
+    {
+      "id": "generalists-vs-specialists",
+      "name": "generalists vs. specialists",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 39
+    },
+    {
+      "id": "introverts-vs-extroverts",
+      "name": "introverts vs. extroverts",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 40
+    },
+    {
+      "id": "iq-vs-eq",
+      "name": "iq vs. eq",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 41
+    },
+    {
+      "id": "joys-law",
+      "name": "joy's law",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 42
+    },
+    {
+      "id": "loyalists-vs-mercenaries",
+      "name": "loyalists vs. mercenaries",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 43
+    },
+    {
+      "id": "nature-vs-nurture",
+      "name": "nature vs. nurture",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 44
+    },
+    {
+      "id": "unicorn-candidate",
+      "name": "unicorn candidate",
+      "category": "teams & talent archetypes",
+      "practice": "decide",
+      "n": 45
+    },
+    {
+      "id": "brookss-law",
+      "name": "brooks's law",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 46
+    },
+    {
+      "id": "bus-factor",
+      "name": "bus factor",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 47
+    },
+    {
+      "id": "directly-responsible-individual",
+      "name": "directly responsible individual (dri)",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 48
+    },
+    {
+      "id": "dunbars-number",
+      "name": "dunbar's number",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 49
+    },
+    {
+      "id": "fixed-mindset-vs-growth-mindset",
+      "name": "fixed mindset vs. growth mindset",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 50
+    },
+    {
+      "id": "institutional-knowledge",
+      "name": "institutional knowledge",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 51
+    },
+    {
+      "id": "managers-schedule-vs-makers-schedule",
+      "name": "manager's schedule vs. maker's schedule",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 52
+    },
+    {
+      "id": "managing-to-the-person",
+      "name": "managing to the person",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 53
+    },
+    {
+      "id": "mythical-man-month",
+      "name": "mythical man-month",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 54
+    },
+    {
+      "id": "parkinsons-law",
+      "name": "parkinson's law",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 55
+    },
+    {
+      "id": "peter-principle",
+      "name": "peter principle",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 56
+    },
+    {
+      "id": "radical-candor",
+      "name": "radical candor",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 57
+    },
+    {
+      "id": "weekly-one-on-one",
+      "name": "weekly one-on-one",
+      "category": "org & management",
+      "practice": "decide",
+      "n": 58
+    },
+    {
+      "id": "broken-windows-theory",
+      "name": "broken windows theory",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 59
+    },
+    {
+      "id": "culture",
+      "name": "culture",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 60
+    },
+    {
+      "id": "distributive-justice-vs-procedural-justice",
+      "name": "distributive justice vs. procedural justice",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 61
+    },
+    {
+      "id": "gateway-drug-theory",
+      "name": "gateway drug theory",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 62
+    },
+    {
+      "id": "high-context-vs-low-context",
+      "name": "high-context vs. low-context",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 63
+    },
+    {
+      "id": "overton-window",
+      "name": "overton window",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 64
+    },
+    {
+      "id": "social-norms-vs-market-norms",
+      "name": "social norms vs. market norms",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 65
+    },
+    {
+      "id": "veblen-goods",
+      "name": "veblen goods",
+      "category": "culture & sociology",
+      "practice": "decide",
+      "n": 66
+    },
+    {
+      "id": "betteridges-law-of-headlines",
+      "name": "betteridge's law of headlines",
+      "category": "cultural / internet laws",
+      "practice": "decide",
+      "n": 67
+    },
+    {
+      "id": "brandolinis-law",
+      "name": "brandolini's law",
+      "category": "cultural / internet laws",
+      "practice": "decide",
+      "n": 68
+    },
+    {
+      "id": "cunninghams-law",
+      "name": "cunningham's law",
+      "category": "cultural / internet laws",
+      "practice": "decide",
+      "n": 69
+    },
+    {
+      "id": "godwins-law",
+      "name": "godwin's law",
+      "category": "cultural / internet laws",
+      "practice": "decide",
+      "n": 70
+    },
+    {
+      "id": "sturgeons-law",
+      "name": "sturgeon's law",
+      "category": "cultural / internet laws",
+      "practice": "decide",
+      "n": 71
+    }
+  ]
+}

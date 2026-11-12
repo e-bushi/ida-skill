@@ -1,0 +1,337 @@
+{
+  "version": 1,
+  "generated_from": "library/ida-library.csv",
+  "entry_count": 443,
+  "category_count": 52,
+  "placement_count": 53,
+  "phyla": [
+    {
+      "id": "axiom",
+      "subtitle": "how to think clearly",
+      "count": 103,
+      "decide": 53,
+      "spot": 50,
+      "categories": [
+        {
+          "name": "statement properties",
+          "count": 8,
+          "practice": "spot"
+        },
+        {
+          "name": "argument forms (valid)",
+          "count": 8,
+          "practice": "decide"
+        },
+        {
+          "name": "reasoning types",
+          "count": 6,
+          "practice": "decide"
+        },
+        {
+          "name": "logical operators",
+          "count": 6,
+          "practice": "spot"
+        },
+        {
+          "name": "quantifiers",
+          "count": 2,
+          "practice": "spot"
+        },
+        {
+          "name": "conditional relationships",
+          "count": 7,
+          "practice": "decide"
+        },
+        {
+          "name": "laws of logic",
+          "count": 6,
+          "practice": "spot"
+        },
+        {
+          "name": "proof techniques",
+          "count": 6,
+          "practice": "spot"
+        },
+        {
+          "name": "argumentation vocabulary",
+          "count": 10,
+          "practice": "mixed"
+        },
+        {
+          "name": "logical fallacies",
+          "count": 23,
+          "practice": "decide"
+        },
+        {
+          "name": "logical paradoxes",
+          "count": 8,
+          "practice": "spot"
+        },
+        {
+          "name": "modal & philosophical distinctions",
+          "count": 6,
+          "practice": "mixed"
+        },
+        {
+          "name": "categorical (aristotelian) logic",
+          "count": 6,
+          "practice": "spot"
+        },
+        {
+          "name": "reasoning tools",
+          "count": 1,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "kanon",
+      "subtitle": "how to know what's true",
+      "count": 31,
+      "decide": 24,
+      "spot": 7,
+      "categories": [
+        {
+          "name": "probability & statistical inference",
+          "count": 13,
+          "practice": "mixed"
+        },
+        {
+          "name": "evidence & methodology",
+          "count": 7,
+          "practice": "decide"
+        },
+        {
+          "name": "uncertainty & distributions",
+          "count": 5,
+          "practice": "decide"
+        },
+        {
+          "name": "forecasting & collective knowledge",
+          "count": 4,
+          "practice": "decide"
+        },
+        {
+          "name": "knowledge & representation",
+          "count": 2,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "bias",
+      "subtitle": "where your mind tricks you",
+      "count": 62,
+      "decide": 62,
+      "spot": 0,
+      "categories": [
+        {
+          "name": "memory & attention",
+          "count": 6,
+          "practice": "decide"
+        },
+        {
+          "name": "inference & pattern errors",
+          "count": 9,
+          "practice": "decide"
+        },
+        {
+          "name": "decision distortions",
+          "count": 11,
+          "practice": "decide"
+        },
+        {
+          "name": "self-perception",
+          "count": 10,
+          "practice": "decide"
+        },
+        {
+          "name": "social perception",
+          "count": 9,
+          "practice": "decide"
+        },
+        {
+          "name": "action & belief persistence",
+          "count": 10,
+          "practice": "decide"
+        },
+        {
+          "name": "old-paradigm traps",
+          "count": 7,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "strategy",
+      "subtitle": "how to win when others play too",
+      "count": 81,
+      "decide": 81,
+      "spot": 0,
+      "categories": [
+        {
+          "name": "game theory",
+          "count": 7,
+          "practice": "decide"
+        },
+        {
+          "name": "influence (cialdini family)",
+          "count": 10,
+          "practice": "decide"
+        },
+        {
+          "name": "manipulation & deception",
+          "count": 5,
+          "practice": "decide"
+        },
+        {
+          "name": "conflict & military",
+          "count": 23,
+          "practice": "decide"
+        },
+        {
+          "name": "business & market positioning",
+          "count": 34,
+          "practice": "decide"
+        },
+        {
+          "name": "markets & investing",
+          "count": 2,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "systema",
+      "subtitle": "how things connect and ripple",
+      "count": 53,
+      "decide": 53,
+      "spot": 0,
+      "categories": [
+        {
+          "name": "systems behavior",
+          "count": 16,
+          "practice": "decide"
+        },
+        {
+          "name": "networks & cascades",
+          "count": 4,
+          "practice": "decide"
+        },
+        {
+          "name": "incentive structures",
+          "count": 12,
+          "practice": "decide"
+        },
+        {
+          "name": "system pathologies",
+          "count": 9,
+          "practice": "decide"
+        },
+        {
+          "name": "durability & capacity",
+          "count": 8,
+          "practice": "decide"
+        },
+        {
+          "name": "software & org systems",
+          "count": 3,
+          "practice": "decide"
+        },
+        {
+          "name": "markets as systems",
+          "count": 1,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "persona",
+      "subtitle": "why people do what they do",
+      "count": 71,
+      "decide": 71,
+      "spot": 0,
+      "categories": [
+        {
+          "name": "individual psychology",
+          "count": 6,
+          "practice": "decide"
+        },
+        {
+          "name": "learning & memory",
+          "count": 12,
+          "practice": "decide"
+        },
+        {
+          "name": "cognitive limits (ux/hci)",
+          "count": 3,
+          "practice": "decide"
+        },
+        {
+          "name": "group dynamics",
+          "count": 13,
+          "practice": "decide"
+        },
+        {
+          "name": "teams & talent archetypes",
+          "count": 11,
+          "practice": "decide"
+        },
+        {
+          "name": "org & management",
+          "count": 13,
+          "practice": "decide"
+        },
+        {
+          "name": "culture & sociology",
+          "count": 8,
+          "practice": "decide"
+        },
+        {
+          "name": "cultural / internet laws",
+          "count": 5,
+          "practice": "decide"
+        }
+      ]
+    },
+    {
+      "id": "momentum",
+      "subtitle": "how to decide and act",
+      "count": 42,
+      "decide": 42,
+      "spot": 0,
+      "categories": [
+        {
+          "name": "decision frameworks",
+          "count": 12,
+          "practice": "decide"
+        },
+        {
+          "name": "reasoning tools",
+          "count": 11,
+          "practice": "decide"
+        },
+        {
+          "name": "action & execution",
+          "count": 3,
+          "practice": "decide"
+        },
+        {
+          "name": "risk & uncertainty heuristics",
+          "count": 7,
+          "practice": "decide"
+        },
+        {
+          "name": "productivity",
+          "count": 4,
+          "practice": "decide"
+        },
+        {
+          "name": "ethics",
+          "count": 5,
+          "practice": "decide"
+        }
+      ]
+    }
+  ]
+}

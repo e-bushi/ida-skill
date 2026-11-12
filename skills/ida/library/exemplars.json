@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "note": "Full text for the authored entries only. Use these as the voice for scenarios and feedback. For every other id, use your own knowledge. Do not invent a quotation.",
+  "entries": [
+    {
+      "id": "survivorship-bias",
+      "name": "survivorship bias",
+      "phylum": "bias",
+      "subtitle": "where your mind tricks you",
+      "category": "inference & pattern errors",
+      "practice": "decide",
+      "law": "the evidence that lived is loud; the evidence that died says nothing.",
+      "notes": "the planes that came home show you where armor isn't needed. the failures never report back. the sample you can see is not the sample that was.",
+      "attribution": "abraham wald",
+      "year": 1943
+    },
+    {
+      "id": "schelling-point",
+      "name": "schelling point",
+      "phylum": "strategy",
+      "subtitle": "how to win when others play too",
+      "category": "game theory",
+      "practice": "decide",
+      "law": "with no way to speak, people still find the same place to meet.",
+      "notes": "with no communication, people still converge on the same answer. the focal point each expects the other to expect. coordination without a word.",
+      "attribution": "thomas schelling",
+      "year": 1960
+    },
+    {
+      "id": "goodharts-law",
+      "name": "goodhart's law",
+      "phylum": "systema",
+      "subtitle": "how things connect and ripple",
+      "category": "system pathologies",
+      "practice": "decide",
+      "law": "what happens when the measuring stick becomes the thing being measured.",
+      "notes": "when a measure becomes a target, it ceases to be a good measure. push on any metric hard enough and the system starts producing the number itself instead of the outcome the number was meant to track.",
+      "attribution": "charles goodhart",
+      "year": 1975
+    },
+    {
+      "id": "mimetic-desire",
+      "name": "mimetic desire",
+      "phylum": "persona",
+      "subtitle": "why people do what they do",
+      "category": "individual psychology",
+      "practice": "decide",
+      "law": "we don't choose what we want. we catch it from each other.",
+      "notes": "we borrow our wants from models we admire. and when two people want through the same model, they want the same thing. rivalry follows.",
+      "attribution": "rené girard",
+      "year": 1961
+    },
+    {
+      "id": "inversion",
+      "name": "inversion",
+      "phylum": "axiom",
+      "subtitle": "how to think clearly",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "law": "to master a problem, study how to fail at it, then refuse to.",
+      "notes": "instead of asking how to succeed, ask what would guarantee failure, then avoid it. many hard problems dissolve when worked backward.",
+      "attribution": "carl jacobi",
+      "year": 1840
+    },
+    {
+      "id": "via-negativa",
+      "name": "via negativa",
+      "phylum": "momentum",
+      "subtitle": "how to decide and act",
+      "category": "action & execution",
+      "practice": "decide",
+      "law": "the surest improvement is removing what's wrong, not adding what's clever.",
+      "notes": "improvement by subtraction: strip the fragile, the false, and the unnecessary before adding anything clever. what you remove can't break.",
+      "attribution": "nassim taleb",
+      "year": 2012
+    },
+    {
+      "id": "gell-mann-amnesia",
+      "name": "gell-mann amnesia",
+      "phylum": "kanon",
+      "subtitle": "how to know what's true",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "law": "you trust the report on every subject but the one you happen to know.",
+      "notes": "you read a story about a subject you know deeply and catch every error. you turn the page to a subject you don't know, and trust it completely.",
+      "attribution": "michael crichton",
+      "year": 2002
+    }
+  ]
+}

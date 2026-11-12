@@ -1,0 +1,573 @@
+{
+  "phylum": "strategy",
+  "subtitle": "how to win when others play too",
+  "entries": [
+    {
+      "id": "arms-race",
+      "name": "arms race",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "game-theory",
+      "name": "game theory",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "nash-equilibrium",
+      "name": "nash equilibrium",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 3
+    },
+    {
+      "id": "prisoners-dilemma",
+      "name": "prisoner's dilemma",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "schelling-point",
+      "name": "schelling point",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 5
+    },
+    {
+      "id": "tit-for-tat",
+      "name": "tit-for-tat",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 6
+    },
+    {
+      "id": "ultimatum-game",
+      "name": "ultimatum game",
+      "category": "game theory",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "authority",
+      "name": "authority",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "commitment-and-consistency",
+      "name": "commitment and consistency",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "contrast-principle",
+      "name": "contrast principle",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "door-in-the-face",
+      "name": "door-in-the-face",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "foot-in-the-door",
+      "name": "foot-in-the-door",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "liking",
+      "name": "liking",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "reciprocity",
+      "name": "reciprocity",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "scarcity",
+      "name": "scarcity",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "social-proof",
+      "name": "social proof",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "unity",
+      "name": "unity",
+      "category": "influence (cialdini family)",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "bait-and-switch",
+      "name": "bait and switch",
+      "category": "manipulation & deception",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "dark-patterns",
+      "name": "dark patterns",
+      "category": "manipulation & deception",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "fear-uncertainty-and-doubt",
+      "name": "fear, uncertainty, and doubt (fud)",
+      "category": "manipulation & deception",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "potemkin-village",
+      "name": "potemkin village",
+      "category": "manipulation & deception",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "trojan-horse",
+      "name": "trojan horse",
+      "category": "manipulation & deception",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "appeasement",
+      "name": "appeasement",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "boots-on-the-ground",
+      "name": "boots on the ground",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "burn-the-boats",
+      "name": "burn the boats",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "call-your-bluff",
+      "name": "call your bluff",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "carrot-and-stick",
+      "name": "carrot-and-stick",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "containment",
+      "name": "containment",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "deterrence",
+      "name": "deterrence",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "endgame",
+      "name": "endgame",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "exit-strategy",
+      "name": "exit strategy",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "flypaper-theory",
+      "name": "flypaper theory",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "guerrilla-warfare",
+      "name": "guerrilla warfare",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "hail-mary-pass",
+      "name": "hail mary pass",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "hollow-victory",
+      "name": "hollow victory",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "mutually-assured-destruction",
+      "name": "mutually assured destruction (mad)",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "nuclear-option",
+      "name": "nuclear option",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "punching-above-your-weight",
+      "name": "punching above your weight",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 38
+    },
+    {
+      "id": "quarantine",
+      "name": "quarantine",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 39
+    },
+    {
+      "id": "red-line",
+      "name": "red line",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 40
+    },
+    {
+      "id": "stop-the-bleeding",
+      "name": "stop the bleeding",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 41
+    },
+    {
+      "id": "strategy-vs-tactics",
+      "name": "strategy vs. tactics",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 42
+    },
+    {
+      "id": "war-of-attrition",
+      "name": "war of attrition",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 43
+    },
+    {
+      "id": "winning-hearts-and-minds",
+      "name": "winning hearts and minds",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 44
+    },
+    {
+      "id": "zero-tolerance-policy",
+      "name": "zero-tolerance policy",
+      "category": "conflict & military",
+      "practice": "decide",
+      "n": 45
+    },
+    {
+      "id": "arbitrage",
+      "name": "arbitrage",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 46
+    },
+    {
+      "id": "barriers-to-entry-and-barriers-to-exit",
+      "name": "barriers to entry and barriers to exit",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 47
+    },
+    {
+      "id": "beachhead",
+      "name": "beachhead",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 48
+    },
+    {
+      "id": "blue-ocean",
+      "name": "blue ocean",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 49
+    },
+    {
+      "id": "comparative-advantage",
+      "name": "comparative advantage",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 50
+    },
+    {
+      "id": "consensus-contrarian-matrix",
+      "name": "consensus-contrarian matrix",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 51
+    },
+    {
+      "id": "crossing-the-chasm",
+      "name": "crossing the chasm",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 52
+    },
+    {
+      "id": "customer-development",
+      "name": "customer development",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 53
+    },
+    {
+      "id": "disruptive-innovations",
+      "name": "disruptive innovations",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 54
+    },
+    {
+      "id": "first-mover-advantage-vs-first-mover-disadvantage",
+      "name": "first-mover advantage vs. first-mover disadvantage",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 55
+    },
+    {
+      "id": "five-forces",
+      "name": "five forces",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 56
+    },
+    {
+      "id": "heat-seeking-missiles",
+      "name": "heat-seeking missiles",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 57
+    },
+    {
+      "id": "idea-maze",
+      "name": "idea maze",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 58
+    },
+    {
+      "id": "innovators-dilemma",
+      "name": "innovator's dilemma",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 59
+    },
+    {
+      "id": "jobs-to-be-done",
+      "name": "jobs to be done",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 60
+    },
+    {
+      "id": "lock-in",
+      "name": "lock-in",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 61
+    },
+    {
+      "id": "loss-leader-strategy",
+      "name": "loss leader strategy",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 62
+    },
+    {
+      "id": "market-power",
+      "name": "market power",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 63
+    },
+    {
+      "id": "moats",
+      "name": "moats",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 64
+    },
+    {
+      "id": "north-star-metric",
+      "name": "north star metric",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 65
+    },
+    {
+      "id": "only-the-paranoid-survive",
+      "name": "only the paranoid survive",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 66
+    },
+    {
+      "id": "personas",
+      "name": "personas",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 67
+    },
+    {
+      "id": "pivot",
+      "name": "pivot",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 68
+    },
+    {
+      "id": "product-market-fit",
+      "name": "product/market fit",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 69
+    },
+    {
+      "id": "razor-and-blades-model",
+      "name": "razor and blades model",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 70
+    },
+    {
+      "id": "regulatory-capture",
+      "name": "regulatory capture",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 71
+    },
+    {
+      "id": "resonant-frequency",
+      "name": "resonant frequency",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 72
+    },
+    {
+      "id": "secrets",
+      "name": "secrets",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 73
+    },
+    {
+      "id": "sustainable-competitive-advantage",
+      "name": "sustainable competitive advantage",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 74
+    },
+    {
+      "id": "switching-costs",
+      "name": "switching costs",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 75
+    },
+    {
+      "id": "what-type-of-customer-are-you-hunting",
+      "name": "what type of customer are you hunting?",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 76
+    },
+    {
+      "id": "why-now",
+      "name": "why now?",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 77
+    },
+    {
+      "id": "winner-take-most-markets",
+      "name": "winner-take-most markets",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 78
+    },
+    {
+      "id": "worse-is-better",
+      "name": "worse is better",
+      "category": "business & market positioning",
+      "practice": "decide",
+      "n": 79
+    },
+    {
+      "id": "greater-fool-theory",
+      "name": "greater fool theory",
+      "category": "markets & investing",
+      "practice": "decide",
+      "n": 80
+    },
+    {
+      "id": "mr-market",
+      "name": "mr. market",
+      "category": "markets & investing",
+      "practice": "decide",
+      "n": 81
+    }
+  ]
+}
