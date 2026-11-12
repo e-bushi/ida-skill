@@ -18,9 +18,15 @@ If SKILL.md was loaded from another directory, use that directory, still with `s
 
 Do not write a temp file. Do not use a file-edit tool. Do not use a heredoc. Do not pipe stdin. Do not chain commands. Do not put prose on a command. No scene, no summary, no explanation, no answer sentence. A command is a few words, short enough to stay on one line.
 
-Stdout is the plain screen. Paste it into a `text` fence. Its last line is a spacer, so a collapsed tail is empty. Keep that spacer in the fence.
+Stdout starts with one line for you, then `BEGIN`, then the screen, then `END`. Paste only the lines between `BEGIN` and `END` into a `text` fence. Do not paste the `[ida -> agent]` line. Do not paste the lines after `END`.
 
-On a card, stderr is one line, the idea name, then a spacer. Do not paste stderr. Do not show the name. On `idk`, stderr is one reminder, then a spacer. Do not paste that either. There is no JSON line.
+On a card, stderr is one line, the idea name, then the same blank tail. Do not paste stderr. Do not show the name. On `idk`, stderr is one reminder, then the blank tail. Do not paste that either. There is no JSON line.
+
+## Collapsed tail
+
+Warp hides a command behind "output lines hidden" and then previews the last line that is not only whitespace or zero-width. A space plus a zero-width space is skipped, so the preview was the last real line of the screen (the question, or a row of the banner).
+
+The last three lines of stdout are braille blanks (U+2800). That character is not whitespace, so Warp keeps the line, and it draws nothing. Each of those lines is wrapped in ANSI conceal (`\033[8m` ... `\033[0m`). If a host strips the conceal codes, the braille blanks are still there and still have no ink. The three lines are the same bytes whether or not `IDA_COLOR` is set. They are written after the screen is painted, so color never changes them. The only thing under the command is "output lines hidden". The lines after `END` are that tail. Do not paste them. The same tail follows any stderr line, so a name or a reminder cannot become the preview either.
 
 The card frame contains the word SCENE. Replace that word in the fence with the scene you write. Keep `■ T H E   Q U E S T I O N` and the question text.
 

@@ -16,17 +16,23 @@ You run a practice loop. You write a realistic scenario. The user names which wa
 
 The library has 443 ways of thinking. Seven of them have full authored text. Use your own knowledge for the rest. Do not invent a quotation or a fake stored law.
 
+## Golden rule
+
+Command output is invisible to the user. Every screen must be pasted into the reply. Never call a choice tool before that paste.
+
+Stdout starts with a line addressed to you, then a line `BEGIN`, then the screen, then a line `END`. Paste only the lines between `BEGIN` and `END` into a `text` fence. Do not paste the `[ida -> agent]` line. Do not paste the lines after `END`. On idk, write how it applies and three steps under that fence, and only then call the choice tool.
+
 ## Language
 
 Say "ways of thinking", "ideas", and "clarity". Never write "mental models", even if the user does. The wordmark is lowercase `ida`. No em dashes. No emoji. On screen, use the spoken section names. Never show an id.
 
 ## The screen is the reply
 
-After every `ida turn`, paste its plain stdout into a `text` fence in the chat reply. Every time. Every host. Warp, Cursor, and Claude Code.
+After every `ida turn`, paste the lines between `BEGIN` and `END` into a `text` fence in the chat reply. Every time. Every host. Warp, Cursor, and Claude Code.
 
-Tool output is not the screen. Warp collapses it ("output lines hidden") and the person only sees a dim last line. That last line is a spacer, so the preview is empty. Color in that log is optional extra. It is never the only copy.
+Tool output is not the screen. Warp collapses it ("output lines hidden"). The person does not see that block. The fence is what they see. Color in that log is optional extra. It is never the only copy.
 
-The fence is plain text, with no ANSI codes. Keep every spacer line, including the last one. Keep the whole banner. Do not describe the banner. Do not shorten it. Do not restack the blocks. On a card, replace the word SCENE with the scene you write, and keep the question.
+The fence is plain text, with no ANSI codes. Keep every spacer line that sits between `BEGIN` and `END`. Keep the whole banner. Do not describe the banner. Do not shorten it. Do not restack the blocks. On a card, replace the word SCENE with the scene you write, and keep the question.
 
 Do not narrate a tool call, a path, or a command.
 
@@ -54,11 +60,11 @@ No prose on a command. No scene, no summary, no explanation, no answer sentence.
 
 If this file was loaded from another directory, use that directory in the same shape, still with `sh` and still one command. Do not search for a binary. Do not run this file with `python3`.
 
-Stdout is the plain screen. Paste it. Leave `IDA_COLOR` unset. Stderr is empty, except the one reminder after `idk`. Do not paste stderr.
+Leave `IDA_COLOR` unset. Stderr on a card is the idea name, then blank lines. On idk it is a reminder, then blank lines. Do not paste stderr.
 
 ## idk
 
-**When they type idk, run `sh ~/.agents/skills/ida/ida turn idk`. The reply MUST paste the full reveal screen verbatim in a `text` fence before anything else. Under that fence, write how it applies to this scene and three steps. Then call the choice tool.**
+**When they type idk, run `sh ~/.agents/skills/ida/ida turn idk`. The reply MUST paste the lines between `BEGIN` and `END` verbatim in a `text` fence before anything else. Under that fence, write how it applies to this scene and three steps. Then call the choice tool.**
 
 The screen is the banner and, when the library has one, the definition saved with the pick. Do not skip the banner. Do not put the reveal inside the choice tool. If the screen has no definition line, write the definition under the fence too, then the three steps. The choice tool may offer got it, another like this, and menu.
 

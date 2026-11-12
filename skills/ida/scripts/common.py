@@ -32,6 +32,16 @@ BAR_BLOCKS = 20
 # A blank line that is not empty. A space keeps the gap. The zero-width
 # space keeps the line when a host drops lines that are only whitespace.
 SPACER = " \u200b"
+# Warp skips a line that is only whitespace or zero-width, then previews
+# the last line that has ink. U+2800 is a braille blank (category So), so
+# it is not skipped, and it draws nothing. Conceal hides it where ANSI is
+# honored. If a host strips the conceal codes, the braille blanks remain.
+# Three lines, so dropping one blank still leaves a blank. These bytes do
+# not depend on IDA_COLOR.
+BRAILLE_BLANK = "\u2800"
+TAIL_LINE = "\033[8m" + (BRAILLE_BLANK * 8) + "\033[0m"
+TAIL_LINES = 3
+TAIL = (TAIL_LINE + "\n") * TAIL_LINES
 
 # User-facing section names. Ids stay in the library and the progress file.
 DISPLAY_ORDER = (

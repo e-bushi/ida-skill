@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import unittest
 from pathlib import Path
 
@@ -19,7 +21,37 @@ sys.path.insert(0, str(SCRIPTS))
 import build_library  # noqa: E402
 import render  # noqa: E402
 from catalog import load_catalog  # noqa: E402
-from common import LIBRARY, ROOT  # noqa: E402
+from common import LIBRARY, ROOT, TAIL_LINE, TAIL_LINES
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def visible_glyphs(line: str) -> str:
+    """Glyphs a terminal would draw. Conceal codes, blanks, and whitespace do not count."""
+    cleaned = _ANSI.sub("", line)
+    kept = []
+    for ch in cleaned:
+        if ch == "\u2800":
+            continue
+        if unicodedata.category(ch)[0] in ("C", "Z"):
+            continue
+        kept.append(ch)
+    return "".join(kept)
+
+
+def assert_blank_tail(test: unittest.TestCase, text: str) -> None:
+    lines = text.splitlines()
+    test.assertGreaterEqual(len(lines), TAIL_LINES)
+    for line in lines[-TAIL_LINES:]:
+        test.assertEqual(line, TAIL_LINE)
+        test.assertEqual(visible_glyphs(line), "")
+        test.assertIn("\u2800", line)
+
+
+def screen_body(stdout: str) -> str:
+    start = stdout.index("BEGIN\n") + len("BEGIN\n")
+    end = stdout.index("\nEND")
+    return stdout[start:end]  # noqa: E402
 
 REPO = ROOT.parents[1]
 EM = "\u2014"
@@ -685,7 +717,7 @@ class IdaCommandTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(opened.returncode, 0, opened.stderr)
-            self.assertEqual(opened.stdout.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, opened.stdout)
             opened_info = json.loads(opened.stdout.splitlines()[0])
             self.assertEqual(opened_info["kind"], "new")
             self.assertEqual(opened_info["bars"]["axiom"][0], 0)
@@ -716,7 +748,7 @@ class IdaCommandTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(nxt.returncode, 0, nxt.stderr)
-            self.assertEqual(nxt.stdout.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, nxt.stdout)
             fields = json.loads(nxt.stdout.splitlines()[0])
             self.assertEqual(fields["section"], "playing to win")
             self.assertNotIn("\t", nxt.stdout)
@@ -790,21 +822,25 @@ class IdaCommandTests(unittest.TestCase):
             opening = run(["turn"])
             self.assertEqual(opening.returncode, 0, opening.stderr)
             self.assertIn("01 / 03", opening.stdout)
-            self.assertNotIn("\033", opening.stdout)
+            self.assertIn("[ida -> agent]", opening.stdout)
+            self.assertLess(opening.stdout.index("[ida -> agent]"), opening.stdout.index("BEGIN"))
+            self.assertNotIn("\033", screen_body(opening.stdout))
             self.assertEqual(opening.stderr, "")
-            self.assertEqual(opening.stdout.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, opening.stdout)
             run(["turn", "designer"])
             run(["turn", "climbing"])
             menu = run(["turn", "what to ship"])
             self.assertIn("pick a lane", menu.stdout)
-            self.assertEqual(menu.stdout.splitlines()[-1], " \u200b")
+            self.assertIn("THEN call the choice tool.", menu.stdout)
+            assert_blank_tail(self, menu.stdout)
             deal = "sh ~/.agents/skills/ida/ida turn deal inversion"
             self.assertLessEqual(len(deal), 48)
             card = run(["turn", "deal", "inversion"])
             self.assertEqual(card.returncode, 0, card.stderr)
             self.assertEqual(card.stderr.splitlines()[0], "inversion")
-            self.assertEqual(card.stderr.splitlines()[-1], " \u200b")
-            self.assertIn("SCENE", card.stdout)
+            assert_blank_tail(self, card.stderr)
+            self.assertIn("Replace the word SCENE", card.stdout)
+            self.assertIn("SCENE", screen_body(card.stdout))
             self.assertIn("T H E   Q U E S T I O N", card.stdout)
             self.assertNotIn("study how to fail", card.stdout.lower())
             reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
@@ -814,15 +850,18 @@ class IdaCommandTests(unittest.TestCase):
             self.assertIn("study how to fail", reveal.stdout.lower())
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
             self.assertNotIn("FROM STDIN", reveal.stdout)
-            self.assertNotIn("\033", reveal.stdout)
+            self.assertIn("THEN call the choice tool.", reveal.stdout)
+            self.assertLess(reveal.stdout.index("BEGIN"), reveal.stdout.index("not yet"))
+            self.assertLess(reveal.stdout.index("not yet"), reveal.stdout.index("\nEND"))
+            self.assertNotIn("\033", screen_body(reveal.stdout))
             self.assertNotIn("{", reveal.stderr)
             self.assertIn("three steps", reveal.stderr)
-            self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
-            self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, reveal.stdout)
+            assert_blank_tail(self, reveal.stderr)
             helped = run(["show", "card", "--help"])
             self.assertNotEqual(helped.returncode, 0)
             self.assertEqual(helped.stderr.splitlines()[0], "commands are in references/commands.md")
-            self.assertEqual(helped.stderr.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, helped.stderr)
             self.assertEqual(helped.stdout, "")
             typed = run(["turn", "--typed"])
             self.assertIn("›", typed.stdout)
@@ -834,8 +873,12 @@ class ShimTests(unittest.TestCase):
     def test_one_command_and_shim_accepts_python(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sh ~/.agents/skills/ida/ida turn", skill)
-        self.assertIn("MUST paste the full reveal screen verbatim", skill)
+        self.assertIn("MUST paste the lines between `BEGIN` and `END` verbatim", skill)
         self.assertIn("before anything else", skill)
+        self.assertIn("## Golden rule", skill)
+        self.assertIn("Command output is invisible to the user.", skill)
+        self.assertLess(skill.index("## Golden rule"), skill.index("## Language"))
+        self.assertIn("braille blanks", (ROOT / "references" / "commands.md").read_text(encoding="utf-8"))
         self.assertIn("heredoc", skill)
         self.assertIn("file-edit", skill)
         self.assertNotIn("/tmp/ida-screen.json", skill)
@@ -867,7 +910,8 @@ class ShimTests(unittest.TestCase):
                 self.assertNotIn("SyntaxError", proc.stderr)
                 self.assertNotIn("Traceback", proc.stderr)
                 self.assertEqual(proc.stderr, "")
-                self.assertEqual(proc.stdout.splitlines()[-1], " \u200b")
+                assert_blank_tail(self, proc.stdout)
+                self.assertEqual(visible_glyphs(proc.stdout.splitlines()[-1]), "")
                 self.assertIn("01 / 03", proc.stdout)
 
 
@@ -904,8 +948,10 @@ class IdaRevealTests(unittest.TestCase):
             self.assertNotIn("FROM STDIN", reveal.stdout + reveal.stderr)
             self.assertNotIn("{", reveal.stderr)
             self.assertIn("three steps", reveal.stderr.splitlines()[0])
-            self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
-            self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
+            self.assertIn("THEN call the choice tool.", reveal.stdout)
+            self.assertLess(reveal.stdout.index("[ida -> agent]"), reveal.stdout.index("BEGIN"))
+            assert_blank_tail(self, reveal.stdout)
+            assert_blank_tail(self, reveal.stderr)
             self.assertIn("not yet", reveal.stdout)
             self.assertIn("study how to fail", reveal.stdout.lower())
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
@@ -926,7 +972,7 @@ class IdaRevealTests(unittest.TestCase):
             answered = run(["turn", "strong"])
             self.assertIn("S T R O N G", answered.stdout)
             self.assertIn("N E G A T I V A", answered.stdout)
-            self.assertEqual(answered.stdout.splitlines()[-1], " \u200b")
+            assert_blank_tail(self, answered.stdout)
             self.assertEqual(answered.stderr, "")
             prose = run(["turn", "deal", "inversion"])
             ignored = run(["turn", "Cut the sections nobody reads."])
@@ -968,7 +1014,8 @@ class ColorAndBannerTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(proc.returncode, 0, proc.stderr)
-            self.assertNotIn("\033", proc.stdout)
+            assert_blank_tail(self, proc.stdout)
+            self.assertNotIn("\033", "\n".join(proc.stdout.splitlines()[:-TAIL_LINES]))
             env = os.environ.copy()
             env.pop("NO_COLOR", None)
             env["TERM"] = "dumb"
@@ -979,7 +1026,8 @@ class ColorAndBannerTests(unittest.TestCase):
                 env=env,
                 check=False,
             )
-            self.assertNotIn("\033", proc.stdout)
+            assert_blank_tail(self, proc.stdout)
+            self.assertNotIn("\033", "\n".join(proc.stdout.splitlines()[:-TAIL_LINES]))
             env = {"PATH": os.environ.get("PATH", ""), "IDA_COLOR": "always"}
             proc = subprocess.run(
                 [PY, str(SCRIPTS / "ida.py"), "--path", progress, "show", "opening"],
@@ -989,7 +1037,8 @@ class ColorAndBannerTests(unittest.TestCase):
                 check=False,
             )
         self.assertEqual(proc.returncode, 0, proc.stderr)
-        self.assertIn("\033[38;2;", proc.stdout)
+        self.assertIn("\033[38;2;", "\n".join(proc.stdout.splitlines()[:-TAIL_LINES]))
+        self.assertEqual(proc.stdout.splitlines()[-TAIL_LINES:], [TAIL_LINE] * TAIL_LINES)
         self.assertFalse(proc.stdout.startswith("\n"))
 
     def test_version_1_progress_migrates_without_losing_entries(self):
@@ -1032,7 +1081,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.4.0")
+        self.assertEqual(plugin["version"], "1.5.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 
