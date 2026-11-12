@@ -851,6 +851,11 @@ class IdaCommandTests(unittest.TestCase):
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
             self.assertNotIn("FROM STDIN", reveal.stdout)
             self.assertIn("THEN call the choice tool.", reveal.stdout)
+            self.assertIn(
+                "QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?",
+                reveal.stdout,
+            )
+            self.assertLess(reveal.stdout.index("\nEND"), reveal.stdout.index("\nQUESTION:"))
             self.assertLess(reveal.stdout.index("BEGIN"), reveal.stdout.index("not yet"))
             self.assertLess(reveal.stdout.index("not yet"), reveal.stdout.index("\nEND"))
             self.assertNotIn("\033", screen_body(reveal.stdout))
@@ -873,8 +878,8 @@ class ShimTests(unittest.TestCase):
     def test_one_command_and_shim_accepts_python(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sh ~/.agents/skills/ida/ida turn", skill)
-        self.assertIn("MUST paste the lines between `BEGIN` and `END` verbatim", skill)
-        self.assertIn("before anything else", skill)
+        self.assertIn("The choice tool question MUST be the exact string printed after `QUESTION:`.", skill)
+        self.assertLess(skill.index("## idk"), skill.index("## Language"))
         self.assertIn("## Golden rule", skill)
         self.assertIn("Command output is invisible to the user.", skill)
         self.assertLess(skill.index("## Golden rule"), skill.index("## Language"))
@@ -949,13 +954,17 @@ class IdaRevealTests(unittest.TestCase):
             self.assertNotIn("{", reveal.stderr)
             self.assertIn("three steps", reveal.stderr.splitlines()[0])
             self.assertIn("THEN call the choice tool.", reveal.stdout)
+            self.assertIn(
+                "QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?",
+                reveal.stdout,
+            )
             self.assertLess(reveal.stdout.index("[ida -> agent]"), reveal.stdout.index("BEGIN"))
             assert_blank_tail(self, reveal.stdout)
             assert_blank_tail(self, reveal.stderr)
             self.assertIn("not yet", reveal.stdout)
             self.assertIn("study how to fail", reveal.stdout.lower())
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
-            self.assertLess(len(reveal.stdout.splitlines()), 16)
+            self.assertLess(len(reveal.stdout.splitlines()), 20)
             for line in render_name(name):
                 if line.strip(" \u200b"):
                     self.assertIn(line, reveal.stdout)
@@ -966,12 +975,25 @@ class IdaRevealTests(unittest.TestCase):
             open_reveal = run(["turn", "idk"])
             self.assertIn("no stored definition", open_reveal.stderr)
             self.assertNotIn("to master a problem", open_reveal.stdout)
+            self.assertIn(
+                "QUESTION: It's called Contingency. <one-line definition you write>. Where to from here?",
+                open_reveal.stdout,
+            )
             self.assertIn("█", open_reveal.stdout)
             again = run(["turn", "deal", "via-negativa"])
             self.assertEqual(again.returncode, 0, again.stderr)
             answered = run(["turn", "strong"])
             self.assertIn("S T R O N G", answered.stdout)
             self.assertIn("N E G A T I V A", answered.stdout)
+            self.assertIn("QUESTION: That's Via negativa. Where to from here?", answered.stdout)
+            partial = run(["turn", "deal", "inversion"])
+            self.assertEqual(partial.returncode, 0, partial.stderr)
+            partial_grade = run(["turn", "partial"])
+            self.assertIn("QUESTION: Close. The idea was Inversion. Where to from here?", partial_grade.stdout)
+            missed = run(["turn", "deal", "inversion"])
+            self.assertEqual(missed.returncode, 0, missed.stderr)
+            miss_grade = run(["turn", "miss"])
+            self.assertIn("QUESTION: The idea was Inversion. Where to from here?", miss_grade.stdout)
             assert_blank_tail(self, answered.stdout)
             self.assertEqual(answered.stderr, "")
             prose = run(["turn", "deal", "inversion"])
@@ -1081,7 +1103,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.5.0")
+        self.assertEqual(plugin["version"], "1.6.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 
