@@ -1,0 +1,223 @@
+{
+  "phylum": "kanon",
+  "subtitle": "how to know what's true",
+  "entries": [
+    {
+      "id": "base-rate-fallacy",
+      "name": "base rate fallacy",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "bayes-theorem",
+      "name": "bayes' theorem",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "central-limit-theorem",
+      "name": "central limit theorem",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 3
+    },
+    {
+      "id": "conditional-probability",
+      "name": "conditional probability",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "confidence-interval",
+      "name": "confidence interval",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 5
+    },
+    {
+      "id": "error-bars",
+      "name": "error bars",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 6
+    },
+    {
+      "id": "false-negative",
+      "name": "false negative",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "false-positive",
+      "name": "false positive",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "frequentists-vs-bayesians",
+      "name": "frequentists vs. bayesians",
+      "category": "probability & statistical inference",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "null-hypothesis",
+      "name": "null hypothesis",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 10
+    },
+    {
+      "id": "p-value",
+      "name": "p-value",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 11
+    },
+    {
+      "id": "power",
+      "name": "power",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 12
+    },
+    {
+      "id": "statistical-significance",
+      "name": "statistical significance",
+      "category": "probability & statistical inference",
+      "practice": "spot",
+      "n": 13
+    },
+    {
+      "id": "data-dredging",
+      "name": "data dredging",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "garbage-in-garbage-out",
+      "name": "garbage in, garbage out",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "meta-analyses",
+      "name": "meta-analyses",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "publication-bias",
+      "name": "publication bias",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "replication-crisis",
+      "name": "replication crisis",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "systematic-review",
+      "name": "systematic review",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "black-swan-events",
+      "name": "black swan events",
+      "category": "uncertainty & distributions",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "fat-tailed-distributions",
+      "name": "fat-tailed distributions",
+      "category": "uncertainty & distributions",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "knightian-uncertainty",
+      "name": "knightian uncertainty",
+      "category": "uncertainty & distributions",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "mean-reversion",
+      "name": "mean reversion",
+      "category": "uncertainty & distributions",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "monte-carlo-simulation",
+      "name": "monte carlo simulation",
+      "category": "uncertainty & distributions",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "crowdsourcing",
+      "name": "crowdsourcing",
+      "category": "forecasting & collective knowledge",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "prediction-market",
+      "name": "prediction market",
+      "category": "forecasting & collective knowledge",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "superforecasters",
+      "name": "superforecasters",
+      "category": "forecasting & collective knowledge",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "unknown-unknowns",
+      "name": "unknown unknowns",
+      "category": "forecasting & collective knowledge",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "map-vs-territory",
+      "name": "map vs. territory",
+      "category": "knowledge & representation",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "signal-vs-noise",
+      "name": "signal vs. noise",
+      "category": "knowledge & representation",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "gell-mann-amnesia",
+      "name": "gell-mann amnesia",
+      "category": "evidence & methodology",
+      "practice": "decide",
+      "n": 31
+    }
+  ]
+}

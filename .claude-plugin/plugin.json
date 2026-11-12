@@ -1,0 +1,12 @@
+{
+  "name": "ida",
+  "displayName": "ida",
+  "version": "1.0.0",
+  "description": "Practice thinking clearly. A short scenario, a named way of thinking, and feedback. Progress stays on your machine.",
+  "author": {
+    "name": "e-bushi",
+    "url": "https://github.com/e-bushi"
+  },
+  "homepage": "https://github.com/e-bushi/ida-skill",
+  "repository": "https://github.com/e-bushi/ida-skill"
+}

@@ -1,0 +1,377 @@
+{
+  "phylum": "systema",
+  "subtitle": "how things connect and ripple",
+  "entries": [
+    {
+      "id": "chateliers-principle",
+      "name": "chatelier's principle",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "compounding",
+      "name": "compounding",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "critical-mass",
+      "name": "critical mass",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 3
+    },
+    {
+      "id": "diminishing-returns",
+      "name": "diminishing returns",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "emergence",
+      "name": "emergence",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 5
+    },
+    {
+      "id": "entropy",
+      "name": "entropy",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 6
+    },
+    {
+      "id": "equilibrium",
+      "name": "equilibrium",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "exponential-growth",
+      "name": "exponential growth",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "feedback-loops",
+      "name": "feedback loops",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "hysteresis",
+      "name": "hysteresis",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "local-optimum-vs-global-optimum",
+      "name": "local optimum vs. global optimum",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "long-tail",
+      "name": "long tail",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "power-law-pareto-principle",
+      "name": "power law / pareto principle",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "systems-thinking",
+      "name": "systems thinking",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "theory-of-constraints",
+      "name": "theory of constraints",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "tipping-point",
+      "name": "tipping point",
+      "category": "systems behavior",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "domino-effect",
+      "name": "domino effect",
+      "category": "networks & cascades",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "flywheel-effect",
+      "name": "flywheel effect",
+      "category": "networks & cascades",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "network-effects",
+      "name": "network effects",
+      "category": "networks & cascades",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "simultaneous-invention",
+      "name": "simultaneous invention",
+      "category": "networks & cascades",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "adverse-selection",
+      "name": "adverse selection",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "bullwhip-effect",
+      "name": "bullwhip effect",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "diminishing-marginal-utility",
+      "name": "diminishing marginal utility",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "externalities",
+      "name": "externalities",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "free-rider-problem",
+      "name": "free rider problem",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "information-asymmetry",
+      "name": "information asymmetry",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "lemon-problem",
+      "name": "lemon problem",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "moral-hazard",
+      "name": "moral hazard",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "multipolar-trap",
+      "name": "multipolar trap",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "principal-agent-problem",
+      "name": "principal-agent problem",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "race-to-the-bottom",
+      "name": "race to the bottom",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "tragedy-of-the-commons",
+      "name": "tragedy of the commons",
+      "category": "incentive structures",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "campbells-law",
+      "name": "campbell's law",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "cobra-effect",
+      "name": "cobra effect",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "goodharts-law",
+      "name": "goodhart's law",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "iatrogenics",
+      "name": "iatrogenics",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "jevons-paradox",
+      "name": "jevons paradox",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "legibility-trap",
+      "name": "legibility trap",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 38
+    },
+    {
+      "id": "murphys-law",
+      "name": "murphy's law",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 39
+    },
+    {
+      "id": "shirky-principle",
+      "name": "shirky principle",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 40
+    },
+    {
+      "id": "wirths-law",
+      "name": "wirth's law",
+      "category": "system pathologies",
+      "practice": "decide",
+      "n": 41
+    },
+    {
+      "id": "antifragile",
+      "name": "antifragile",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 42
+    },
+    {
+      "id": "defense-in-depth",
+      "name": "defense in depth",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 43
+    },
+    {
+      "id": "galls-law",
+      "name": "gall's law",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 44
+    },
+    {
+      "id": "leverage-points",
+      "name": "leverage points",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 45
+    },
+    {
+      "id": "lindy-effect",
+      "name": "lindy effect",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 46
+    },
+    {
+      "id": "single-point-of-failure",
+      "name": "single point of failure",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 47
+    },
+    {
+      "id": "slack",
+      "name": "slack",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 48
+    },
+    {
+      "id": "swiss-cheese-model",
+      "name": "swiss cheese model",
+      "category": "durability & capacity",
+      "practice": "decide",
+      "n": 49
+    },
+    {
+      "id": "conways-law",
+      "name": "conway's law",
+      "category": "software & org systems",
+      "practice": "decide",
+      "n": 50
+    },
+    {
+      "id": "hyrums-law",
+      "name": "hyrum's law",
+      "category": "software & org systems",
+      "practice": "decide",
+      "n": 51
+    },
+    {
+      "id": "linuss-law",
+      "name": "linus's law",
+      "category": "software & org systems",
+      "practice": "decide",
+      "n": 52
+    },
+    {
+      "id": "efficient-market-hypothesis",
+      "name": "efficient market hypothesis",
+      "category": "markets as systems",
+      "practice": "decide",
+      "n": 53
+    }
+  ]
+}

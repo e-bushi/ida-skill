@@ -1,0 +1,300 @@
+{
+  "phylum": "momentum",
+  "subtitle": "how to decide and act",
+  "entries": [
+    {
+      "id": "buridans-ass",
+      "name": "buridan's ass",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 1
+    },
+    {
+      "id": "chestertons-fence",
+      "name": "chesterton's fence",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 2
+    },
+    {
+      "id": "consequence-conviction-matrix",
+      "name": "consequence-conviction matrix",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 3
+    },
+    {
+      "id": "cost-benefit-analysis",
+      "name": "cost-benefit analysis",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 4
+    },
+    {
+      "id": "decision-tree",
+      "name": "decision tree",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 5
+    },
+    {
+      "id": "eisenhower-matrix",
+      "name": "eisenhower matrix",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 6
+    },
+    {
+      "id": "expected-value",
+      "name": "expected value",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 7
+    },
+    {
+      "id": "pro-con-list",
+      "name": "pro-con list",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 8
+    },
+    {
+      "id": "reversible-vs-irreversible-decisions",
+      "name": "reversible vs. irreversible decisions",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 9
+    },
+    {
+      "id": "satisficing",
+      "name": "satisficing",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 10
+    },
+    {
+      "id": "sensitivity-analysis",
+      "name": "sensitivity analysis",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 11
+    },
+    {
+      "id": "utility-values",
+      "name": "utility values",
+      "category": "decision frameworks",
+      "practice": "decide",
+      "n": 12
+    },
+    {
+      "id": "back-of-the-envelope-calculation",
+      "name": "back-of-the-envelope calculation",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 13
+    },
+    {
+      "id": "business-case",
+      "name": "business case",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 14
+    },
+    {
+      "id": "divergent-thinking-vs-convergent-thinking",
+      "name": "divergent thinking vs. convergent thinking",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 15
+    },
+    {
+      "id": "feynman-technique",
+      "name": "feynman technique",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 16
+    },
+    {
+      "id": "first-principles-thinking",
+      "name": "first principles thinking",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 17
+    },
+    {
+      "id": "hanlons-razor",
+      "name": "hanlon's razor",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 18
+    },
+    {
+      "id": "inflation",
+      "name": "inflation",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 19
+    },
+    {
+      "id": "lateral-thinking",
+      "name": "lateral thinking",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 20
+    },
+    {
+      "id": "postels-law",
+      "name": "postel's law",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 21
+    },
+    {
+      "id": "scenario-analysis",
+      "name": "scenario analysis",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 22
+    },
+    {
+      "id": "second-order-thinking",
+      "name": "second-order thinking",
+      "category": "reasoning tools",
+      "practice": "decide",
+      "n": 23
+    },
+    {
+      "id": "bright-spots",
+      "name": "bright spots",
+      "category": "action & execution",
+      "practice": "decide",
+      "n": 24
+    },
+    {
+      "id": "ooda-loop",
+      "name": "ooda loop (observe, orient, decide, act)",
+      "category": "action & execution",
+      "practice": "decide",
+      "n": 25
+    },
+    {
+      "id": "via-negativa",
+      "name": "via negativa",
+      "category": "action & execution",
+      "practice": "decide",
+      "n": 26
+    },
+    {
+      "id": "barbell-strategy",
+      "name": "barbell strategy",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 27
+    },
+    {
+      "id": "circle-of-competence",
+      "name": "circle of competence",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 28
+    },
+    {
+      "id": "goldilocks-principle",
+      "name": "goldilocks principle",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 29
+    },
+    {
+      "id": "kelly-criterion",
+      "name": "kelly criterion",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 30
+    },
+    {
+      "id": "margin-of-safety",
+      "name": "margin of safety",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 31
+    },
+    {
+      "id": "optionality",
+      "name": "optionality",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 32
+    },
+    {
+      "id": "skin-in-the-game",
+      "name": "skin in the game",
+      "category": "risk & uncertainty heuristics",
+      "practice": "decide",
+      "n": 33
+    },
+    {
+      "id": "deep-work",
+      "name": "deep work",
+      "category": "productivity",
+      "practice": "decide",
+      "n": 34
+    },
+    {
+      "id": "eat-the-frog",
+      "name": "eat the frog",
+      "category": "productivity",
+      "practice": "decide",
+      "n": 35
+    },
+    {
+      "id": "pomodoro-technique",
+      "name": "pomodoro technique",
+      "category": "productivity",
+      "practice": "decide",
+      "n": 36
+    },
+    {
+      "id": "two-minute-rule",
+      "name": "two-minute rule",
+      "category": "productivity",
+      "practice": "decide",
+      "n": 37
+    },
+    {
+      "id": "categorical-imperative",
+      "name": "categorical imperative",
+      "category": "ethics",
+      "practice": "decide",
+      "n": 38
+    },
+    {
+      "id": "doctrine-of-double-effect",
+      "name": "doctrine of double effect",
+      "category": "ethics",
+      "practice": "decide",
+      "n": 39
+    },
+    {
+      "id": "trolley-problem",
+      "name": "trolley problem",
+      "category": "ethics",
+      "practice": "decide",
+      "n": 40
+    },
+    {
+      "id": "utilitarianism",
+      "name": "utilitarianism",
+      "category": "ethics",
+      "practice": "decide",
+      "n": 41
+    },
+    {
+      "id": "veil-of-ignorance",
+      "name": "veil of ignorance",
+      "category": "ethics",
+      "practice": "decide",
+      "n": 42
+    }
+  ]
+}
