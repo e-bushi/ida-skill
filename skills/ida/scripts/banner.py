@@ -118,6 +118,69 @@ def _fallback(token: str) -> list[str]:
     return ["■ " + spaced_caps(token)]
 
 
+def question_banner(name: str, max_cols: int = 62) -> list[str]:
+    """Banner rows for the choice box. Each line is at most max_cols.
+
+    Words share a 3-row line while they fit. The next word starts another
+    3-row line. A word this font cannot draw, or that is wider than
+    max_cols, is printed in spaced caps.
+    """
+    words = _words(name.replace(",", " "))
+    if not words:
+        return _wrap_caps(name, max_cols)
+    groups: list[list[str]] = []
+    current: list[str] = []
+    for word in words:
+        drawable = _supported(word) and _width(word) <= max_cols
+        if not drawable:
+            if current:
+                groups.append(current)
+                current = []
+            groups.append([word])
+            continue
+        trial = current + [word]
+        if current and _width(" ".join(trial)) <= max_cols:
+            current = trial
+        else:
+            if current:
+                groups.append(current)
+            current = [word]
+    if current:
+        groups.append(current)
+    lines: list[str] = []
+    for group in groups:
+        word = group[0]
+        if len(group) == 1 and (not _supported(word) or _width(word) > max_cols):
+            lines.extend(_wrap_caps(word, max_cols))
+            continue
+        lines.extend(_raster(" ".join(group)))
+    return lines or _wrap_caps(name, max_cols)
+
+
+def _wrap_caps(text: str, max_cols: int) -> list[str]:
+    raw = spaced_caps(text)
+    if len(raw) <= max_cols:
+        return [raw]
+    lines: list[str] = []
+    current = ""
+    for word in raw.split(" "):
+        if not word:
+            continue
+        if not current:
+            current = word
+        elif len(current) + 1 + len(word) <= max_cols:
+            current = current + " " + word
+        else:
+            lines.append(current)
+            current = word
+        while len(current) > max_cols:
+            lines.append(current[:max_cols])
+            current = current[max_cols:]
+    if current:
+        lines.append(current)
+    return lines or [raw[:max_cols]]
+
+
 def render_name(name: str) -> list[str]:
     """Plain banner lines, each at most 72 columns, at most 3 rows per word."""
     words = _words(name)

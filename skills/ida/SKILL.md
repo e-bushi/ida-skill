@@ -24,15 +24,15 @@ Stdout starts with a line addressed to you, then a line `BEGIN`, then the screen
 
 ## idk
 
-**On idk, paste the lines between BEGIN and END, write how it applies and 3 steps, then call the choice tool. The choice tool question MUST be the exact string printed after `QUESTION:`.**
+**On idk, paste the lines between BEGIN and END, write how it applies and 3 steps, then call the choice tool. The choice tool question is every line after `QUESTION:`, passed as-is with its line breaks.**
 
-Do not ask "Where do you want to go from here?" If the string contains `<one-line definition you write>`, replace only those words with one sentence. Copy the rest unchanged. Strong, partial, and miss use that same rule. Their `QUESTION:` line already names the idea.
+Replace `<one sentence on this scene>` with one sentence tied to the scenario on screen. Never leave that placeholder visible. If `<one-line definition you write>` is still there, replace only those words with one sentence. Do not ask "Where do you want to go from here?" Strong, partial, and miss use their own `QUESTION:` line, which already names the idea.
 
 ## explain
 
 **When they ask for more, or type a question in Other, run `sh ~/.agents/skills/ida/ida turn explain`. Do not grade it. Do not answer in a separate message.**
 
-The next choice tool's question MUST be the exact string after `QUESTION:`. Replace each `<placeholder>` with your words. Keep the idea name the script filled in. If the tool allows line breaks, break after each sentence. Then the options are got it, another angle, next, and menu.
+The next choice tool's question is every line after `QUESTION:`. Pass it as-is, with the real line breaks. Do not collapse it, and do not write a backslash and an n. Replace each `<placeholder>`, including `<one sentence on this scene>`, with your words. Never leave a placeholder visible. Keep the framed name the script printed. Then the options are got it, another angle, next, and menu.
 
 A hint before they answer is `sh ~/.agents/skills/ida/ida turn hint`. That question must not name the idea.
 
@@ -95,7 +95,7 @@ Single select only. Do not turn a menu into checkboxes. One question, and do not
 
 Labels are the spoken names in lowercase: thinking clearly, knowing what's true, blind spots, reading people, playing to win, seeing ripple effects, deciding and acting. Put the percent, or a one-line reason, in the description.
 
-Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After idk, the options are got it, another like this, and menu. After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. On a menu, the tool's question is the exact string after `QUESTION:`, and each option label is one `OPTIONS:` line, including the short description and the progress. On idk, copy every line after `QUESTION:` into the tool, with real line breaks, not a backslash and an n. `QUESTION_BANNER: spaced` means the name is in spaced caps, which is the default because neither Cursor's AskQuestion nor Claude Code's AskUserQuestion keeps a monospace grid in the question. `QUESTION_BANNER: block` is the 3-row banner, used only when `IDA_QUESTION_BANNER=block`. Strong, partial, and miss still use their single `QUESTION:` line, which names the idea. Do not ask "Where do you want to go from here?" or "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
+Use the tool for the seven lanes (plus daily, spot, and surprise me), for the short labels of a multiple-choice card, and for the actions after an answer (next, why, menu, retry, again, done). After idk, the options are got it, another like this, and menu. After a re-explain, the options are got it, another angle, next, and menu. Do not use it for a free-text card. On a menu, the tool's question is the exact string after `QUESTION:`, and each option label is one `OPTIONS:` line, including the short description and the progress. On idk, copy every line after `QUESTION:` into the tool as-is. Keep the real line breaks. Do not collapse the question onto one line, and do not write a backslash and an n. Replace `<one sentence on this scene>` with one sentence tied to the scenario on screen. Never leave that placeholder in the question the person sees. `QUESTION_BANNER: block` is the default: a heavy frame and the 3-row name. `QUESTION_BANNER: spaced` is the fallback when `IDA_QUESTION_BANNER=spaced`. Strong, partial, and miss still use their single `QUESTION:` line, which names the idea. Do not ask "Where do you want to go from here?" or "Clearer now?". On a multiple-choice card the tool's options are the short names only. The fence already showed the question and the full options.
 
 The choice tool is not for a free-text answer. A free-text card, and a profile question, end the reply. The person types. Do not call the tool at all on that card. If they type idk, hint, or skip, treat that as the reply. Do not print a line listing those words.
 
