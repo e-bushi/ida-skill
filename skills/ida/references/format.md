@@ -205,6 +205,15 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
     two.
 ```
 
+When the card is dealt, a status strip sits under the title. Counts come from `~/.ida`. `CARD N / total` appears only when the session length is known. An open-ended sitting stays `CARD N`.
+
+```text
+  01 · T H I N K I N G   C L E A R L Y                            CARD 2 / 5
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  lane  ■■□□□□□□□□□□□□□□  6 / 63 ways      today  ●●○○○      streak 3d
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ```text
   ■■■  S T R O N G
  ​

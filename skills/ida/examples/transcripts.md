@@ -115,6 +115,17 @@ Illustrations. During practice, do not open this file.
   ■ suggested  01, your lightest lane
 ```
 
+## Card status
+
+The strip is computed. This sitting had a known length of 5, six ideas already practiced in the lane, and a 3-day streak.
+
+```text
+  01 · T H I N K I N G   C L E A R L Y                            CARD 2 / 5
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  lane  ■■□□□□□□□□□□□□□□  6 / 63 ways      today  ●●○○○      streak 3d
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## A card
 
 ```text
