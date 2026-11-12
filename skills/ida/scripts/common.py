@@ -25,12 +25,35 @@ HISTORY_CAP = 40
 SUMMARY_LIMIT = 280
 PROMPT_LIMIT = 2000
 
-CARD_WIDTH = 44
-INNER_WIDTH = 40
-BAR_LABEL_WIDTH = 41
+# Sheet width, counting the two-space indent. Rules run to this edge.
+SCREEN_WIDTH = 54
 BAR_BLOCKS = 10
-PHYLUM_WIDTH = 8
-SUBTITLE_WIDTH = 31
+
+# User-facing section names. Ids stay in the library and the progress file.
+DISPLAY_ORDER = (
+    "axiom",
+    "kanon",
+    "bias",
+    "persona",
+    "strategy",
+    "systema",
+    "momentum",
+)
+DISPLAY_NAMES = {
+    "axiom": "thinking clearly",
+    "kanon": "knowing what's true",
+    "bias": "blind spots",
+    "persona": "reading people",
+    "strategy": "playing to win",
+    "systema": "seeing ripple effects",
+    "momentum": "deciding and acting",
+}
+
+# Locked. They rotate on the end-of-session screen only.
+SIGNOFFS = (
+    "Clarity is a competitive edge.",
+    "The people who see clearly win.",
+)
 
 
 def now() -> str:

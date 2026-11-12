@@ -1,124 +1,255 @@
 # Format
 
-`render.py` is the source of truth. Use it. The rules below are for a sitting where Python cannot run. Count characters before you send. Padding is spaces, never tabs. Treat each character as width 1, including the blocks.
+Draw these screens yourself. Do not run `render.py` during a sitting. Put each screen in a `text` fence. The sheet is 54 columns. Copy the spacing, the rules, and the prompt line. Do not add a right border. No emoji.
 
-If the chat uses a proportional font, wrap the block in a fence tagged `text`. In a terminal, print it raw. Do not reflow a rendered block.
+The headline stays on the first question of a first run only:
 
-## Wordmark
-
-```
-  █  █▀▄  ▄▀█
-  █  █▄▀  █▀█
-  reach for clarity
+```text
+  When it gets noisy,
+  you can always reach for clarity.
 ```
 
-The opening kinds:
+Questions 02 and 03 reuse the block. Only the counter changes. There is no letter menu. They answer in their own words.
 
-- `new`: wordmark, blank line, then the intro (tagline, subhead, the three steps, the three questions). No practice menu yet.
-- `ready`: wordmark, the profile line, the menu.
-- `returning`: wordmark, `Welcome back.` plus the welcome line, the menu.
-- `resume`: same as returning, plus `Continue that one, or start fresh.`
+Sign-offs are not on these screens. They rotate on the session sheet only, in this order, and the words stay exact:
 
-Menu, exact:
+1. Clarity is a competitive edge.
+2. The people who see clearly win.
 
-```
-  Practice: [1] a section  [2] pick ideas  [3] random
-```
+Session 1 uses the first. Session 2 uses the second. Then they alternate. One to carry is a sentence in ida's voice. Never attribute it to a real person.
 
-Section list: `All sections are open.` Then `  N  ` + phylum padded to 8 + two spaces + subtitle. Phylum ids stay lowercase.
+## Names
 
-## Cards
+Say the name on the right. The id is only for `ida.py`. Lane numbers follow this order.
 
-Width 44, counting the borders. Inner width 40.
-
-```
-│ <40 characters, space-padded> │
-```
-
-That is: `│`, space, 40 characters, space, `│`.
-
-Top, for a decide card:
-
-```
-┌─ scenario NN <dashes> <phylum> ─┐
-```
-
-`NN` is two digits under 100. The dashes are `─` and the whole line is 44. A spot card puts `<phylum> / spot` in that same slot. If the tag does not fit, drop ` / spot` and put `spot` on the first inner line.
-
-Bottom is `└` + 42 `─` + `┘`.
-
-Wrap the scene on spaces to 40. A single token longer than 40 is cut into 40-character pieces. Blank line between paragraphs, collapsed so you never get two blank lines. One blank line, then the footer. No blank line above the first sentence. No blank line under the footer.
-
-Footer, each sentence wrapped on its own:
-
-- decide, free: `Which way of thinking fits here?` / `Name it and apply it in a sentence or two.` / `Type "idk" anytime.`
-- spot, free: `What is this called?` / `The name is enough. Add a few words if you want.` / `Type "idk" anytime.`
-- decide, choice: `Which one fits? A number is enough.` / `Add a sentence if you want.` / `Type "idk" anytime.`
-- spot, choice: `Which name fits? A number is enough.` / `Type "idk" anytime.`
-
-Options go after the scene, before the footer, with a blank line on each side. `1  ` then the name. Continuation lines indent three spaces. At most 9 options. This skill uses 4.
-
-Sample decide card:
-
-```
-┌─ scenario 04 ───────────────── strategy ─┐
-│ Your biggest customer asks for a custom  │
-│ feature only they would use. They pay    │
-│ 40% of your revenue.                     │
-│                                          │
-│ Which way of thinking fits here?         │
-│ Name it and apply it in a sentence or    │
-│ two.                                     │
-│ Type "idk" anytime.                      │
-└──────────────────────────────────────────┘
-```
-
-## Feedback
-
-Not a box. No line longer than 44.
-
-- strong: `✓ <name>: strong pick.`
-- partial: `~ <name>: partial.`
-- miss: `✗ <name>: miss.`
-- idk: `? <name>.`
-
-Names stay in library lowercase. Comment lines are the rest of the feedback, wrapped to 42 and indented two spaces.
-
-```
-✓ second-order thinking: strong pick.
-  You saw the roadmap cost. Also consider
-  inversion: what would make losing them
-  survivable?
-```
+| id | name |
+| --- | --- |
+| `axiom` | thinking clearly |
+| `kanon` | knowing what's true |
+| `bias` | blind spots |
+| `persona` | reading people |
+| `strategy` | playing to win |
+| `systema` | seeing ripple effects |
+| `momentum` | deciding and acting |
 
 ## Bars
 
-One width for every row. Label column 41, two spaces, 10 blocks, two spaces, the count right-aligned in 7 (`8/103`, `24/81`).
+Ten cells, always. A strong idea counts as 1. A partial idea counts as half. An idk or a miss adds nothing. The score is the percent of the section that credit represents, rounded. A lane with no credit yet says `new`, not `0%` and not `1/81`.
 
-A phylum label is the id padded to 8, two spaces, the subtitle padded to 31. A category label is the category name padded to 41. Blocks are `█` and `░`. Filled count is `(well * 10 + total // 2) // total`. If they have at least one strong and that rounds to 0, show one block. If every idea in the slice has a strong, show ten.
+Each cell is one tenth of the section. Full tenths are █. Any remainder, including the first small bit of credit, is ▒. The rest are ░. One strong idea in a section of 81 is `1%` and a single half cell.
 
-`well` is how many ideas in that slice have been strong at least once. `total` is how many ideas the slice has. Partials, misses, and idk do not fill a block.
+On a STRONG screen the lane line ends with `+1`. On a PARTIAL screen it ends with `+0.5`.
 
-```
-axiom     how to think clearly             ░░░░░░░░░░    0/103
-strategy  how to win when others play too  ███░░░░░░░    24/81
-```
+## First run
 
-After a card, show the active slice only. At the end of a sitting, show all seven sections.
+```text
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## Summary
+  When it gets noisy,
+  you can always reach for clarity.
 
-Rules are width 44. The top is `── session ` filled with `─`. The bottom is 44 `─`. Content lines wrap at 44 and are not padded.
 
-Put the counts on one line when they fit: `6 scenarios · 4 strong · 1 partial · 1 idk`. Always include strong. Omit a grade that is zero, except strong. One scenario uses the singular. Zero scenarios is `No scenarios this time.`
+  ■ first session · 3 quick questions · about a minute
 
-```
-── session ─────────────────────────────────
-6 scenarios · 4 strong · 1 partial · 1 idk
-Sharpest: inversion
-Revisit: sunk cost fallacy
-Next time: pick up in strategy
-────────────────────────────────────────────
+  ────────────────────────────────────────────────────
+  01 / 03                      WHAT DO YOU DO FOR WORK
+
+  › your own words
 ```
 
-Sharpest is the idea they hit strong most often this sitting, else `none yet`. Revisit is the latest idea that was partial, miss, or idk, else `nothing due`. Next time is `pick up in <section or category>`, `pick up at random`, or `pick up the ideas you chose`.
+```text
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ────────────────────────────────────────────────────
+  02 / 03               WHAT ARE YOU INTO BESIDES THAT
+
+  › your own words
+```
+
+## Menu
+
+```text
+  ida · practice                            SESSION 04
+  ────────────────────────────────────────────────────
+
+  pick a lane
+
+
+  01   thinking clearly        ░░░░░░░░░░   new
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ░░░░░░░░░░   new
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ░░░░░░░░░░   new
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
+
+
+  ■ suggested  01, your lightest lane
+
+  › a number, or "surprise me"
+```
+
+`suggested` is the lightest lane, the lowest percent, earliest number on a tie.
+
+## Card
+
+```text
+  05 · PLAYING TO WIN                          CARD 02
+  ┃
+  ┃  A seed-stage startup offers you a role. The
+  ┃  equity is generous, the salary is 30% lower,
+  ┃  and the founder says they'll raise in six
+  ┃  months.
+  ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ■ THE QUESTION
+
+    Which way of thinking fits here? Name it and apply
+    it in a sentence or two.
+
+
+  › your answer · "hint" · "idk" · "skip"
+```
+
+A spot card asks "What is this called?" and the prompt is `› the name · "idk" · "skip"`. Choice mode numbers the options and the prompt is `› a number · "idk" · "skip"`.
+
+## Strong
+
+```text
+  ■■■  STRONG
+  ────────────────────────────────────────────────────
+
+  You asked what happens if the raise doesn't come,
+  and you priced the downside before the upside.
+  That's the move.
+
+  what you reached for    downside first, base rates
+  one level deeper        most seed rounds slip, so
+                          plan for 12 months, not 6
+
+  05   playing to win          ▒░░░░░░░░░    4%   +1
+
+  › "next" · "why" · "menu"
+```
+
+## Partial
+
+```text
+  ■■□  PARTIAL
+  ────────────────────────────────────────────────────
+
+  what you reached for    the meeting place
+  what was missing        what each side expects the
+                          other to expect
+  try it                  Say the place, then say why
+                          both would pick it.
+
+  05   playing to win          ▒░░░░░░░░░    1%   +0.5
+
+  › "retry" · "next" · "show me"
+```
+
+## Not yet
+
+idk and a miss both use this header. The file still stores them apart.
+
+```text
+  □□□  NOT YET
+  ────────────────────────────────────────────────────
+
+  Saying so is the honest start. Here's one way in.
+
+  01  name the bad case       the raise does not come
+  02  price that year         salary gap times twelve
+  03  then decide             only if that year is
+                              survivable
+
+  Name the failure before you admire the offer.
+
+  › "got it" · "another like this" · "menu"
+```
+
+## Lanes
+
+```text
+  LANES
+  01   thinking clearly        ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    1%
+```
+
+## Session
+
+```text
+  ida · session 04 complete                12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  5 cards     ■■■ 3     ■■□ 1     □□□ 1
+
+
+  LANES
+  01   thinking clearly        ▒░░░░░░░░░    1%
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ▒░░░░░░░░░    1%
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    4%
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
+
+
+  WHAT YOU REACHED FOR
+  · downside first   · base rates
+
+
+  ONE TO CARRY
+  Price the bad case before you fall for the good one.
+
+
+  ────────────────────────────────────────────────────
+  Clarity is a competitive edge.
+
+  › "again" · "menu" · "done"
+```
+
+The other sign-off, on the next session:
+
+```text
+  ida · session 05 complete                12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  5 cards     ■■■ 3     ■■□ 1     □□□ 1
+
+
+  LANES
+  01   thinking clearly        ▒░░░░░░░░░    1%
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ▒░░░░░░░░░    1%
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    4%
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
+
+
+  WHAT YOU REACHED FOR
+  · downside first
+
+
+  ONE TO CARRY
+  Name the idea, then say what it changes here.
+
+
+  ────────────────────────────────────────────────────
+  The people who see clearly win.
+
+  › "again" · "menu" · "done"
+```
+
+## Machine line
+
+`python3 "$IDA/scripts/ida.py" open` prints one line. Do not show it.
+
+`NEW|bars|axiom:0:0:103,...` means the first run. `READY` means the profile exists. `BACK|Last time: ...|bars|...` is the menu. `RESUME|Last time: ...|bars|...` is an unfinished card.
+
+Each bar field is `id:strong:partial:total`. Draw the bar from the rule above.

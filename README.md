@@ -62,6 +62,24 @@ Say "practice with ida".
 
 Progress stays in `~/.ida/progress.json` on your machine.
 
+A first run looks like this:
+
+```text
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  When it gets noisy,
+  you can always reach for clarity.
+
+
+  ■ first session · 3 quick questions · about a minute
+
+  ────────────────────────────────────────────────────
+  01 / 03                      WHAT DO YOU DO FOR WORK
+
+  › your own words
+```
+
 ## A session
 
 The first time, ida asks what you do, what you are into, and what decisions keep showing up. After that it remembers. Say "update my profile" when that changes.

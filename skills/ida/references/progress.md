@@ -4,6 +4,8 @@ Version 1. Path: `~/.ida/progress.json`. The directory is created on the first l
 
 These operations are the memory API. The script is the file adapter. A later server should accept the same inputs and return the same outputs. Practice code calls the operations. It does not invent a second writer, and this version does not call a network.
 
+A sitting does not call this script. It calls `scripts/ida.py`, which uses these operations. `open` prints one line. `save`, `profile`, and `end` print nothing. Version 1 files load unchanged. Nothing is dropped. Welcome lines use the spoken section names. The stored ids do not change.
+
 | Operation | Command |
 | --- | --- |
 | loadProgress | `progress.py load` |

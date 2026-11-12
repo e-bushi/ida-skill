@@ -91,11 +91,13 @@ Scene: "The build passed. If the build passes, we can ship. So we can ship."
 
 Also check:
 
-- First run asks the three profile questions and does not start a card before saving them.
-- Returning run shows the wordmark, where they left off, and the three practice choices.
+- First run asks the three profile questions, in the 01 / 02 / 03 blocks, and does not start a card before saving them.
+- Returning run goes to the menu, or to resume, with no tagline.
+- Sections use the spoken names (playing to win, blind spots, and the rest), not the ids.
 - Random does not repeat an id from the last few scenarios when others are available.
 - Choice mode accepts a bare correct number as strong. Free text still wants a sentence on the stake for strong.
 - `idk` teaches in about two sentences and does not fill the bar.
-- Cards in one sitting share a width. Bars in one printout share a width.
+- Screens stay within 54 columns and follow the sheet: heavy rule, thin rule, card rail, and a `›` prompt. Bars are 10 cells with a percent, or `new`, not a fraction like 1/81.
+- On screen the grades are STRONG, PARTIAL, and NOT YET. The session sheet rotates "Clarity is a competitive edge." and "The people who see clearly win."
 - Nothing the user reads says "mental models" or uses an em dash.
-- The wordmark reads as lowercase ida.
+- The wordmark reads as lowercase ida, marked with ■.
