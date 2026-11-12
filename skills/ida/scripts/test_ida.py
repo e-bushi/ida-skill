@@ -241,13 +241,7 @@ class RenderTests(unittest.TestCase):
         )
         not_yet = render.feedback_not_yet(
             "inversion",
-            "Saying so is the honest start. Here's one way in.",
-            [
-                ("name the bad case", "the raise does not come"),
-                ("price that year", "salary gap times twelve"),
-                ("then decide", "only if that year is survivable"),
-            ],
-            "Name the failure before you admire the offer.",
+            "to master a problem, study how to fail at it, then refuse to.",
         )
         bars = render.bars(
             [
@@ -691,8 +685,8 @@ class IdaCommandTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(opened.returncode, 0, opened.stderr)
-            self.assertEqual(len(opened.stdout.strip().splitlines()), 1)
-            opened_info = json.loads(opened.stdout)
+            self.assertEqual(opened.stdout.splitlines()[-1], " \u200b")
+            opened_info = json.loads(opened.stdout.splitlines()[0])
             self.assertEqual(opened_info["kind"], "new")
             self.assertEqual(opened_info["bars"]["axiom"][0], 0)
             quiet = subprocess.run(
@@ -722,7 +716,8 @@ class IdaCommandTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(nxt.returncode, 0, nxt.stderr)
-            fields = json.loads(nxt.stdout)
+            self.assertEqual(nxt.stdout.splitlines()[-1], " \u200b")
+            fields = json.loads(nxt.stdout.splitlines()[0])
             self.assertEqual(fields["section"], "playing to win")
             self.assertNotIn("\t", nxt.stdout)
             saved = subprocess.run(
@@ -749,7 +744,7 @@ class IdaCommandTests(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertEqual(json.loads(again.stdout)["bars"]["strategy"][0], 0)
+            self.assertEqual(json.loads(again.stdout.splitlines()[0])["bars"]["strategy"][0], 0)
             strong = subprocess.run(
                 [PY, str(SCRIPTS / "ida.py"), "--path", str(path), "next", "--phylum", "strategy", "--seed", "2"],
                 text=True,
@@ -779,7 +774,7 @@ class IdaCommandTests(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertEqual(json.loads(after.stdout)["bars"]["strategy"][0], 1)
+            self.assertEqual(json.loads(after.stdout.splitlines()[0])["bars"]["strategy"][0], 1)
 
     def test_turn_is_one_command_and_help_is_one_line(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -796,35 +791,38 @@ class IdaCommandTests(unittest.TestCase):
             self.assertEqual(opening.returncode, 0, opening.stderr)
             self.assertIn("01 / 03", opening.stdout)
             self.assertNotIn("\033", opening.stdout)
-            self.assertEqual(len(opening.stderr.strip().splitlines()), 1)
-            self.assertEqual(json.loads(opening.stderr)["screen"], "opening")
-            run(["turn"], {"answer": "designer"})
-            run(["turn"], {"answer": "climbing"})
-            menu = run(["turn"], {"answer": "what to ship"})
+            self.assertEqual(opening.stderr, "")
+            self.assertEqual(opening.stdout.splitlines()[-1], " \u200b")
+            run(["turn", "designer"])
+            run(["turn", "climbing"])
+            menu = run(["turn", "what to ship"])
             self.assertIn("pick a lane", menu.stdout)
-            card = run(["turn", "1"])
+            self.assertEqual(menu.stdout.splitlines()[-1], " \u200b")
+            deal = "sh ~/.agents/skills/ida/ida turn deal inversion"
+            self.assertLessEqual(len(deal), 48)
+            card = run(["turn", "deal", "inversion"])
             self.assertEqual(card.returncode, 0, card.stderr)
-            info = json.loads(card.stderr)
-            self.assertEqual(info["screen"], "card")
+            self.assertEqual(card.stderr.splitlines()[0], "inversion")
+            self.assertEqual(card.stderr.splitlines()[-1], " \u200b")
             self.assertIn("SCENE", card.stdout)
-            self.assertNotIn("\t", card.stderr)
-            reveal = run(
-                ["turn", "idk"],
-                {
-                    "summary": "they could not name it",
-                    "explain": "Two sentences on the idea, tied to this stake.",
-                    "moves": [["name it", "say the name"], ["apply it", "one change"], ["keep it", "one sentence"]],
-                    "closing": "Name the idea, then say what it changes here.",
-                },
-            )
+            self.assertIn("T H E   Q U E S T I O N", card.stdout)
+            self.assertNotIn("study how to fail", card.stdout.lower())
+            reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
             self.assertEqual(reveal.returncode, 0, reveal.stderr)
             self.assertIn("█", reveal.stdout)
             self.assertIn("not yet", reveal.stdout)
+            self.assertIn("study how to fail", reveal.stdout.lower())
+            self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
+            self.assertNotIn("FROM STDIN", reveal.stdout)
             self.assertNotIn("\033", reveal.stdout)
-            self.assertEqual(json.loads(reveal.stderr)["screen"], "idk")
+            self.assertNotIn("{", reveal.stderr)
+            self.assertIn("three steps", reveal.stderr)
+            self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
+            self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
             helped = run(["show", "card", "--help"])
             self.assertNotEqual(helped.returncode, 0)
-            self.assertEqual(helped.stderr.strip().splitlines(), ["commands are in references/commands.md"])
+            self.assertEqual(helped.stderr.splitlines()[0], "commands are in references/commands.md")
+            self.assertEqual(helped.stderr.splitlines()[-1], " \u200b")
             self.assertEqual(helped.stdout, "")
             typed = run(["turn", "--typed"])
             self.assertIn("›", typed.stdout)
@@ -836,12 +834,27 @@ class ShimTests(unittest.TestCase):
     def test_one_command_and_shim_accepts_python(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sh ~/.agents/skills/ida/ida turn", skill)
+        self.assertIn("MUST paste the full reveal screen verbatim", skill)
+        self.assertIn("before anything else", skill)
+        self.assertIn("heredoc", skill)
+        self.assertIn("file-edit", skill)
+        self.assertNotIn("/tmp/ida-screen.json", skill)
         self.assertNotIn("command -v", skill)
         self.assertNotIn("||", skill)
         self.assertNotIn("&&", skill)
+        for line in skill.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("sh ~/.agents/skills/ida/ida "):
+                self.assertLessEqual(len(stripped), 48, stripped)
+                self.assertNotIn(" the ", stripped)
+        commands = (ROOT / "references" / "commands.md").read_text(encoding="utf-8")
+        self.assertIn("heredoc", commands)
+        self.assertIn("Do not pipe stdin.", commands)
+        self.assertNotIn("/tmp/ida-screen.json", commands)
         checklist = (ROOT / "evals" / "checklist.md").read_text(encoding="utf-8")
         self.assertIn("no chained fallbacks", checklist)
         self.assertIn("command -v", checklist)
+        self.assertIn("No temp file.", checklist)
         shim = ROOT / "ida"
         with tempfile.TemporaryDirectory() as tmp:
             env = os.environ.copy()
@@ -853,9 +866,9 @@ class ShimTests(unittest.TestCase):
                 self.assertIn("01 / 03", proc.stdout)
                 self.assertNotIn("SyntaxError", proc.stderr)
                 self.assertNotIn("Traceback", proc.stderr)
-                self.assertEqual(len(proc.stderr.strip().splitlines()), 1)
-                info = json.loads(proc.stderr)
-                self.assertEqual(info["screen"], "opening")
+                self.assertEqual(proc.stderr, "")
+                self.assertEqual(proc.stdout.splitlines()[-1], " \u200b")
+                self.assertIn("01 / 03", proc.stdout)
 
 
 class IdaRevealTests(unittest.TestCase):
@@ -878,24 +891,49 @@ class IdaRevealTests(unittest.TestCase):
                     check=False,
                 )
 
-            run(["turn"], {"answer": "designer"})
-            run(["turn"], {"answer": "climbing"})
-            self.assertEqual(run(["turn"], {"answer": "shipping"}).returncode, 0)
-            card = run(["turn", "1"])
+            run(["turn", "designer"])
+            run(["turn", "climbing"])
+            self.assertEqual(run(["turn", "shipping"]).returncode, 0)
+            name = "inversion"
+            card = run(["turn", "deal", name])
             self.assertEqual(card.returncode, 0, card.stderr)
-            name = json.loads(card.stderr)["name"]
-            reveal = run(["turn", "idk"])
+            self.assertIn("SCENE", card.stdout)
+            self.assertEqual(card.stderr.splitlines()[0], name)
+            reveal = run(["turn", "idk"], {"explain": "FROM STDIN"})
             self.assertEqual(reveal.returncode, 0, reveal.stderr)
-            info = json.loads(reveal.stderr)
-            self.assertEqual(info["screen"], "idk")
-            self.assertEqual(info["name"], name)
-            self.assertEqual(info.get("fill"), "explain")
+            self.assertNotIn("FROM STDIN", reveal.stdout + reveal.stderr)
+            self.assertNotIn("{", reveal.stderr)
+            self.assertIn("three steps", reveal.stderr.splitlines()[0])
+            self.assertEqual(reveal.stdout.splitlines()[-1], " \u200b")
+            self.assertEqual(reveal.stderr.splitlines()[-1], " \u200b")
             self.assertIn("not yet", reveal.stdout)
+            self.assertIn("study how to fail", reveal.stdout.lower())
+            self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
+            self.assertLess(len(reveal.stdout.splitlines()), 16)
             for line in render_name(name):
                 if line.strip(" \u200b"):
                     self.assertIn(line, reveal.stdout)
             self.assertLessEqual(max(len(line) for line in render_name(name)), 72)
             self.assertEqual(len(render_name("or")), 3)
+            bare = run(["turn", "deal", "contingency"])
+            self.assertEqual(bare.stderr.splitlines()[0], "contingency")
+            open_reveal = run(["turn", "idk"])
+            self.assertIn("no stored definition", open_reveal.stderr)
+            self.assertNotIn("to master a problem", open_reveal.stdout)
+            self.assertIn("█", open_reveal.stdout)
+            again = run(["turn", "deal", "via-negativa"])
+            self.assertEqual(again.returncode, 0, again.stderr)
+            answered = run(["turn", "strong"])
+            self.assertIn("S T R O N G", answered.stdout)
+            self.assertIn("N E G A T I V A", answered.stdout)
+            self.assertEqual(answered.stdout.splitlines()[-1], " \u200b")
+            self.assertEqual(answered.stderr, "")
+            prose = run(["turn", "deal", "inversion"])
+            ignored = run(["turn", "Cut the sections nobody reads."])
+            self.assertIn("SCENE", ignored.stdout)
+            self.assertNotIn("S T R O N G", ignored.stdout)
+            self.assertIn("use strong partial miss or idk", ignored.stderr)
+            self.assertEqual(prose.returncode, 0)
 
 
 class ColorAndBannerTests(unittest.TestCase):
@@ -994,7 +1032,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["source"], "./")
         self.assertNotIn("skills", entry)
         self.assertEqual(plugin["name"], "ida")
-        self.assertEqual(plugin["version"], "1.2.0")
+        self.assertEqual(plugin["version"], "1.4.0")
         self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
         self.assertNotIn("skills", plugin)
 

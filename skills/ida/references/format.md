@@ -1,16 +1,16 @@
 # Format
 
-`sh ~/.agents/skills/ida/ida turn` prints the screen in plain text on stdout. One command. No fallback chain. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The flags are in `references/commands.md`.
+`sh ~/.agents/skills/ida/ida turn` prints the screen in plain text on stdout. One command. No fallback chain. After every turn, paste that stdout verbatim into a `text` fence in the chat reply. Every time. Every host. One shell command per user message. Never `--help`. The arguments are in `references/commands.md`.
 
-Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Stderr is one JSON line for the agent. It is not part of the fence.
+Tool output is not the screen. Warp hides it behind "output lines hidden", so an idk banner that exists only in the tool log never appears. The fence includes the full banner and every spacer line, with no ANSI codes. Do not paste stderr.
 
-A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji.
+A spacer looks blank and is not an empty line. One spacer separates related lines. Two spacers separate unrelated blocks. The sheet is 76 columns. Rules are 72 characters after a 2-space indent. No emoji. Every command that prints ends with one more spacer, so the collapsed tail is empty.
 
-Do not pass the scene, the explanation, or the steps as command flags. Write `/tmp/ida-screen.json` and run `sh ~/.agents/skills/ida/ida turn idk < /tmp/ida-screen.json`.
+Commands stay short. No prose on the command line. `ida turn deal <id>` or `ida turn next` saves the idea. The card frame prints the word SCENE. In the reply, replace that word with the scene you write. `ida turn idk` prints the banner and the library definition when one is stored. Under that fence, write how it applies to the scene and three steps. If no definition was printed, write the definition there too. Do not write a temp file. Do not use a heredoc. Do not pipe stdin. Do not use a file-edit tool.
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
-The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `sh ~/.agents/skills/ida/ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes the frame, `■ T H E   Q U E S T I O N`, and the question text, and a multiple-choice card also includes the numbered options. The command leaves the word SCENE in the rail. The reply replaces SCENE with the scene and keeps the question. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `sh ~/.agents/skills/ida/ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
 The headline stays on the first question of a first run only:
 
@@ -46,7 +46,7 @@ Twenty cells. A strong idea counts as 1. A partial counts as half. idk and miss 
 
 ## Hosts
 
-Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line. That is why the reply fence is required even when you also see color. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
+Claude Code, Warp, and Cursor may show command output, and they may not. Warp collapses a long block to "output lines hidden" and leaves the last line as a dim preview. That last line is a spacer, so the preview is empty. The reply fence is still required. On idk the fence is the whole reveal, and it comes before the choice tool. Leave `IDA_COLOR` unset so stdout stays plain and can be pasted. Set it only if you still paste the plain fence.
 
 ```bash
 sh ~/.agents/skills/ida/ida turn idk
@@ -204,19 +204,7 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   ▄█▄░█░█░ ▀░ █▄▄░█░█░▀▄▀░▄█▄░▀▄▀░█░█░
  ​
  ​
-  Saying so is the honest start. Here's one way in.
- ​
- ​
-  ────────────────────────────────────────────────────────────────────────
- ​
-  01  name the bad case  the raise does not come
- ​
-  02  price that year   salary gap times twelve
- ​
-  03  then decide       only if that year is survivable
- ​
- ​
-  Name the failure before you admire the offer.
+  to master a problem, study how to fail at it, then refuse to.
 ```
 
 ```text
@@ -326,4 +314,4 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
 
 ## Machine line
 
-`ida.py open` still prints one machine line for you. Do not show it. `ida.py show` is what the person sees.
+A sitting runs `ida turn` only. `open` and `next` print one JSON line for tests, then a spacer. Do not show that JSON.

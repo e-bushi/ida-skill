@@ -218,6 +218,7 @@ def card(
     options: list[str] | None = None,
     total: int | None = None,
     signoff_index: int = 0,
+    nudge: str = "",
     typed: bool = False,
 ) -> str:
     del signoff_index
@@ -246,6 +247,11 @@ def card(
             for piece_index, piece in enumerate(wrap(name, 66)):
                 prefix = f"    {index}  " if piece_index == 0 else "       "
                 lines.append(prefix + piece)
+    if nudge.strip():
+        lines.extend(gap(2))
+        lines.append("  ■ " + spaced("a nudge"))
+        lines.extend(gap(1))
+        lines.extend(_prose(nudge.strip()))
     if mode == "choice":
         choices(lines, '  › a number · "idk" · "skip"', typed)
     return _check(lines)
@@ -331,19 +337,16 @@ def reveal_banner(name: str) -> str:
     return _check(lines)
 
 
-def feedback_not_yet(name: str, explain: str, steps: list[tuple[str, str]], closing: str, typed: bool = False) -> str:
+def feedback_not_yet(name: str, definition: str = "", typed: bool = False) -> str:
+    """Banner, and the library definition when this idea has one.
+
+    The scenario-specific explanation and the three steps are written in
+    the reply, under this screen. They are not printed here.
+    """
     lines = reveal_banner(name).split("\n")
-    lines.extend(gap(2))
-    lines.extend(_prose(explain))
-    lines.extend(gap(2))
-    lines.append(thin())
-    lines.extend(gap(1))
-    for index, (title, detail) in enumerate(steps, start=1):
-        if index > 1:
-            lines.extend(gap(1))
-        lines.extend(_field(f"{index:02d}  {title}", detail))
-    lines.extend(gap(2))
-    lines.extend(_prose(closing))
+    if definition.strip():
+        lines.extend(gap(2))
+        lines.extend(_prose(definition.strip()))
     choices(lines, '  › "got it" · "another like this" · "menu"', typed)
     return _check(lines)
 
@@ -368,13 +371,7 @@ def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: st
         return feedback_strong(text, name, text, phylum, 1, 0, 81, typed=typed)
     if result == "partial":
         return feedback_partial(name, text, text, phylum, 0, 1, 81, typed=typed)
-    return feedback_not_yet(
-        name,
-        "Saying so is the honest start. Here's one way in. " + text,
-        [("name it", name), ("apply it", text), ("keep it", "one sentence on the stake")],
-        "Name the idea, then say what it changes here.",
-        typed=typed,
-    )
+    return feedback_not_yet(name, text or "", typed=typed)
 
 
 def summary_block(
