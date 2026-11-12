@@ -497,9 +497,26 @@ class PickTests(unittest.TestCase):
             self.assertEqual({entry["category"] for entry in body["intended"]}, {"game theory"})
 
 
+class ManifestTests(unittest.TestCase):
+    def test_plugin_manifests_point_at_the_skill(self):
+        marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+        plugin = json.loads((REPO / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        self.assertEqual(marketplace["name"], "ida-skill")
+        self.assertEqual(marketplace["owner"]["name"], "e-bushi")
+        self.assertEqual(len(marketplace["plugins"]), 1)
+        entry = marketplace["plugins"][0]
+        self.assertEqual(entry["name"], "ida")
+        self.assertEqual(entry["source"], "./")
+        self.assertNotIn("skills", entry)
+        self.assertEqual(plugin["name"], "ida")
+        self.assertEqual(plugin["version"], "1.0.0")
+        self.assertTrue((REPO / "skills" / "ida" / "SKILL.md").is_file())
+        self.assertNotIn("skills", plugin)
+
+
 class ProseTests(unittest.TestCase):
     def test_no_em_dash_outside_the_source_csv(self):
-        roots = [REPO / "README.md", ROOT]
+        roots = [REPO / "README.md", REPO / ".claude-plugin", ROOT]
         for root in roots:
             paths = [root] if root.is_file() else [path for path in root.rglob("*") if path.is_file()]
             for path in paths:
@@ -530,6 +547,10 @@ class ProseTests(unittest.TestCase):
         self.assertIn("~/.claude/skills", readme)
         self.assertIn("~/.cursor/skills", readme)
         self.assertIn("~/.ida/progress.json", readme)
+        self.assertIn("/plugin marketplace add e-bushi/ida-skill", readme)
+        self.assertIn("/plugin install ida@ida-skill", readme)
+        self.assertIn("npx skills add e-bushi/ida-skill", readme)
+        self.assertIn("/ida:ida", readme)
         self.assertIn("#111316", readme)
         self.assertIn("#EDEAE4", readme)
         self.assertIn("#0A84FF", readme)

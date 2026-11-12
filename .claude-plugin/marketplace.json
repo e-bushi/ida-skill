@@ -1,0 +1,15 @@
+{
+  "name": "ida-skill",
+  "description": "ida, a practice skill for thinking clearly.",
+  "owner": {
+    "name": "e-bushi",
+    "url": "https://github.com/e-bushi"
+  },
+  "plugins": [
+    {
+      "name": "ida",
+      "source": "./",
+      "description": "Practice thinking clearly. A short scenario, a named way of thinking, and feedback. Progress stays on your machine."
+    }
+  ]
+}

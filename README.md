@@ -12,35 +12,55 @@ ida is a practice skill for thinking clearly. Your agent writes a realistic scen
 
 ## Install
 
-The skill is the `skills/ida` folder. Copy that folder into a skills directory. The folder name should stay `ida`.
+### Claude Code
 
-Claude Code, for every project on this machine:
+In a session:
 
-```bash
-mkdir -p ~/.claude/skills
-cp -R skills/ida ~/.claude/skills/ida
+```text
+/plugin marketplace add e-bushi/ida-skill
+/plugin install ida@ida-skill
 ```
 
-Cursor, for every project on this machine:
+`/plugin install` opens the plugin panel so you can confirm. From a shell, the same names are `claude plugin marketplace add e-bushi/ida-skill` and `claude plugin install ida@ida-skill`.
 
-```bash
-mkdir -p ~/.cursor/skills
-cp -R skills/ida ~/.cursor/skills/ida
+One line, on Claude Code 2.1.275 or later:
+
+```text
+/plugin install ida --marketplace e-bushi/ida-skill
 ```
 
-A project-only copy works too: `.claude/skills/ida` or `.cursor/skills/ida`. Cursor also reads `.agents/skills/ida`.
+The shell form of that line needs 2.1.292 or later: `claude plugin install ida --marketplace e-bushi/ida-skill`.
 
-Other agents that load a `SKILL.md` from a skills folder can use the same copy. Codex looks in `~/.codex/skills/`.
-
-If your machine can read this repo:
+### Cursor and other agents
 
 ```bash
-npx skills add e-bushi/ida-skill --skill ida
+npx skills add e-bushi/ida-skill
 ```
 
-The repo is private. Copying the folder does not need that command.
+Add `-g` to install it for every project. The skills CLI finds `skills/ida`.
 
-Then start a session with "practice with ida", "sharpen my thinking", or `/ida`.
+### Copy the folder
+
+```bash
+git clone https://github.com/e-bushi/ida-skill.git
+mkdir -p ~/.claude/skills ~/.cursor/skills
+cp -R ida-skill/skills/ida ~/.claude/skills/ida
+cp -R ida-skill/skills/ida ~/.cursor/skills/ida
+```
+
+One of those copies is enough.
+
+### Download a release
+
+On the Releases page, download Source code (zip), unzip it, and copy `skills/ida` the same way as above.
+
+## Start
+
+Say "practice with ida".
+
+`/ida` is the command for a copied folder and for `npx skills`. The Claude Code plugin command is `/ida:ida`.
+
+Progress stays in `~/.ida/progress.json` on your machine.
 
 ## A session
 
