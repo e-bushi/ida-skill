@@ -85,26 +85,27 @@ class LibraryTests(unittest.TestCase):
 
 
 class RenderTests(unittest.TestCase):
-    def test_cards_stay_within_56_and_end_on_a_prompt(self):
+    def test_cards_stay_within_54_and_end_on_a_prompt(self):
         for phylum in render.DISPLAY_ORDER:
             for practice in ("decide", "spot"):
                 text = render.card(4, phylum, "A short scene with a real stake.", practice=practice)
-                self.assertTrue(all(len(line) <= 56 for line in text.splitlines()), text)
-                self.assertEqual(text.splitlines()[-1], "│ ›")
+                self.assertTrue(all(len(line) <= 54 for line in text.splitlines()), text)
+                self.assertTrue(text.strip().endswith('"skip"'))
                 self.assertNotIn("✓", text)
                 self.assertIn(render.display_name(phylum).upper(), text)
+                self.assertIn("┃", text)
         long_name = "commutative / associative / distributive laws"
         text = render.card(
             8,
             "axiom",
-            "A long label has to wrap inside the rail.",
+            "A long label has to wrap inside the card.",
             practice="spot",
             mode="choice",
             options=[long_name, "tautology", "contradiction", "validity"],
         )
-        self.assertTrue(all(len(line) <= 56 for line in text.splitlines()))
+        self.assertTrue(all(len(line) <= 54 for line in text.splitlines()))
         self.assertIn("commutative", text)
-        self.assertNotIn("┐", text)
+        self.assertNotIn("Clarity is a competitive edge.", text)
 
     def test_bars_are_ten_cells_and_partials_are_half(self):
         empty, pct = render.bar_cells(0, 0, 81)
@@ -126,13 +127,21 @@ class RenderTests(unittest.TestCase):
         untouched, pct = render.bar_cells(0, 0, 62)
         self.assertEqual(set(untouched), {"░"})
         self.assertEqual(pct, 0)
-        lines = [render.bar_line(phylum, 1, 1, 40) for phylum in render.DISPLAY_ORDER]
+        lines = [render.bar_line(phylum, 8, 0, 40) for phylum in render.DISPLAY_ORDER]
         self.assertEqual(len({len(line) for line in lines}), 1)
+        self.assertEqual(len({line.index("█") for line in lines}), 1)
         self.assertTrue(all(len(line) <= 54 for line in lines))
+        fresh = [render.bar_line(phylum, 0, 0, 10) for phylum in render.DISPLAY_ORDER]
+        self.assertTrue(all(line.endswith(" new") for line in fresh))
+        self.assertEqual(len({line.index("░") for line in fresh}), 1)
+        one = render.bar_line("strategy", 1, 0, 81)
+        self.assertIn("1%", one)
+        self.assertIn("▒", one)
+        self.assertNotIn("1/81", one)
         screen = render.bars(
             [{"phylum": phylum, "strong": 1, "partial": 0, "total": 81} for phylum in render.DISPLAY_ORDER]
         )
-        self.assertTrue(all(len(line) <= 56 for line in screen.splitlines()))
+        self.assertTrue(all(len(line) <= 54 for line in screen.splitlines()))
         self.assertNotIn("1/81", screen)
         self.assertNotIn("axiom", screen)
         self.assertIn("1%", screen)
@@ -150,31 +159,63 @@ class RenderTests(unittest.TestCase):
                 "deciding and acting",
             ],
         )
-        menu = render.menu("Last time: playing to win, 4 scenarios.")
-        self.assertIn("PLAYING TO WIN", menu)
+        menu = render.menu(4)
+        self.assertIn("playing to win", menu)
+        self.assertNotIn("PLAYING TO WIN", menu)
         self.assertNotIn("how to win", menu)
         self.assertNotIn("axiom", menu)
         self.assertNotIn("When it gets noisy", menu)
-        self.assertIn("sharpest minds", menu)
+        self.assertNotIn("Clarity is a competitive edge.", menu)
         opening = render.opening_new()
-        self.assertEqual(opening.count("When it gets noisy, you can always reach for clarity."), 1)
-        self.assertIn("01", opening)
-        self.assertIn("What do you do for work?", opening)
-        self.assertNotIn("[1]", opening)
+        self.assertIn("When it gets noisy,", opening)
+        self.assertIn("you can always reach for clarity.", opening)
+        self.assertIn("01 / 03", opening)
+        self.assertIn("WHAT DO YOU DO FOR WORK", opening)
+        self.assertNotIn("Clarity is a competitive edge.", opening)
+        self.assertNotIn("The people who see clearly win.", opening)
+        later = render.opening(3)
+        self.assertIn("03 / 03", later)
+        self.assertNotIn("When it gets noisy,", later)
+        self.assertEqual(
+            render.SIGNOFFS if hasattr(render, "SIGNOFFS") else __import__("common").SIGNOFFS,
+            (
+                "Clarity is a competitive edge.",
+                "The people who see clearly win.",
+            ),
+        )
 
     def test_samples_live_in_the_docs(self):
         card = render.card(
-            4,
+            2,
             "strategy",
-            "Your biggest customer asks for a custom feature only they would use. They pay 40% of your revenue.",
+            "A seed-stage startup offers you a role. The equity is generous, the salary is 30% lower, and the founder says they'll raise in six months.",
         )
-        feedback = render.feedback(
-            "strong",
-            "second-order thinking",
+        strong = render.feedback_strong(
+            "You asked what happens if the raise doesn't come, and you priced the downside before the upside. That's the move.",
+            "downside first, base rates",
+            "most seed rounds slip, so plan for 12 months, not 6",
+            "strategy",
+            3,
+            1,
+            81,
+        )
+        partial = render.feedback_partial(
+            "the meeting place",
+            "what each side expects the other to expect",
+            "Say the place, then say why both would pick it.",
+            "strategy",
+            0,
+            1,
+            81,
+        )
+        not_yet = render.feedback_not_yet(
+            "Saying so is the honest start. Here's one way in.",
             [
-                "You saw the roadmap cost.",
-                "Also consider inversion: what would make losing them survivable?",
+                ("name the bad case", "the raise does not come"),
+                ("price that year", "salary gap times twelve"),
+                ("then decide", "only if that year is survivable"),
             ],
+            "Name the failure before you admire the offer.",
         )
         bars = render.bars(
             [
@@ -182,60 +223,72 @@ class RenderTests(unittest.TestCase):
                 {"phylum": "strategy", "strong": 1, "partial": 0, "total": 81},
             ]
         )
-        summary = render.summary_block(6, 4, 1, 0, 1, "inversion", "sunk cost fallacy", "pick up in playing to win")
+        rows = [
+            {"phylum": "axiom", "strong": 1, "partial": 0, "total": 103},
+            {"phylum": "kanon", "strong": 0, "partial": 0, "total": 31},
+            {"phylum": "bias", "strong": 0, "partial": 1, "total": 62},
+            {"phylum": "persona", "strong": 0, "partial": 0, "total": 71},
+            {"phylum": "strategy", "strong": 3, "partial": 1, "total": 81},
+            {"phylum": "systema", "strong": 0, "partial": 0, "total": 53},
+            {"phylum": "momentum", "strong": 0, "partial": 0, "total": 42},
+        ]
+        summary = render.summary_block(
+            5,
+            3,
+            1,
+            0,
+            1,
+            "downside first",
+            "",
+            "",
+            session=4,
+            date="12 NOV 2026",
+            reached=["downside first", "base rates"],
+            carry="Price the bad case before you fall for the good one.",
+            signoff_index=0,
+            rows=rows,
+        )
+        other = render.summary_block(
+            5,
+            3,
+            1,
+            0,
+            1,
+            "downside first",
+            "",
+            "",
+            session=5,
+            date="12 NOV 2026",
+            reached=["downside first"],
+            carry="Name the idea, then say what it changes here.",
+            signoff_index=1,
+            rows=rows,
+        )
         guide = (ROOT / "references" / "format.md").read_text(encoding="utf-8")
-        for block in (card, feedback, bars, summary, render.opening_new()):
+        for block in (card, strong, partial, not_yet, bars, summary, other, render.opening(1), render.opening(2), render.menu(4)):
             self.assertIn(block, guide)
         for phylum, name in render.DISPLAY_NAMES.items():
             self.assertIn(name, guide)
             self.assertIn(phylum, guide)
+        self.assertIn("Clarity is a competitive edge.", summary)
+        self.assertIn("The people who see clearly win.", other)
         transcripts = (ROOT / "examples" / "transcripts.md").read_text(encoding="utf-8")
-        blocks = [
-            render.opening_new(),
-            render.menu("Last time: playing to win, 4 scenarios."),
-            render.resume("Last time: playing to win, scenario 3."),
-            render.card(
-                1,
-                "strategy",
-                "You and your climbing partner are split across two trailheads. Both phones are dead. You still have to meet before dark, and neither of you named a place.",
-            ),
-            render.feedback(
-                "strong",
-                "schelling point",
-                "You named the place each of you expects the other to expect. That is the whole move when you cannot talk.",
-            ),
-            render.feedback(
-                "partial",
-                "schelling point",
-                "The meeting place is right, and the why is thin. Say what each of you expects the other to expect.",
-            ),
-            render.feedback(
-                "idk",
-                "goodhart's law",
-                "When the count became the bonus, the team started producing the count. Rename the bonus around bugs that stay fixed.",
-            ),
-            render.card(
-                4,
-                "axiom",
-                '"Either the launch ships on Tuesday, or it does not."',
-                practice="spot",
-            ),
-            render.summary_block(4, 3, 0, 0, 1, "schelling point", "goodhart's law", "pick up at random"),
-        ]
-        for block in blocks:
+        for block in (render.opening(1), render.opening(2), render.menu(4), card, strong, partial, not_yet, summary):
             self.assertIn(block, transcripts)
+        self.assertIn(render.opening(1), (REPO / "README.md").read_text(encoding="utf-8"))
 
     def test_opening_and_summary_edges(self):
         opening = render.opening_new()
-        self.assertNotIn("PRACTICE", opening)
-        self.assertLessEqual(max(len(line) for line in opening.splitlines()), 56)
+        self.assertNotIn("pick a lane", opening)
+        self.assertLessEqual(max(len(line) for line in opening.splitlines()), 54)
         quiet = render.summary_block(0, 0, 0, 0, 0, "", "", "pick up wherever you like")
-        self.assertIn("No scenarios this time.", quiet)
-        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), 56)
+        self.assertIn("0 cards", quiet)
+        self.assertIn("Clarity is a competitive edge.", quiet)
+        self.assertLessEqual(max(len(line) for line in quiet.splitlines()), 54)
         text = render.feedback("idk", "inversion", "Study the failure, then refuse it.")
-        self.assertTrue(text.splitlines()[0].endswith("IDK"))
+        self.assertIn("NOT YET", text.splitlines()[0])
         self.assertNotIn("✓", text)
-        self.assertTrue(all(len(line) <= 56 for line in text.splitlines()))
+        self.assertTrue(all(len(line) <= 54 for line in text.splitlines()))
 
 
 class ProgressTests(unittest.TestCase):

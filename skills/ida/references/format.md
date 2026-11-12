@@ -1,15 +1,26 @@
 # Format
 
-Draw these screens yourself. Do not run `render.py` during a sitting. Put each screen in a `text` fence. Every line is at most 56 columns. Content lines start with a left rail (`│ `) and have no right border. Blank lines are blank. The only accent is ■. Labels are in caps. No emoji. Every screen ends with `│ ›`.
+Draw these screens yourself. Do not run `render.py` during a sitting. Put each screen in a `text` fence. The sheet is 54 columns. Copy the spacing, the rules, and the prompt line. Do not add a right border. No emoji.
 
-The two sign-off lines are locked. Do not rewrite them. The first run shows the first line once, as the tagline, and does not repeat a sign-off. After that, alternate them, starting with the second line on the menu.
+The headline stays on the first question of a first run only:
 
-1. When it gets noisy, you can always reach for clarity.
-2. The best ideas from the sharpest minds, ready when a decision gets hard.
+```text
+  When it gets noisy,
+  you can always reach for clarity.
+```
+
+Questions 02 and 03 reuse the block. Only the counter changes. There is no letter menu. They answer in their own words.
+
+Sign-offs are not on these screens. They rotate on the session sheet only, in this order, and the words stay exact:
+
+1. Clarity is a competitive edge.
+2. The people who see clearly win.
+
+Session 1 uses the first. Session 2 uses the second. Then they alternate. One to carry is a sentence in ida's voice. Never attribute it to a real person.
 
 ## Names
 
-Say the name on the right. The id is only for `ida.py`.
+Say the name on the right. The id is only for `ida.py`. Lane numbers follow this order.
 
 | id | name |
 | --- | --- |
@@ -21,142 +32,218 @@ Say the name on the right. The id is only for `ida.py`.
 | `systema` | seeing ripple effects |
 | `momentum` | deciding and acting |
 
-Drop the old subtitle. The name already says it.
-
 ## Bars
 
-Ten cells, always. A strong idea counts as 1. A partial idea counts as half. An idk or a miss adds nothing. The score on the right is the percent of the section that credit represents, rounded. It is not a fraction like 1/81.
+Ten cells, always. A strong idea counts as 1. A partial idea counts as half. An idk or a miss adds nothing. The score is the percent of the section that credit represents, rounded. A lane with no credit yet says `new`, not `0%` and not `1/81`.
 
 Each cell is one tenth of the section. Full tenths are █. Any remainder, including the first small bit of credit, is ▒. The rest are ░. One strong idea in a section of 81 is `1%` and a single half cell.
+
+On a STRONG screen the lane line ends with `+1`. On a PARTIAL screen it ends with `+0.5`.
 
 ## First run
 
 ```text
-│ ■ ida
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ When it gets noisy, you can always reach for clarity.
+  When it gets noisy,
+  you can always reach for clarity.
 
-│ 01
-│ What do you do for work?
 
-│ 02
-│ What are you into besides that?
+  ■ first session · 3 quick questions · about a minute
 
-│ 03
-│ What decisions keep showing up for you?
+  ────────────────────────────────────────────────────
+  01 / 03                      WHAT DO YOU DO FOR WORK
 
-│ ›
+  › your own words
+```
+
+```text
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ────────────────────────────────────────────────────
+  02 / 03               WHAT ARE YOU INTO BESIDES THAT
+
+  › your own words
 ```
 
 ## Menu
 
-Returning people see this, with no tagline. A resume uses the shorter screen under it.
-
 ```text
-│ ■ ida
+  ida · practice                            SESSION 04
+  ────────────────────────────────────────────────────
 
-│ WELCOME BACK
-│ Last time: playing to win, 4 scenarios.
+  pick a lane
 
-│ PRACTICE
-│ 1  THINKING CLEARLY
-│ 2  KNOWING WHAT'S TRUE
-│ 3  BLIND SPOTS
-│ 4  READING PEOPLE
-│ 5  PLAYING TO WIN
-│ 6  SEEING RIPPLE EFFECTS
-│ 7  DECIDING AND ACTING
 
-│ Or name the ideas. Or say random.
+  01   thinking clearly        ░░░░░░░░░░   new
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ░░░░░░░░░░   new
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ░░░░░░░░░░   new
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
 
-│ The best ideas from the sharpest minds, ready when a
-│ decision gets hard.
 
-│ ›
+  ■ suggested  01, your lightest lane
+
+  › a number, or "surprise me"
 ```
 
+`suggested` is the lightest lane, the lowest percent, earliest number on a tie.
+
+## Card
+
 ```text
-│ ■ ida
+  05 · PLAYING TO WIN                          CARD 02
+  ┃
+  ┃  A seed-stage startup offers you a role. The
+  ┃  equity is generous, the salary is 30% lower,
+  ┃  and the founder says they'll raise in six
+  ┃  months.
+  ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ WELCOME BACK
-│ Last time: playing to win, scenario 3.
+  ■ THE QUESTION
 
-│ Continue that one, or start fresh.
+    Which way of thinking fits here? Name it and apply
+    it in a sentence or two.
 
-│ The best ideas from the sharpest minds, ready when a
-│ decision gets hard.
 
-│ ›
+  › your answer · "hint" · "idk" · "skip"
 ```
 
-## Scenario
+A spot card asks "What is this called?" and the prompt is `› the name · "idk" · "skip"`. Choice mode numbers the options and the prompt is `› a number · "idk" · "skip"`.
+
+## Strong
 
 ```text
-│ SCENARIO 04
-│ PLAYING TO WIN
+  ■■■  STRONG
+  ────────────────────────────────────────────────────
 
-│ Your biggest customer asks for a custom feature only
-│ they would use. They pay 40% of your revenue.
+  You asked what happens if the raise doesn't come,
+  and you priced the downside before the upside.
+  That's the move.
 
-│ Which way of thinking fits here? Name it and apply it
-│ in a sentence or two. idk is fine.
+  what you reached for    downside first, base rates
+  one level deeper        most seed rounds slip, so
+                          plan for 12 months, not 6
 
-│ When it gets noisy, you can always reach for clarity.
+  05   playing to win          ▒░░░░░░░░░    4%   +1
 
-│ ›
+  › "next" · "why" · "menu"
 ```
 
-A spot puts `SPOT` under the section name and asks what it is called.
-
-## Feedback
+## Partial
 
 ```text
-│ STRONG
-│ second-order thinking
+  ■■□  PARTIAL
+  ────────────────────────────────────────────────────
 
-│ You saw the roadmap cost. Also consider inversion:
-│ what would make losing them survivable?
+  what you reached for    the meeting place
+  what was missing        what each side expects the
+                          other to expect
+  try it                  Say the place, then say why
+                          both would pick it.
 
-│ When it gets noisy, you can always reach for clarity.
+  05   playing to win          ▒░░░░░░░░░    1%   +0.5
 
-│ ›
+  › "retry" · "next" · "show me"
 ```
 
-`PARTIAL`, `MISS`, and `IDK` use the same shape. The label is the grade. The idea name stays lowercase.
+## Not yet
 
-## Progress
+idk and a miss both use this header. The file still stores them apart.
 
 ```text
-│ PROGRESS
+  □□□  NOT YET
+  ────────────────────────────────────────────────────
 
-│ THINKING CLEARLY       ░░░░░░░░░░    0%
-│ PLAYING TO WIN         ▒░░░░░░░░░    1%
+  Saying so is the honest start. Here's one way in.
 
-│ When it gets noisy, you can always reach for clarity.
+  01  name the bad case       the raise does not come
+  02  price that year         salary gap times twelve
+  03  then decide             only if that year is
+                              survivable
 
-│ ›
+  Name the failure before you admire the offer.
+
+  › "got it" · "another like this" · "menu"
 ```
 
-## Summary
+## Lanes
 
 ```text
-│ SESSION
+  LANES
+  01   thinking clearly        ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    1%
+```
 
-│ 6 scenarios
-│ 4 strong · 1 partial · 1 idk
+## Session
 
-│ SHARPEST
-│ inversion
+```text
+  ida · session 04 complete                12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ REVISIT
-│ sunk cost fallacy
+  5 cards     ■■■ 3     ■■□ 1     □□□ 1
 
-│ NEXT
-│ pick up in playing to win
 
-│ When it gets noisy, you can always reach for clarity.
+  LANES
+  01   thinking clearly        ▒░░░░░░░░░    1%
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ▒░░░░░░░░░    1%
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    4%
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
 
-│ ›
+
+  WHAT YOU REACHED FOR
+  · downside first   · base rates
+
+
+  ONE TO CARRY
+  Price the bad case before you fall for the good one.
+
+
+  ────────────────────────────────────────────────────
+  Clarity is a competitive edge.
+
+  › "again" · "menu" · "done"
+```
+
+The other sign-off, on the next session:
+
+```text
+  ida · session 05 complete                12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  5 cards     ■■■ 3     ■■□ 1     □□□ 1
+
+
+  LANES
+  01   thinking clearly        ▒░░░░░░░░░    1%
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ▒░░░░░░░░░    1%
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    4%
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
+
+
+  WHAT YOU REACHED FOR
+  · downside first
+
+
+  ONE TO CARRY
+  Name the idea, then say what it changes here.
+
+
+  ────────────────────────────────────────────────────
+  The people who see clearly win.
+
+  › "again" · "menu" · "done"
 ```
 
 ## Machine line

@@ -65,20 +65,19 @@ Progress stays in `~/.ida/progress.json` on your machine.
 A first run looks like this:
 
 ```text
-│ ■ ida
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ When it gets noisy, you can always reach for clarity.
+  When it gets noisy,
+  you can always reach for clarity.
 
-│ 01
-│ What do you do for work?
 
-│ 02
-│ What are you into besides that?
+  ■ first session · 3 quick questions · about a minute
 
-│ 03
-│ What decisions keep showing up for you?
+  ────────────────────────────────────────────────────
+  01 / 03                      WHAT DO YOU DO FOR WORK
 
-│ ›
+  › your own words
 ```
 
 ## A session

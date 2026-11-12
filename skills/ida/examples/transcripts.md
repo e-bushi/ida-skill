@@ -5,197 +5,167 @@ Illustrations of the screens. During practice, do not open this file.
 ## First visit
 
 ```text
-│ ■ ida
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ When it gets noisy, you can always reach for clarity.
+  When it gets noisy,
+  you can always reach for clarity.
 
-│ 01
-│ What do you do for work?
 
-│ 02
-│ What are you into besides that?
+  ■ first session · 3 quick questions · about a minute
 
-│ 03
-│ What decisions keep showing up for you?
+  ────────────────────────────────────────────────────
+  01 / 03                      WHAT DO YOU DO FOR WORK
 
-│ ›
+  › your own words
 ```
 
-The person answers the three questions. ida saves the profile and shows the menu, with no tagline.
+They answer in their own words. The next question only changes the counter.
 
 ```text
-│ ■ ida
+  ida                                          NO. 001
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ PRACTICE
-│ 1  THINKING CLEARLY
-│ 2  KNOWING WHAT'S TRUE
-│ 3  BLIND SPOTS
-│ 4  READING PEOPLE
-│ 5  PLAYING TO WIN
-│ 6  SEEING RIPPLE EFFECTS
-│ 7  DECIDING AND ACTING
+  ────────────────────────────────────────────────────
+  02 / 03               WHAT ARE YOU INTO BESIDES THAT
 
-│ Or name the ideas. Or say random.
+  › your own words
+```
 
-│ The best ideas from the sharpest minds, ready when a
-│ decision gets hard.
+After the third answer, the menu. No headline.
 
-│ ›
+```text
+  ida · practice                            SESSION 04
+  ────────────────────────────────────────────────────
+
+  pick a lane
+
+
+  01   thinking clearly        ░░░░░░░░░░   new
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ░░░░░░░░░░   new
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ░░░░░░░░░░   new
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
+
+
+  ■ suggested  01, your lightest lane
+
+  › a number, or "surprise me"
 ```
 
 ## A card
 
 ```text
-│ SCENARIO 01
-│ PLAYING TO WIN
+  05 · PLAYING TO WIN                          CARD 02
+  ┃
+  ┃  A seed-stage startup offers you a role. The
+  ┃  equity is generous, the salary is 30% lower,
+  ┃  and the founder says they'll raise in six
+  ┃  months.
+  ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ You and your climbing partner are split across two
-│ trailheads. Both phones are dead. You still have to
-│ meet before dark, and neither of you named a place.
+  ■ THE QUESTION
 
-│ Which way of thinking fits here? Name it and apply it
-│ in a sentence or two. idk is fine.
+    Which way of thinking fits here? Name it and apply
+    it in a sentence or two.
 
-│ When it gets noisy, you can always reach for clarity.
 
-│ ›
+  › your answer · "hint" · "idk" · "skip"
 ```
 
-User: Schelling point. We both go to the lot we always park in, because each of us expects the other to expect that.
+User: Inversion. If the raise slips, the pay cut has to be survivable for a year, so I would not take it unless I can cover that year.
 
 ```text
-│ STRONG
-│ schelling point
+  ■■■  STRONG
+  ────────────────────────────────────────────────────
 
-│ You named the place each of you expects the other to
-│ expect. That is the whole move when you cannot talk.
+  You asked what happens if the raise doesn't come,
+  and you priced the downside before the upside.
+  That's the move.
 
-│ When it gets noisy, you can always reach for clarity.
+  what you reached for    downside first, base rates
+  one level deeper        most seed rounds slip, so
+                          plan for 12 months, not 6
 
-│ ›
+  05   playing to win          ▒░░░░░░░░░    4%   +1
+
+  › "next" · "why" · "menu"
 ```
 
+## Partial
+
+User: Schelling point. Meet at the usual place.
+
 ```text
-│ PARTIAL
-│ schelling point
+  ■■□  PARTIAL
+  ────────────────────────────────────────────────────
 
-│ The meeting place is right, and the why is thin. Say
-│ what each of you expects the other to expect.
+  what you reached for    the meeting place
+  what was missing        what each side expects the
+                          other to expect
+  try it                  Say the place, then say why
+                          both would pick it.
 
-│ When it gets noisy, you can always reach for clarity.
+  05   playing to win          ▒░░░░░░░░░    1%   +0.5
 
-│ ›
+  › "retry" · "next" · "show me"
 ```
 
-## idk
+## Not yet
+
+User: idk
 
 ```text
-│ IDK
-│ goodhart's law
+  □□□  NOT YET
+  ────────────────────────────────────────────────────
 
-│ When the count became the bonus, the team started
-│ producing the count. Rename the bonus around bugs that
-│ stay fixed.
+  Saying so is the honest start. Here's one way in.
 
-│ When it gets noisy, you can always reach for clarity.
+  01  name the bad case       the raise does not come
+  02  price that year         salary gap times twelve
+  03  then decide             only if that year is
+                              survivable
 
-│ ›
+  Name the failure before you admire the offer.
+
+  › "got it" · "another like this" · "menu"
 ```
 
-The rep is recorded as idk. The bar does not fill.
+The rep is stored as idk. The bar does not fill.
 
-## Spot
-
-```text
-│ SCENARIO 04
-│ THINKING CLEARLY
-│ SPOT
-
-│ "Either the launch ships on Tuesday, or it does not."
-
-│ What is this called? The name is enough. idk is fine.
-
-│ When it gets noisy, you can always reach for clarity.
-
-│ ›
-```
-
-## Progress and the end
+## End
 
 ```text
-│ PROGRESS
+  ida · session 04 complete                12 NOV 2026
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-│ THINKING CLEARLY       ░░░░░░░░░░    0%
-│ KNOWING WHAT'S TRUE    ░░░░░░░░░░    0%
-│ BLIND SPOTS            ░░░░░░░░░░    0%
-│ READING PEOPLE         ░░░░░░░░░░    0%
-│ PLAYING TO WIN         ░░░░░░░░░░    0%
-│ SEEING RIPPLE EFFECTS  ░░░░░░░░░░    0%
-│ DECIDING AND ACTING    ░░░░░░░░░░    0%
+  5 cards     ■■■ 3     ■■□ 1     □□□ 1
 
-│ When it gets noisy, you can always reach for clarity.
 
-│ ›
-```
+  LANES
+  01   thinking clearly        ▒░░░░░░░░░    1%
+  02   knowing what's true     ░░░░░░░░░░   new
+  03   blind spots             ▒░░░░░░░░░    1%
+  04   reading people          ░░░░░░░░░░   new
+  05   playing to win          ▒░░░░░░░░░    4%
+  06   seeing ripple effects   ░░░░░░░░░░   new
+  07   deciding and acting     ░░░░░░░░░░   new
 
-```text
-│ SESSION
 
-│ 4 scenarios
-│ 3 strong · 1 idk
+  WHAT YOU REACHED FOR
+  · downside first   · base rates
 
-│ SHARPEST
-│ schelling point
 
-│ REVISIT
-│ goodhart's law
+  ONE TO CARRY
+  Price the bad case before you fall for the good one.
 
-│ NEXT
-│ pick up at random
 
-│ When it gets noisy, you can always reach for clarity.
+  ────────────────────────────────────────────────────
+  Clarity is a competitive edge.
 
-│ ›
-```
-
-## Coming back
-
-```text
-│ ■ ida
-
-│ WELCOME BACK
-│ Last time: playing to win, 4 scenarios.
-
-│ PRACTICE
-│ 1  THINKING CLEARLY
-│ 2  KNOWING WHAT'S TRUE
-│ 3  BLIND SPOTS
-│ 4  READING PEOPLE
-│ 5  PLAYING TO WIN
-│ 6  SEEING RIPPLE EFFECTS
-│ 7  DECIDING AND ACTING
-
-│ Or name the ideas. Or say random.
-
-│ The best ideas from the sharpest minds, ready when a
-│ decision gets hard.
-
-│ ›
-```
-
-If a card was still on screen:
-
-```text
-│ ■ ida
-
-│ WELCOME BACK
-│ Last time: playing to win, scenario 3.
-
-│ Continue that one, or start fresh.
-
-│ The best ideas from the sharpest minds, ready when a
-│ decision gets hard.
-
-│ ›
+  › "again" · "menu" · "done"
 ```
 

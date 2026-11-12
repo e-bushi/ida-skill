@@ -1,22 +1,18 @@
 """Terminal screens for ida.
 
-Every screen is at most 56 columns, with a left rail and no right border.
-The only accent is ■. Labels are in caps. A › line ends every screen.
-These functions are for tests and for checking the templates. During a
-sitting the agent draws the same screens from references/format.md and
-does not shell out to this file.
+The sheet is 54 columns. Rules, the card rail, and the prompt match the
+reference layouts. These functions check the templates. During a sitting
+the agent draws the same screens from references/format.md.
 """
 
 from __future__ import annotations
 
-from common import (
-    BAR_BLOCKS,
-    CONTENT_WIDTH,
-    DISPLAY_NAMES,
-    DISPLAY_ORDER,
-    RAIL,
-    SCREEN_WIDTH,
-    SIGNOFFS,
+from common import BAR_BLOCKS, DISPLAY_NAMES, DISPLAY_ORDER, SCREEN_WIDTH, SIGNOFFS
+
+QUESTIONS = (
+    "What do you do for work?",
+    "What are you into besides that?",
+    "What decisions keep showing up for you?",
 )
 
 
@@ -45,27 +41,30 @@ def display_name(phylum: str) -> str:
     return DISPLAY_NAMES[phylum]
 
 
-def _finish(content_lines: list[str], signoff_index: int | None) -> str:
-    lines: list[str] = []
-    for line in content_lines:
-        if line == "":
-            lines.append("")
-            continue
-        if len(line) <= CONTENT_WIDTH:
-            lines.append(RAIL + line)
-            continue
-        for part in wrap(line, CONTENT_WIDTH):
-            lines.append(RAIL + part)
-    if signoff_index is not None:
-        lines.append("")
-        for part in wrap(SIGNOFFS[signoff_index % 2], CONTENT_WIDTH):
-            lines.append(RAIL + part)
-    lines.append("")
-    lines.append(RAIL + "›")
+def _check(lines: list[str]) -> str:
     for line in lines:
         if len(line) > SCREEN_WIDTH:
             raise ValueError(f"line is {len(line)} cols: {line!r}")
     return "\n".join(lines)
+
+
+def spread(left: str, right: str) -> str:
+    gap = SCREEN_WIDTH - len(left) - len(right)
+    if gap < 1:
+        gap = 1
+    return left + (" " * gap) + right
+
+
+def rule(char: str) -> str:
+    return "  " + (char * (SCREEN_WIDTH - 2))
+
+
+def heavy() -> str:
+    return rule("━")
+
+
+def thin() -> str:
+    return rule("─")
 
 
 def bar_cells(strong: int, partial: int, total: int) -> tuple[str, int]:
@@ -76,8 +75,8 @@ def bar_cells(strong: int, partial: int, total: int) -> tuple[str, int]:
 
     Each cell is a tenth of the section. Full tenths are █. A remainder
     shows as ▒, including the first bit of credit so one rep is visible
-    without claiming a full tenth. The rest are ░. The percent is the
-    honest score: round(100 * credit / total).
+    without claiming a full tenth. The rest are ░. The percent is
+    round(100 * credit / total).
     """
     if total <= 0 or (strong <= 0 and partial <= 0):
         return "░" * BAR_BLOCKS, 0
@@ -98,59 +97,97 @@ def bar_cells(strong: int, partial: int, total: int) -> tuple[str, int]:
     return ("█" * full) + ("▒" * half) + ("░" * empty), percent
 
 
-def bar_line(phylum: str, strong: int, partial: int, total: int) -> str:
-    label = display_name(phylum).upper().ljust(21)
+def score_field(strong: int, partial: int, percent: int) -> str:
+    if strong <= 0 and partial <= 0:
+        return " new"
+    return f"{percent}%".rjust(4)
+
+
+def bar_line(phylum: str, strong: int, partial: int, total: int, index: int | None = None) -> str:
+    if index is None:
+        index = DISPLAY_ORDER.index(phylum) + 1
     cells, percent = bar_cells(strong, partial, total)
-    score = f"{percent}%".rjust(4)
-    line = f"{label}  {cells}  {score}"
-    if len(line) > CONTENT_WIDTH:
-        raise ValueError(f"bar line is {len(line)} cols")
-    return line
+    name = display_name(phylum).ljust(22)
+    score = score_field(strong, partial, percent)
+    return f"  {index:02d}   {name}  {cells}  {score}"
+
+
+def opening(step: int = 1, issue: int = 1) -> str:
+    if step < 1 or step > len(QUESTIONS):
+        raise ValueError(step)
+    lines = [
+        spread("  ida", f"NO. {issue:03d}"),
+        heavy(),
+        "",
+    ]
+    if step == 1:
+        lines.extend(
+            [
+                "  When it gets noisy,",
+                "  you can always reach for clarity.",
+                "",
+                "",
+                "  ■ first session · 3 quick questions · about a minute",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            thin(),
+            spread(f"  {step:02d} / {len(QUESTIONS):02d}", QUESTIONS[step - 1].upper().rstrip("?")),
+            "",
+            "  › your own words",
+        ]
+    )
+    return _check(lines)
 
 
 def opening_new() -> str:
-    return _finish(
+    return opening(1)
+
+
+def menu(session: int = 1, rows: list[dict] | None = None) -> str:
+    if rows is None:
+        rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in DISPLAY_ORDER]
+    ranked = []
+    for row in rows:
+        index = DISPLAY_ORDER.index(row["phylum"]) + 1
+        _cells, percent = bar_cells(int(row["strong"]), int(row["partial"]), int(row["total"]))
+        ranked.append((percent, index))
+    _light_percent, light_index = min(ranked, key=lambda item: (item[0], item[1]))
+    lines = [
+        spread("  ida · practice", f"SESSION {session:02d}"),
+        thin(),
+        "",
+        "  pick a lane",
+        "",
+        "",
+    ]
+    for row in rows:
+        lines.append(bar_line(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"])))
+    lines.extend(
         [
-            "■ ida",
             "",
-            SIGNOFFS[0],
             "",
-            "01",
-            "What do you do for work?",
+            f"  ■ suggested  {light_index:02d}, your lightest lane",
             "",
-            "02",
-            "What are you into besides that?",
-            "",
-            "03",
-            "What decisions keep showing up for you?",
-        ],
-        None,
+            '  › a number, or "surprise me"',
+        ]
     )
+    return _check(lines)
 
 
-def menu(welcome: str = "", signoff_index: int = 1) -> str:
-    lines = ["■ ida", ""]
-    if welcome:
-        lines.extend(["WELCOME BACK", welcome, ""])
-    lines.append("PRACTICE")
-    for index, phylum in enumerate(DISPLAY_ORDER, start=1):
-        lines.append(f"{index}  {display_name(phylum).upper()}")
-    lines.extend(["", "Or name the ideas. Or say random."])
-    return _finish(lines, signoff_index)
-
-
-def resume(welcome: str, signoff_index: int = 1) -> str:
-    return _finish(
-        [
-            "■ ida",
-            "",
-            "WELCOME BACK",
-            welcome,
-            "",
-            "Continue that one, or start fresh.",
-        ],
-        signoff_index,
-    )
+def _card_body(body: str) -> list[str]:
+    lines = ["  ┃"]
+    paragraphs = [part.strip() for part in body.replace("\r\n", "\n").split("\n\n") if part.strip()]
+    if not paragraphs:
+        paragraphs = [" ".join(body.split())]
+    for paragraph in paragraphs:
+        for piece in wrap(paragraph, 46):
+            lines.append("  ┃  " + piece)
+        lines.append("  ┃")
+    lines.append("  ┗" + ("━" * (SCREEN_WIDTH - 3)))
+    return lines
 
 
 def card(
@@ -162,46 +199,127 @@ def card(
     options: list[str] | None = None,
     signoff_index: int = 0,
 ) -> str:
-    lines = [f"SCENARIO {number:02d}", display_name(phylum).upper()]
+    del signoff_index  # sign-offs belong on the session end only
+    title = display_name(phylum).upper()
+    lane = DISPLAY_ORDER.index(phylum) + 1
+    lines = [spread(f"  {lane:02d} · {title}", f"CARD {number:02d}")]
+    lines.extend(_card_body(body))
+    lines.extend(["", "  ■ THE QUESTION", ""])
     if practice == "spot":
-        lines.append("SPOT")
-    lines.extend(["", body, ""])
-    if options:
-        for index, name in enumerate(options, start=1):
-            lines.append(f"{index}  {name}")
-        lines.append("")
-    if practice == "spot" and mode == "choice":
-        lines.append("Which name fits? A number is enough. idk is fine.")
-    elif practice == "spot":
-        lines.append("What is this called? The name is enough. idk is fine.")
+        question = "What is this called?"
     elif mode == "choice":
-        lines.append("Which one fits? A number is enough. idk is fine.")
+        question = "Which one fits?"
     else:
-        lines.append("Which way of thinking fits here? Name it and apply it in a sentence or two. idk is fine.")
-    return _finish(lines, signoff_index)
+        question = "Which way of thinking fits here? Name it and apply it in a sentence or two."
+    for piece in wrap(question, SCREEN_WIDTH - 4):
+        lines.append("    " + piece)
+    if options:
+        lines.append("")
+        for index, name in enumerate(options, start=1):
+            lines.append(f"    {index}  {name}")
+    lines.extend(["", ""])
+    if mode == "choice":
+        lines.append('  › a number · "idk" · "skip"')
+    elif practice == "spot":
+        lines.append('  › the name · "idk" · "skip"')
+    else:
+        lines.append('  › your answer · "hint" · "idk" · "skip"')
+    return _check(lines)
 
 
-def feedback(result: str, name: str, comment, signoff_index: int = 0) -> str:
-    heads = {"strong": "STRONG", "partial": "PARTIAL", "miss": "MISS", "idk": "IDK"}
-    if result not in heads:
-        raise ValueError(result)
-    if isinstance(comment, list):
-        comment = " ".join(part.strip() for part in comment if part.strip())
-    return _finish([heads[result], name, "", comment], signoff_index)
+def _prose(text: str) -> list[str]:
+    return ["  " + piece for piece in wrap(text, SCREEN_WIDTH - 2)]
 
 
-def bars(rows: list[dict], signoff_index: int = 0) -> str:
-    lines = ["PROGRESS", ""]
-    rendered = [
-        bar_line(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"]))
-        for row in rows
-    ]
-    width = len(rendered[0]) if rendered else 0
-    for line in rendered:
-        if len(line) != width:
-            raise ValueError("bar rows are not the same width")
-        lines.append(line)
-    return _finish(lines, signoff_index)
+def _field(label: str, text: str) -> list[str]:
+    prefix = "  " + f"{label:<20}" + "    "
+    room = SCREEN_WIDTH - len(prefix)
+    parts = wrap(text, room) or [""]
+    lines = [prefix + parts[0]]
+    hang = " " * len(prefix)
+    for extra in parts[1:]:
+        lines.append(hang + extra)
+    return lines
+
+
+def _status(phylum: str, strong: int, partial: int, total: int, delta: str) -> str:
+    base = bar_line(phylum, strong, partial, total)
+    if not delta:
+        return base
+    return base + "   " + delta
+
+
+def feedback_strong(
+    comment: str,
+    reached: str,
+    deeper: str,
+    phylum: str,
+    strong: int,
+    partial: int,
+    total: int,
+    delta: str = "+1",
+) -> str:
+    lines = ["  ■■■  STRONG", thin(), ""]
+    lines.extend(_prose(comment))
+    lines.append("")
+    lines.extend(_field("what you reached for", reached))
+    lines.extend(_field("one level deeper", deeper))
+    lines.extend(["", _status(phylum, strong, partial, total, delta), "", '  › "next" · "why" · "menu"'])
+    return _check(lines)
+
+
+def feedback_partial(
+    reached: str,
+    missing: str,
+    try_it: str,
+    phylum: str,
+    strong: int,
+    partial: int,
+    total: int,
+    delta: str = "+0.5",
+) -> str:
+    lines = ["  ■■□  PARTIAL", thin(), ""]
+    lines.extend(_field("what you reached for", reached))
+    lines.extend(_field("what was missing", missing))
+    lines.extend(_field("try it", try_it))
+    lines.extend(["", _status(phylum, strong, partial, total, delta), "", '  › "retry" · "next" · "show me"'])
+    return _check(lines)
+
+
+def _step(index: int, title: str, detail: str) -> list[str]:
+    prefix = f"  {index:02d}  {title}".ljust(30)
+    room = SCREEN_WIDTH - len(prefix)
+    parts = wrap(detail, max(room, 12)) or [""]
+    lines = [prefix + parts[0]]
+    hang = " " * len(prefix)
+    for extra in parts[1:]:
+        lines.append(hang + extra)
+    return lines
+
+
+def feedback_not_yet(lead: str, steps: list[tuple[str, str]], closing: str) -> str:
+    lines = ["  □□□  NOT YET", thin(), ""]
+    lines.extend(_prose(lead))
+    lines.append("")
+    for index, (title, detail) in enumerate(steps, start=1):
+        lines.extend(_step(index, title, detail))
+    lines.extend(["", *_prose(closing), "", '  › "got it" · "another like this" · "menu"'])
+    return _check(lines)
+
+
+def feedback(result: str, name: str, comment, signoff_index: int = 0, phylum: str = "strategy") -> str:
+    """A short form used when a caller only has a grade and a comment."""
+    del signoff_index
+    text = " ".join(comment) if isinstance(comment, list) else comment
+    if result == "strong":
+        return feedback_strong(text, name, text, phylum, 1, 0, 81)
+    if result == "partial":
+        return feedback_partial(name, text, text, phylum, 0, 1, 81)
+    return feedback_not_yet(
+        "Saying so is the honest start. Here's one way in.",
+        [("name it", name), ("apply it", text), ("keep it", "one sentence on the stake")],
+        text,
+    )
 
 
 def summary_block(
@@ -215,38 +333,65 @@ def summary_block(
     next_line: str,
     unanswered: bool = False,
     signoff_index: int = 0,
+    session: int = 1,
+    date: str = "12 NOV 2026",
+    reached: list[str] | None = None,
+    carry: str = "",
+    rows: list[dict] | None = None,
 ) -> str:
-    lines = ["SESSION", ""]
-    if scenarios == 0:
-        lines.append("No scenarios this time.")
+    not_yet = miss + idk
+    noun = "card" if scenarios == 1 else "cards"
+    lines = [
+        spread(f"  ida · session {session:02d} complete", date),
+        heavy(),
+        "",
+        f"  {scenarios} {noun}     ■■■ {strong}     ■■□ {partial}     □□□ {not_yet}",
+        "",
+        "",
+        "  LANES",
+    ]
+    if rows is None:
+        rows = [{"phylum": phylum, "strong": 0, "partial": 0, "total": 10} for phylum in DISPLAY_ORDER]
+    for row in rows:
+        lines.append(bar_line(row["phylum"], int(row["strong"]), int(row["partial"]), int(row["total"])))
+    names = reached or ([sharpest] if sharpest else [])
+    lines.extend(["", "", "  WHAT YOU REACHED FOR"])
+    if names:
+        lines.append("  · " + "   · ".join(names))
     else:
-        noun = "scenario" if scenarios == 1 else "scenarios"
-        bits = [f"{strong} strong"]
-        if partial:
-            bits.append(f"{partial} partial")
-        if miss:
-            bits.append(f"{miss} miss")
-        if idk:
-            bits.append(f"{idk} idk")
-        lines.append(f"{scenarios} {noun}")
-        lines.append(" · ".join(bits))
-    if unanswered:
-        lines.append("Left the last scenario unanswered.")
+        lines.append("  · nothing yet")
+    if carry:
+        carry_line = carry
+    elif unanswered:
+        carry_line = "One card was left open. It was not graded."
+    else:
+        carry_line = next_line or "Name the idea, then say what it changes here."
+    del revisit
+    lines.extend(["", "", "  ONE TO CARRY"])
+    lines.extend(_prose(carry_line))
     lines.extend(
         [
             "",
-            "SHARPEST",
-            sharpest or "none yet",
             "",
-            "REVISIT",
-            revisit or "nothing due",
+            thin(),
+            "  " + SIGNOFFS[signoff_index % 2],
             "",
-            "NEXT",
-            next_line,
+            '  › "again" · "menu" · "done"',
         ]
     )
-    return _finish(lines, signoff_index)
+    return _check(lines)
 
 
-def section_rows(order=DISPLAY_ORDER) -> list[dict]:
-    return [{"phylum": phylum, "strong": 0, "partial": 0, "total": 1} for phylum in order]
+def bars(rows: list[dict], signoff_index: int = 0) -> str:
+    del signoff_index
+    lines = ["  LANES"]
+    for row in rows:
+        lines.append(
+            bar_line(
+                row["phylum"],
+                int(row.get("strong", 0)),
+                int(row.get("partial", 0)),
+                int(row["total"]),
+            )
+        )
+    return _check(lines)

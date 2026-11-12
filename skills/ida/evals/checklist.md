@@ -97,6 +97,7 @@ Also check:
 - Random does not repeat an id from the last few scenarios when others are available.
 - Choice mode accepts a bare correct number as strong. Free text still wants a sentence on the stake for strong.
 - `idk` teaches in about two sentences and does not fill the bar.
-- Screens stay within 56 columns, use a left rail, and end on `›`. Bars are 10 cells with a percent, not a fraction like 1/81.
+- Screens stay within 54 columns and follow the sheet: heavy rule, thin rule, card rail, and a `›` prompt. Bars are 10 cells with a percent, or `new`, not a fraction like 1/81.
+- On screen the grades are STRONG, PARTIAL, and NOT YET. The session sheet rotates "Clarity is a competitive edge." and "The people who see clearly win."
 - Nothing the user reads says "mental models" or uses an em dash.
 - The wordmark reads as lowercase ida, marked with ■.

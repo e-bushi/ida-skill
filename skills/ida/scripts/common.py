@@ -25,10 +25,8 @@ HISTORY_CAP = 40
 SUMMARY_LIMIT = 280
 PROMPT_LIMIT = 2000
 
-# Screens are at most 56 columns. The left rail is two characters ("│ ").
-SCREEN_WIDTH = 56
-RAIL = "│ "
-CONTENT_WIDTH = SCREEN_WIDTH - len(RAIL)
+# Sheet width, counting the two-space indent. Rules run to this edge.
+SCREEN_WIDTH = 54
 BAR_BLOCKS = 10
 
 # User-facing section names. Ids stay in the library and the progress file.
@@ -51,10 +49,10 @@ DISPLAY_NAMES = {
     "momentum": "deciding and acting",
 }
 
-# Locked. Do not rewrite these. They rotate under every screen after the first run.
+# Locked. They rotate on the end-of-session screen only.
 SIGNOFFS = (
-    "When it gets noisy, you can always reach for clarity.",
-    "The best ideas from the sharpest minds, ready when a decision gets hard.",
+    "Clarity is a competitive edge.",
+    "The people who see clearly win.",
 )
 
 
