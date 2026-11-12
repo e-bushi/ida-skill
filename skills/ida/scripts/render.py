@@ -125,10 +125,23 @@ def bar_line(phylum: str, strong: int, partial: int, total: int, index: int | No
     return "\n".join(lane_lines(phylum, strong, partial, total, index, delta))
 
 
+def _banner_lines(name: str) -> list[str]:
+    lines = []
+    for piece in render_name(name):
+        lines.append(("  " + piece) if piece.strip(" \u200b") else SPACER)
+    return lines
+
+
+def _step_marks(step: int) -> str:
+    marks = ["■" if index <= step else "□" for index in range(1, 4)]
+    return "  " + " ".join(marks) + f"    {step:02d} / {len(QUESTIONS):02d}"
+
+
 def opening(step: int = 1, issue: int = 1) -> str:
+    del issue
     if step < 1 or step > len(QUESTIONS):
         raise ValueError(step)
-    lines = [spread("  ida", f"NO. {issue:03d}"), heavy()]
+    lines = _banner_lines("IDA")
     lines.extend(gap(2))
     if step == 1:
         lines.extend(
@@ -138,27 +151,13 @@ def opening(step: int = 1, issue: int = 1) -> str:
             ]
         )
         lines.extend(gap(2))
-        lines.append("  ■ first session · 3 quick questions · about a minute")
-        lines.extend(gap(2))
-    lines.append(thin())
-    lines.append(f"  {step:02d} / {len(QUESTIONS):02d}")
-    lines.extend(gap(1))
-    label = spaced(QUESTIONS[step - 1].rstrip("?"))
-    words = label.split("   ")
-    current = ""
-    wrapped: list[str] = []
-    for word in words:
-        if not current:
-            current = word
-        elif len(current) + 3 + len(word) <= 72:
-            current = current + "   " + word
-        else:
-            wrapped.append(current)
-            current = word
-    if current:
-        wrapped.append(current)
-    for piece in wrapped:
-        lines.append("  " + piece)
+    lines.append(_step_marks(step))
+    lines.extend(gap(2))
+    words = QUESTIONS[step - 1].rstrip("?").split()
+    for index, word in enumerate(words):
+        if index:
+            lines.extend(gap(1))
+        lines.extend(_banner_lines(word))
     return _check(lines)
 
 

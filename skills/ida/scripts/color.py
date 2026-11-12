@@ -92,6 +92,9 @@ def paint(text: str, mode: str) -> str:
         if any(ch in line for ch in "█▒░"):
             out.append(_paint_bar(line, mode))
             continue
+        if " / " in stripped and ("■" in stripped or "□" in stripped):
+            out.append(accent + line + RESET)
+            continue
         if stripped.startswith("■■■"):
             out.append(accent + line + RESET)
             continue

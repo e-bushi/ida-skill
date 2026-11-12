@@ -5,32 +5,75 @@ Illustrations. During practice, do not open this file.
 ## First visit
 
 ```text
-  ida                                                                NO. 001
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ▀█▀░█▀▄░▀█▀░
+   █░ █░█░█▀█░
+  ▄█▄░█▄▀░▀░▀░
  ​
  ​
   When it gets noisy,
   you can always reach for clarity.
  ​
  ​
-  ■ first session · 3 quick questions · about a minute
+  ■ □ □    01 / 03
  ​
  ​
-  ────────────────────────────────────────────────────────────────────────
-  01 / 03
+  █░█░█░█░▀█▀░▀█▀░
+  ███░█▀█░█▀█░ █░
+  █▀█░█░█░▀░▀░ █░
  ​
-  W H A T   D O   Y O U   D O   F O R   W O R K
+  █▀▄░▄▀▄░
+  █░█░█░█░
+  █▄▀░▀▄▀░
+ ​
+  █░█░▄▀▄░█░█░
+   ▀░ █░█░█░█░
+   █░ ▀▄▀░▀▄▀░
+ ​
+  █▀▄░▄▀▄░
+  █░█░█░█░
+  █▄▀░▀▄▀░
+ ​
+  █▀▀░▄▀▄░█▀▄░
+  █▀░ █░█░█▀█░
+  █░  ▀▄▀░█░█░
+ ​
+  █░█░▄▀▄░█▀▄░█░█░
+  ███░█░█░█▀█░█▀░
+  █▀█░▀▄▀░█░█░█░█░
 ```
 
 ```text
-  ida                                                                NO. 001
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ▀█▀░█▀▄░▀█▀░
+   █░ █░█░█▀█░
+  ▄█▄░█▄▀░▀░▀░
  ​
  ​
-  ────────────────────────────────────────────────────────────────────────
-  02 / 03
+  ■ ■ □    02 / 03
  ​
-  W H A T   A R E   Y O U   I N T O   B E S I D E S   T H A T
+ ​
+  █░█░█░█░▀█▀░▀█▀░
+  ███░█▀█░█▀█░ █░
+  █▀█░█░█░▀░▀░ █░
+ ​
+  ▀█▀░█▀▄░█▀▀░
+  █▀█░█▀█░█▀░
+  ▀░▀░█░█░█▄▄░
+ ​
+  █░█░▄▀▄░█░█░
+   ▀░ █░█░█░█░
+   █░ ▀▄▀░▀▄▀░
+ ​
+  ▀█▀░█▀█░▀█▀░▄▀▄░
+   █░ ███░ █░ █░█░
+  ▄█▄░█░█░ █░ ▀▄▀░
+ ​
+  █▀▄░█▀▀░▄▀▀░▀█▀░█▀▄░█▀▀░▄▀▀░
+  █▀█░█▀░ ▀▀▄░ █░ █░█░█▀░ ▀▀▄░
+  █▄▀░█▄▄░▀▄▀░▄█▄░█▄▀░█▄▄░▀▄▀░
+ ​
+  ▀█▀░█░█░▀█▀░▀█▀░
+   █░ █▀█░█▀█░ █░
+   █░ █░█░▀░▀░ █░
 ```
 
 ```text
@@ -146,6 +189,10 @@ QUESTION: It's called Inversion. To master a problem, study how to fail at it, t
 ```
 
 The choice tool question is that QUESTION line, not "Where do you want to go from here?". If the line still says `<one-line definition you write>`, replace only those words with one sentence.
+
+## One more pass
+
+They typed a question in Other: "Can you break this down for me even more, please?" That is a request, not an answer. The command is `sh ~/.agents/skills/ida/ida turn explain`. The reply does not explain beside the tool. The next choice tool's question is the `QUESTION:` line, with each placeholder filled in. Break it after each sentence when the tool allows. Then got it, another angle, next, menu.
 
 The screen between those markers is the next fence. Under that fence, write how the idea applies to this scene, then three short steps. If the screen had no definition line, write the definition there too. Then the choice tool, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
 

@@ -48,6 +48,8 @@ The card frame contains the word SCENE. Replace that word in the fence with the 
 | `partial` | Save partial. |
 | `miss` | Save a miss and return to the menu. |
 | `idk` | Save idk. Print the banner and the library definition when this idea has one. No other arguments. |
+| `explain` | Another pass at the last idea. The `QUESTION:` line is the next choice question. Fill each placeholder. Do not answer beside the tool. |
+| `hint` | Before they answer. A nudge in the choice question. Do not name the idea. |
 | `hint` | The card frame again. Write one nudge in the reply. Do not name the idea. |
 | `skip` | Save a miss and return to the menu. |
 | `why` | The last feedback, one level down. |
