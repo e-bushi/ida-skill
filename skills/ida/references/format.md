@@ -10,7 +10,7 @@ Do not pass the scene, the explanation, or the steps as command flags. Write `/t
 
 Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
 
-The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. Profile questions have no `›` line. The question itself is the prompt. When the host has a choice tool, the screen has no `›` line either. The tool carries the choices, single select, with lowercase section names. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
+The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes `■ T H E   Q U E S T I O N` and the question text, and a multiple-choice card also includes the numbered options. That block is pasted in the reply. A free-text card does not call the choice tool. Under the question it has `type your answer · idk · hint · skip`, and the reply ends. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
 The headline stays on the first question of a first run only:
 
@@ -69,7 +69,7 @@ When the reveal did not land, this block is the reply. The choice tool comes aft
 
 ## Choices
 
-If the host has a choice tool, use it and do not print a `›` line. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `ida turn --typed` and the `›` line is the choice.
+If the host has a choice tool, use it for a menu, a multiple-choice answer, or the next step after feedback. Do not use it to ask a free-text question. The card's question stays in the fence. Claude Code: `AskUserQuestion`. Cursor: `cursor/ask_question` when that method is available, otherwise AskQuestion if it is in your tool list. Warp's agent: `AskUserQuestion` when the host exposes it. Single select, not checkboxes. Do not write "Question 1 of 1". Labels are lowercase spoken names, and on a multiple-choice card they are only the short option names. Put the percent, or a one-line reason, in the description. If there is no such tool, the first command is `ida turn --typed` and the `›` line is the choice.
 
 Use it for the practice menu, the seven lanes, multiple choice, and the after-answer actions (next, why, menu, retry).
 
@@ -154,6 +154,8 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
  ​
     Which way of thinking fits here? Name it and apply it in a sentence or
     two.
+ ​
+  type your answer · idk · hint · skip
 ```
 
 ```text

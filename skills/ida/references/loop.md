@@ -109,7 +109,7 @@ The choice tool comes after the block is in the reply. Single select. Short labe
 
 ## After the card
 
-When the screen ends in a `›` line, that line is the prompt. Honor it. When it does not, the choice tool is the prompt, and you call it only after the screen is already in the reply.
+When the screen ends in a `›` line, that line is the prompt. Honor it. A free-text card has no choice tool. The fence is the question, and the reply ends so they can type an answer, or idk, or hint, or skip. That line under the question is part of the card, not a tool. The choice tool is only a menu, a multiple-choice answer, or the next step after feedback. It is never a substitute for `■ T H E   Q U E S T I O N`.
 
 - "hint" before an answer: one nudge, no `save`.
 - "idk" or "skip": the NOT YET screen, then `save --result idk`.

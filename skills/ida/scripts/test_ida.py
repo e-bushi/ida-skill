@@ -91,8 +91,10 @@ class RenderTests(unittest.TestCase):
                 text = render.card(4, phylum, "A short scene with a real stake.", practice=practice)
                 self.assertTrue(all(len(line) <= 76 for line in text.splitlines()), text)
                 self.assertNotIn("›", text)
+                self.assertIn("type your answer · idk · hint · skip", text)
                 typed = render.card(4, phylum, "A short scene with a real stake.", practice=practice, typed=True)
-                self.assertTrue(typed.strip().endswith('"skip"'))
+                self.assertNotIn("›", typed)
+                self.assertTrue(typed.strip().endswith("skip"))
                 self.assertNotIn("✓", text)
                 self.assertIn(render.spaced(render.display_name(phylum)), text)
                 self.assertIn("┃", text)
@@ -107,7 +109,31 @@ class RenderTests(unittest.TestCase):
         )
         self.assertTrue(all(len(line) <= 76 for line in text.splitlines()))
         self.assertIn("commutative", text)
+        self.assertIn("T H E   Q U E S T I O N", text)
+        self.assertIn("Which one fits?", text)
         self.assertNotIn("Clarity is a competitive edge.", text)
+
+    def test_card_includes_the_question(self):
+        free = render.card(2, "strategy", "A seed-stage startup offers you a role.")
+        self.assertIn("T H E   Q U E S T I O N", free)
+        self.assertIn("Which way of thinking fits here?", free)
+        self.assertIn("type your answer · idk · hint · skip", free)
+        self.assertNotIn("›", free)
+        self.assertIn("A seed-stage startup offers you a role.", free)
+        choice = render.card(
+            1,
+            "bias",
+            "They quote the customers who stayed.",
+            mode="choice",
+            options=["survivorship bias", "confirmation bias", "sunk cost", "anchoring"],
+        )
+        self.assertIn("T H E   Q U E S T I O N", choice)
+        self.assertIn("Which one fits?", choice)
+        for name in ("survivorship bias", "confirmation bias", "sunk cost", "anchoring"):
+            self.assertIn(name, choice)
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("A free-text card, and a profile question, end the reply.", skill)
+        self.assertNotIn("idk / hint / skip on a free-text card", skill)
 
     def test_bars_are_ten_cells_and_partials_are_half(self):
         empty, pct = render.bar_cells(0, 0, 81)
@@ -314,11 +340,13 @@ class RenderTests(unittest.TestCase):
         self.assertNotIn("›", render.opening(2))
         self.assertNotIn("your own words", render.opening(1))
         card = render.card(1, "bias", "A short scene with a real stake.")
-        self.assertNotIn("your answer", card)
+        self.assertNotIn("your own words", card)
+        self.assertIn("type your answer · idk · hint · skip", card)
         self.assertNotIn("›", card)
         typed_card = render.card(1, "bias", "A short scene with a real stake.", typed=True)
-        self.assertIn('› "hint" · "idk" · "skip"', typed_card)
-        self.assertTrue(typed_card.splitlines()[-3] == SPACER and typed_card.splitlines()[-2] == SPACER)
+        self.assertIn("type your answer · idk · hint · skip", typed_card)
+        self.assertNotIn("›", typed_card)
+        self.assertTrue(typed_card.strip().endswith("skip"))
         self.assertNotIn("›", render.menu(4))
         self.assertIn("›", render.menu(4, typed=True))
         angle = render.another_angle(

@@ -100,7 +100,7 @@ def paint(text: str, mode: str) -> str:
         if stripped.startswith("□□□"):
             out.append(dim + line + RESET)
             continue
-        if stripped.startswith(("━", "─", "›", "ida")) or stripped.startswith("ida "):
+        if stripped.startswith(("━", "─", "›", "ida", "type your answer")) or stripped.startswith("ida "):
             out.append(dim + line + RESET)
             continue
         if "■" in line:
