@@ -152,6 +152,12 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ​
  ​
+  Lanes are the seven kinds of thinking ida trains. Each holds ways of
+  thinking from the sharpest minds, turned into scenes from your work and
+  life. Practice one until it sticks, and you will reach for the right
+  idea when it counts.
+ ​
+ ​
   pick a lane
  ​
  ​

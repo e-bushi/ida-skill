@@ -81,6 +81,12 @@ Illustrations. During practice, do not open this file.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ​
  ​
+  Lanes are the seven kinds of thinking ida trains. Each holds ways of
+  thinking from the sharpest minds, turned into scenes from your work and
+  life. Practice one until it sticks, and you will reach for the right
+  idea when it counts.
+ ​
+ ​
   pick a lane
  ​
  ​
@@ -185,7 +191,11 @@ The command output starts with a line for the agent, then `BEGIN`, then the scre
 [ida -> agent] The user cannot see this output. Paste everything between the markers into your reply in a text fence, then write how it applies + 3 steps, THEN call the choice tool. The choice tool question MUST be the exact string after QUESTION:.
 BEGIN
 END
-QUESTION: It's called Inversion. To master a problem, study how to fail at it, then refuse to. Where to from here?
+QUESTION_BANNER: spaced
+QUESTION:
+I N V E R S I O N
+To master a problem, study how to fail at it, then refuse to.
+Where to from here?
 ```
 
 The choice tool question is that QUESTION line, not "Where do you want to go from here?". If the line still says `<one-line definition you write>`, replace only those words with one sentence.

@@ -58,7 +58,9 @@ The card frame contains the word SCENE. Replace that word in the fence with the 
 | `--typed` | No choice tool on this host. Remember it. Screens then end with a `›` line. Pass it once, on the first turn. |
 | a number during a choice card | That option. A correct option is strong. |
 
-`ida turn idk` reads the pick saved in `~/.ida`. It does not take a definition from you. After `END` it prints `QUESTION:`. The choice tool question is that string, copied exactly. Seven ideas have a stored definition, and the string includes it. The other ideas leave `<one-line definition you write>` in the string. Replace only those words with one sentence. Strong, partial, and miss print a `QUESTION:` line that names the idea. Copy that too.
+`ida turn idk` reads the pick saved in `~/.ida`. It does not take a definition from you. After `END` it prints `QUESTION_BANNER:` and then `QUESTION:`. Copy every line after `QUESTION:` into the choice tool, with real line breaks. Do not write a backslash and the letter n. The default banner form is `spaced`: the name in spaced caps, then the definition, then "Where to from here?". Spaced caps are the default because Cursor's AskQuestion has shown newlines as the two characters backslash-n, and Claude Code's AskUserQuestion draws the question in bold proportional text, not a monospace grid. A 3-row banner would not stay aligned there. Option descriptions in Claude Code also flatten newlines. Set `IDA_QUESTION_BANNER=block` to print the 3-row banner instead. The printed `QUESTION_BANNER:` line says which form this output used. Seven ideas include a stored definition. The others leave `<one-line definition you write>`. Replace only those words. Strong, partial, and miss print a single `QUESTION:` line that names the idea.
+
+`ida turn` with no card open, after the profile, prints a menu `QUESTION:` and `OPTIONS:`. The choice question is that `QUESTION:` line. Each option label is one `OPTIONS:` line.
 
 A card has the word SCENE in the rail. The scene is not an argument.
 
