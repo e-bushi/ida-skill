@@ -1110,21 +1110,17 @@ class ColorAndBannerTests(unittest.TestCase):
         from ida import _idk_question, _split_name
 
         forbidden = set("░▒▓▀▄▌▐■")
-        self.assertEqual(question_tier("inversion"), "5")
+        self.assertEqual(question_tier("inversion"), "large")
         inversion = question_banner("inversion")
-        self.assertEqual(len(inversion), 5)
+        self.assertGreaterEqual(len(inversion), 5)
         self.assertIn("█", "\n".join(inversion))
         self.assertNotIn("INVERSION", "\n".join(inversion))
 
-        self.assertEqual(question_tier("material conditional"), "wrap")
+        self.assertEqual(question_tier("material conditional"), "small-wrap")
         material = question_banner("material conditional")
-        self.assertEqual(material.count(""), 1)
-        self.assertEqual(len(material), 9)
+        self.assertIn("", material)
+        self.assertGreater(len(material), 8)
 
-        self.assertEqual(question_tier("contingency"), "5")
-        self.assertEqual(len(question_banner("contingency")), 5)
-        self.assertEqual(question_tier("contrapositive"), "4")
-        self.assertEqual(len(question_banner("contrapositive")), 4)
         self.assertEqual(question_tier("counterexample"), "plain")
         self.assertEqual(question_banner("counterexample"), ["counterexample"])
 
@@ -1135,14 +1131,12 @@ class ColorAndBannerTests(unittest.TestCase):
             rows = question_banner(bare)
             self.assertGreaterEqual(len(rows), 1, entry["name"])
             tier = question_tier(bare)
-            if tier == "5":
-                self.assertEqual(len(rows), 5, entry["name"])
-            elif tier == "4":
-                self.assertEqual(len(rows), 4, entry["name"])
-            elif tier == "wrap":
+            if tier in ("large-wrap", "small-wrap"):
                 self.assertIn("", rows, entry["name"])
-            else:
+            elif tier == "plain":
                 self.assertTrue(all("█" not in row for row in rows), entry["name"])
+            else:
+                self.assertIn("█", "\n".join(rows), entry["name"])
             for row in rows:
                 self.assertFalse(forbidden & set(row), entry["name"])
                 self.assertLessEqual(len(row), 62, entry["name"])
@@ -1152,11 +1146,11 @@ class ColorAndBannerTests(unittest.TestCase):
                 self.assertLessEqual(len(line), 64, entry["name"])
 
     def test_question_fonts_use_distinct_letterforms(self):
-        from sora_glyphs import SORA4, SORA5
+        from sora_glyphs import SORA_LARGE, SORA_SMALL
 
         forbidden = set("░▒▓▀▄▌▐■")
         letters = "abcdefghijklmnopqrstuvwxyz"
-        for font, height in ((SORA5, 5), (SORA4, 4)):
+        for font, height in ((SORA_LARGE, 9), (SORA_SMALL, 7)):
             shapes = []
             for ch in letters:
                 glyph = font[ch]
@@ -1167,13 +1161,21 @@ class ColorAndBannerTests(unittest.TestCase):
                 shapes.append(tuple(glyph))
             self.assertEqual(len(shapes), len(set(shapes)))
         for ch in "bdfhklti":
-            self.assertIn("█", SORA5[ch][0], ch)
+            self.assertIn("█", SORA_LARGE[ch][0], ch)
         for ch in "gjpqy":
-            self.assertIn("█", SORA5[ch][4], ch)
-            self.assertEqual(len(SORA4[ch]), 4, ch)
+            self.assertIn("█", SORA_LARGE[ch][-1], ch)
+            self.assertIn("█", SORA_SMALL[ch][-1], ch)
         for ch in "ces":
-            self.assertIn(" ", "".join(SORA5[ch]), ch)
-            self.assertIn(" ", "".join(SORA4[ch]), ch)
+            self.assertIn(" ", "".join(SORA_LARGE[ch]), ch)
+            self.assertIn(" ", "".join(SORA_SMALL[ch]), ch)
+        self.assertNotEqual(SORA_LARGE["c"], SORA_LARGE["e"])
+        self.assertNotEqual(SORA_LARGE["e"], SORA_LARGE["o"])
+        self.assertNotEqual(SORA_LARGE["s"], SORA_LARGE["3"])
+        self.assertNotEqual(SORA_LARGE["r"], SORA_LARGE["n"])
+        self.assertNotEqual(SORA_LARGE["t"], SORA_LARGE["l"])
+        self.assertNotEqual(SORA_LARGE["l"], SORA_LARGE["i"])
+        self.assertNotEqual(SORA_LARGE["i"], SORA_LARGE["1"])
+        self.assertEqual(len(SORA_LARGE["l"][2]), 2)
 
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name
