@@ -85,7 +85,7 @@ One short command, after the answer. No prose on the command. Do not write a fil
 
 `sh ~/.agents/skills/ida/ida turn strong`
 
-A thin answer is `sh ~/.agents/skills/ida/ida turn partial`. A wrong one is `sh ~/.agents/skills/ida/ida turn miss`. For idk, `sh ~/.agents/skills/ida/ida turn idk`. That prints the banner and the library definition when one is stored. Under the pasted screen, write how it applies to this scene and three steps. If no definition was printed, write the definition there too. Then the choice tool. Its question is every line after `QUESTION:`, with the line breaks kept. Replace `<one sentence on this scene>` with one sentence tied to this scenario. Never leave the placeholder visible.
+A thin answer is `sh ~/.agents/skills/ida/ida turn partial`. A wrong one is `sh ~/.agents/skills/ida/ida turn miss`. For idk, `sh ~/.agents/skills/ida/ida turn idk`. That prints the name and the library definition in the choice question when one is stored. Under the pasted screen, write how it applies to this scene and three steps. If the question still says `<one plain sentence>`, write one plain sentence there. Then the choice tool. Its question is every line after `QUESTION:`, with the line breaks kept. Replace `<one sentence on this scene>` with one sentence tied to this scenario. Never leave a placeholder visible.
 
 The dealt idea takes the grade. If they reached for a fair different idea, say so in the reply after the screen. Do not put a miss on an idea they never mentioned.
 
@@ -114,7 +114,7 @@ The choice tool comes after the block is in the reply. Single select. Short labe
 When the screen ends in a `›` line, that line is the prompt. Honor it. A free-text card has no choice tool and no hint line. The fence ends at the question, and the reply ends so they can type. idk, hint, and skip are still valid typed replies. The choice tool is only a menu, a multiple-choice answer, or the next step after feedback. It is never a substitute for `■ T H E   Q U E S T I O N`.
 
 - "hint" before an answer: `sh ~/.agents/skills/ida/ida turn hint`. Write one nudge in the reply. Do not name the idea. No new grade.
-- "idk": `sh ~/.agents/skills/ida/ida turn idk`. Paste the banner and the definition. Under that fence, write how it applies and three steps. Then the choice tool. Its question is every line after `QUESTION:`, with the real line breaks kept. Replace `<one sentence on this scene>` with one sentence tied to this scenario. Never leave the placeholder visible.
+- "idk": `sh ~/.agents/skills/ida/ida turn idk`. Paste the screen. Under that fence, write how it applies and three steps. Then the choice tool. Its question is every line after `QUESTION:`, with the real line breaks kept: the lowercase name, the underline, the definition, and the scene line. Replace `<one sentence on this scene>` with one sentence tied to this scenario. If `<one plain sentence>` is still there, replace it with one plain sentence. Never leave a placeholder visible.
 - "skip": `sh ~/.agents/skills/ida/ida turn skip`. A miss, then the menu.
 - a thin answer: `sh ~/.agents/skills/ida/ida turn partial`. A wrong one: `sh ~/.agents/skills/ida/ida turn miss`. A strong one: `sh ~/.agents/skills/ida/ida turn strong`.
 - "why" or "show me": one more sentence in ida's voice. No new card. Do not attribute it to a real person.

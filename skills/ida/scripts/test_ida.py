@@ -912,19 +912,20 @@ class IdaCommandTests(unittest.TestCase):
             self.assertNotIn("H O W   T O   A P P L Y", reveal.stdout)
             self.assertNotIn("FROM STDIN", reveal.stdout)
             self.assertIn("THEN call the choice tool.", reveal.stdout)
-            self.assertIn("QUESTION_BANNER: block", reveal.stdout)
+            self.assertNotIn("QUESTION_BANNER", reveal.stdout)
+            self.assertIn("   inversion\n", reveal.stdout)
+            self.assertIn("   " + "─" * len("inversion"), reveal.stdout)
             self.assertIn("In your scene: <one sentence on this scene>.", reveal.stdout)
-            self.assertIn("━" * 64, reveal.stdout)
-            self.assertIn("To master a problem, study how to fail at it, then refuse to.", reveal.stdout)
+            self.assertIn("To master a problem, study how to fail at it, then refuse", reveal.stdout)
+            self.assertIn("   to.", reveal.stdout)
             self.assertLess(reveal.stdout.index("\nEND"), reveal.stdout.index("\nQUESTION:"))
             explained = run(["turn", "explain"])
-            self.assertIn("In plain words: To master a problem", explained.stdout)
+            self.assertIn("   inversion\n", explained.stdout)
             self.assertIn("In your scene: <one sentence on this scene>.", explained.stdout)
-            self.assertIn("━" * 64, explained.stdout)
-            self.assertIn("<everyday comparison>", explained.stdout)
-            self.assertIn("<3 short steps>", explained.stdout)
+            self.assertNotIn("In plain words:", explained.stdout)
+            self.assertNotIn("━", explained.stdout.split("QUESTION:\n", 1)[1])
             asked = run(["turn", "Can you break this down for me even more, please?"])
-            self.assertIn("In plain words:", asked.stdout)
+            self.assertIn("   inversion\n", asked.stdout)
             self.assertNotIn("use strong", asked.stderr)
             self.assertLess(reveal.stdout.index("BEGIN"), reveal.stdout.index("not yet"))
             self.assertLess(reveal.stdout.index("not yet"), reveal.stdout.index("\nEND"))
@@ -1024,10 +1025,12 @@ class IdaRevealTests(unittest.TestCase):
             self.assertNotIn("{", reveal.stderr)
             self.assertIn("three steps", reveal.stderr.splitlines()[0])
             self.assertIn("THEN call the choice tool.", reveal.stdout)
-            self.assertIn("QUESTION_BANNER: block", reveal.stdout)
+            self.assertNotIn("QUESTION_BANNER", reveal.stdout)
+            self.assertIn("   inversion\n", reveal.stdout)
+            self.assertIn("   " + "─" * len("inversion"), reveal.stdout)
             self.assertIn("In your scene: <one sentence on this scene>.", reveal.stdout)
-            self.assertIn("━" * 64, reveal.stdout)
-            self.assertIn("To master a problem, study how to fail at it, then refuse to.", reveal.stdout)
+            self.assertIn("To master a problem, study how to fail at it, then refuse", reveal.stdout)
+            self.assertIn("   to.", reveal.stdout)
             self.assertLess(reveal.stdout.index("[ida -> agent]"), reveal.stdout.index("BEGIN"))
             assert_blank_tail(self, reveal.stdout)
             assert_blank_tail(self, reveal.stderr)
@@ -1045,20 +1048,11 @@ class IdaRevealTests(unittest.TestCase):
             open_reveal = run(["turn", "idk"])
             self.assertIn("no stored definition", open_reveal.stderr)
             self.assertNotIn("to master a problem", open_reveal.stdout)
-            self.assertIn("QUESTION_BANNER: block", open_reveal.stdout)
+            self.assertIn("   contingency\n", open_reveal.stdout)
+            self.assertIn("   " + "─" * len("contingency"), open_reveal.stdout)
+            self.assertIn("<one plain sentence>.", open_reveal.stdout)
             self.assertIn("In your scene: <one sentence on this scene>.", open_reveal.stdout)
-            self.assertIn("<one-line definition you write>.", open_reveal.stdout)
-            spaced_env = env.copy()
-            spaced_env["IDA_QUESTION_BANNER"] = "spaced"
-            saved_env = env.copy()
-            env.clear()
-            env.update(spaced_env)
-            spaced = run(["turn", "idk"])
-            env.clear()
-            env.update(saved_env)
-            self.assertIn("QUESTION_BANNER: spaced", spaced.stdout)
-            self.assertIn("C O N T I N G E N C Y", spaced.stdout)
-            self.assertIn("In your scene: <one sentence on this scene>.", spaced.stdout)
+            self.assertNotIn("QUESTION_BANNER", open_reveal.stdout)
             self.assertIn("█", open_reveal.stdout)
             again = run(["turn", "deal", "via-negativa"])
             self.assertEqual(again.returncode, 0, again.stderr)
@@ -1085,97 +1079,47 @@ class IdaRevealTests(unittest.TestCase):
 
 
 class ColorAndBannerTests(unittest.TestCase):
-    def test_every_question_line_fits_the_choice_box(self):
-        from ida import _idk_question
+    def test_idk_question_is_a_quiet_name(self):
+        from ida import _explain_question, _idk_question
 
-        _doc, catalog = load_catalog()
-        self.assertEqual(len(catalog), 443)
-        for entry in catalog:
-            question = _idk_question(entry["name"], "A short definition of the idea.")
-            body = question.split("QUESTION:\n", 1)[1]
-            for line in body.splitlines():
-                self.assertLessEqual(len(line), 64, entry["name"])
-            self.assertIn("In your scene: <one sentence on this scene>.", body)
-            self.assertIn("━" * 64, body)
-        framed = _idk_question(
-            "material conditional (→)",
-            '"If P, then Q" is false only when P is true and Q is false.',
+        inversion = _idk_question(
+            "inversion",
+            "to master a problem, study how to fail at it, then refuse to.",
         )
-        self.assertIn("  (→)", framed)
-        self.assertIn("Where to from here?", framed)
-        self.assertNotIn("░", framed)
-
-    def test_question_banner_shrinks_to_one_line(self):
-        from banner import question_banner, question_tier
-        from ida import _idk_question, _split_name
-
-        forbidden = set("░▒▓▀▄▌▐■")
-        self.assertEqual(question_tier("inversion"), "large")
-        inversion = question_banner("inversion")
-        self.assertGreaterEqual(len(inversion), 5)
-        self.assertIn("█", "\n".join(inversion))
-        self.assertNotIn("INVERSION", "\n".join(inversion))
-
-        self.assertEqual(question_tier("material conditional"), "small-wrap")
-        material = question_banner("material conditional")
-        self.assertIn("", material)
-        self.assertGreater(len(material), 8)
-
-        self.assertEqual(question_tier("counterexample"), "plain")
-        self.assertEqual(question_banner("counterexample"), ["counterexample"])
+        self.assertEqual(
+            inversion.split("QUESTION:\n", 1)[1],
+            "\n"
+            "   inversion\n"
+            "   ─────────\n"
+            "\n"
+            "   To master a problem, study how to fail at it, then refuse\n"
+            "   to.\n"
+            "\n"
+            "   In your scene: <one sentence on this scene>.\n"
+            "\n",
+        )
+        material = _idk_question("material conditional (→)", "")
+        body = material.split("QUESTION:\n", 1)[1]
+        self.assertIn("   material conditional\n", body)
+        self.assertIn("   " + "─" * len("material conditional") + "\n", body)
+        self.assertIn("   <one plain sentence>.\n", body)
+        self.assertNotIn("→", body)
+        self.assertNotIn("█", body)
+        self.assertNotIn("━", body)
+        self.assertNotIn("■", body)
+        self.assertEqual(_explain_question("inversion", "to master a problem, study how to fail at it, then refuse to."), inversion)
 
         _doc, catalog = load_catalog()
         self.assertEqual(len(catalog), 443)
         for entry in catalog:
-            bare, _symbol, _gloss = _split_name(entry["name"])
-            rows = question_banner(bare)
-            self.assertGreaterEqual(len(rows), 1, entry["name"])
-            tier = question_tier(bare)
-            if tier in ("large-wrap", "small-wrap"):
-                self.assertIn("", rows, entry["name"])
-            elif tier == "plain":
-                self.assertTrue(all("█" not in row for row in rows), entry["name"])
-            else:
-                self.assertIn("█", "\n".join(rows), entry["name"])
-            for row in rows:
-                self.assertFalse(forbidden & set(row), entry["name"])
-                self.assertLessEqual(len(row), 62, entry["name"])
-            body = _idk_question(entry["name"], "A short definition.").split("QUESTION:\n", 1)[1]
-            self.assertNotIn("░", body, entry["name"])
-            for line in body.splitlines():
-                self.assertLessEqual(len(line), 64, entry["name"])
-
-    def test_question_fonts_use_distinct_letterforms(self):
-        from sora_glyphs import SORA_LARGE, SORA_SMALL
-
-        forbidden = set("░▒▓▀▄▌▐■")
-        letters = "abcdefghijklmnopqrstuvwxyz"
-        for font, height in ((SORA_LARGE, 9), (SORA_SMALL, 7)):
-            shapes = []
-            for ch in letters:
-                glyph = font[ch]
-                self.assertEqual(len(glyph), height, ch)
-                self.assertEqual(len({len(row) for row in glyph}), 1, ch)
-                self.assertFalse(forbidden & set("".join(glyph)), ch)
-                self.assertTrue(set("".join(glyph)) <= {"█", " "}, ch)
-                shapes.append(tuple(glyph))
-            self.assertEqual(len(shapes), len(set(shapes)))
-        for ch in "bdfhklti":
-            self.assertIn("█", SORA_LARGE[ch][0], ch)
-        for ch in "gjpqy":
-            self.assertIn("█", SORA_LARGE[ch][-1], ch)
-            self.assertIn("█", SORA_SMALL[ch][-1], ch)
-        for ch in "ces":
-            self.assertIn(" ", "".join(SORA_LARGE[ch]), ch)
-            self.assertIn(" ", "".join(SORA_SMALL[ch]), ch)
-        self.assertNotEqual(SORA_LARGE["c"], SORA_LARGE["e"])
-        self.assertNotEqual(SORA_LARGE["e"], SORA_LARGE["o"])
-        self.assertNotEqual(SORA_LARGE["s"], SORA_LARGE["3"])
-        self.assertNotEqual(SORA_LARGE["r"], SORA_LARGE["n"])
-        self.assertNotEqual(SORA_LARGE["t"], SORA_LARGE["l"])
-        self.assertNotEqual(SORA_LARGE["l"], SORA_LARGE["i"])
-        self.assertNotEqual(SORA_LARGE["i"], SORA_LARGE["1"])
-        self.assertEqual(len(SORA_LARGE["l"][2]), 2)
+            question = _idk_question(entry["name"], "A short definition of the idea that may need a second line if it runs long enough to wrap.")
+            text = question.split("QUESTION:\n", 1)[1]
+            self.assertTrue(text.startswith("\n"), entry["name"])
+            self.assertTrue(text.endswith("\n"), entry["name"])
+            self.assertIn("In your scene: <one sentence on this scene>.", text)
+            self.assertNotIn("QUESTION_BANNER", question)
+            for line in text.splitlines():
+                self.assertLessEqual(len(line), 60, entry["name"])
 
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name

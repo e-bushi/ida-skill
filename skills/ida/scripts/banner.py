@@ -6,15 +6,12 @@ columns. A name that fits is one line. Otherwise each word is its own
 line. A word that still does not fit, or that uses a character this
 font does not have, falls back to spaced caps with a ■.
 
-The choice-box banner is lowercase Sora Bold. A name that fits uses the
-9-row font, one word per line when the whole name does not. A word that
-is still too wide uses the 7-row font. Plain text is the last resort.
+The idk card still uses this banner. The choice question does not.
 """
 
 from __future__ import annotations
 
 from common import SPACER
-from sora_glyphs import SORA_LARGE, SORA_SMALL
 
 # Three rows, top to bottom. Width is the string length.
 FONT = {
@@ -62,97 +59,6 @@ FONT = {
     ",": ["   ", "   ", " ▄ "],
     "?": ["▀▀▄", " ▀ ", " ▄ "],
 }
-
-# Question banner, traced from Sora Bold. See sora_glyphs.py.
-# Interior of the 64-column frame: two spaces of inset, so the art is 62.
-CONTENT_MAX = 62
-LETTER_GAP = " "
-WORD_GAP = "  "
-
-
-def _banner_text(name: str) -> str:
-    text = str(name).replace("\u2013", "-").replace("\u2014", "-").replace("\u2019", "'")
-    return " ".join(text.lower().split())
-
-
-def _paint(text: str, font: dict) -> list[str]:
-    """One banner line. One column between letters, two between words."""
-    height = len(next(iter(font.values())))
-    rows = [""] * height
-    for word_index, word in enumerate(text.split(" ")):
-        if word_index:
-            for y in range(height):
-                rows[y] += WORD_GAP
-        for char_index, ch in enumerate(word):
-            if char_index:
-                for y in range(height):
-                    rows[y] += LETTER_GAP
-            glyph = font[ch]
-            for y in range(height):
-                rows[y] += glyph[y]
-    return [row.rstrip() for row in rows]
-
-
-def _paint_width(text: str, font: dict) -> int:
-    return max(len(row) for row in _paint(text, font))
-
-
-def _known(text: str, font: dict) -> bool:
-    return all(ch == " " or ch in font for ch in text)
-
-
-def _trim(rows: list[str]) -> list[str]:
-    rows = list(rows)
-    while rows and not rows[0].strip():
-        rows.pop(0)
-    while rows and not rows[-1].strip():
-        rows.pop()
-    return rows or [""]
-
-
-def question_tier(name: str, max_cols: int = CONTENT_MAX) -> str:
-    """large, large-wrap, small, small-wrap, or plain.
-
-    The 9-row font is used for a name that fits on one line, and for one
-    word per line when each word fits. The 7-row font is for a word that
-    is wider than that. Plain text is only when a word is still wider
-    than the frame.
-    """
-    text = _banner_text(name)
-    if not text:
-        return "plain"
-    words = text.split()
-    if _known(text, SORA_LARGE) and _paint_width(text, SORA_LARGE) <= max_cols:
-        return "large"
-    if words and _known(text, SORA_LARGE) and all(_paint_width(word, SORA_LARGE) <= max_cols for word in words):
-        return "large-wrap"
-    if _known(text, SORA_SMALL) and _paint_width(text, SORA_SMALL) <= max_cols:
-        return "small"
-    if words and _known(text, SORA_SMALL) and all(_paint_width(word, SORA_SMALL) <= max_cols for word in words):
-        return "small-wrap"
-    return "plain"
-
-
-def question_banner(name: str, max_cols: int = CONTENT_MAX) -> list[str]:
-    """Lowercase Sora banner for the choice box. Lines are at most max_cols."""
-    text = _banner_text(name)
-    if not text:
-        return [""]
-    tier = question_tier(text, max_cols)
-    if tier == "large":
-        return _trim(_paint(text, SORA_LARGE))
-    if tier == "small":
-        return _trim(_paint(text, SORA_SMALL))
-    if tier in ("large-wrap", "small-wrap"):
-        font = SORA_LARGE if tier == "large-wrap" else SORA_SMALL
-        lines: list[str] = []
-        for index, word in enumerate(text.split()):
-            if index:
-                lines.append("")
-            lines.extend(_trim(_paint(word, font)))
-        return lines
-    return [text]
-
 
 MAX_COLS = 72
 

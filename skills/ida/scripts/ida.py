@@ -520,42 +520,15 @@ def _as_sentence(text: str) -> str:
     return text
 
 
-def _banner_mode() -> str:
-    mode = os.environ.get("IDA_QUESTION_BANNER", "block").strip().lower()
-    return "spaced" if mode == "spaced" else "block"
-
-
-def _split_name(name: str) -> tuple[str, str, str]:
-    """Return the banner name, a symbol like (→), and a caps gloss if any."""
+def _quiet_name(name: str) -> str:
+    """Lowercase name for the question. A trailing parenthetical is not shown."""
     text = " ".join(str(name).split())
     if text.endswith(")") and " (" in text:
-        head, _, tail = text.rpartition(" (")
-        inside = tail[:-1]
-        if not head:
-            return text, "", ""
-        symbolic = any(not (ch.isalpha() or ch.isdigit() or ch in " ,'\"-±") for ch in inside)
-        short = len(inside) <= 12 and " " not in inside.strip()
-        if symbolic or short:
-            return head, f"({inside})", ""
-        return head, "", inside
-    return text, "", ""
-
-
-def _framed_name(name: str, mode: str) -> str:
-    """Heavy frame around the name. Every line is at most 64 columns."""
-    from banner import question_banner, spaced_caps
-
-    bare, symbol, gloss = _split_name(name)
-    if mode == "spaced":
-        inner = ["  " + line for line in _wrap_plain(spaced_caps(bare), 62)]
-    else:
-        inner = ["  " + line for line in question_banner(bare, 62)]
-    if gloss:
-        inner.extend("  " + line for line in _wrap_plain(spaced_caps(gloss), 62))
-    if symbol:
-        inner.extend("  " + line for line in _wrap_plain(symbol, 62))
-    rule = "━" * 64
-    return "\n".join([rule, *inner, rule])
+        head, _, _tail = text.rpartition(" (")
+        if head:
+            text = head
+    text = text.replace("\u2013", "-").replace("\u2014", "-").replace("\u2019", "'")
+    return " ".join(text.lower().split()) or "the idea"
 
 
 def _wrap_plain(text: str, width: int) -> list[str]:
@@ -580,21 +553,38 @@ def _wrap_plain(text: str, width: int) -> list[str]:
     return lines
 
 
-def _idk_question(name: str, definition: str) -> str:
-    """Framed name, definition, a scene placeholder, then the ask.
+def _indent_wrap(text: str, width: int = 60) -> list[str]:
+    """Wrap so each line, including a 3-space indent, stays within width."""
+    inner = width - 3
+    return ["   " + line for line in _wrap_plain(text, inner)]
 
-    The default is a lowercase Sora banner inside a heavy frame. A longer
-    name uses the 4-row size, then one word per line. Line breaks in the
-    Cursor choice box do render, so the question is multi-line. Set
-    IDA_QUESTION_BANNER=spaced to use spaced caps inside the same frame.
-    The agent replaces the scene placeholder. The script does not know the scene.
+
+def _quiet_question(name: str, definition: str) -> str:
+    """Name, an underline, one definition, and a scene line.
+
+    A blank line opens and closes the block. The agent replaces the scene
+    sentence, and the definition placeholder when no law is stored.
     """
-    mode = _banner_mode()
-    gloss = _as_sentence(definition) if definition.strip() else "<one-line definition you write>."
-    gloss_lines = ["  " + line for line in _wrap_plain(gloss, 62)]
-    scene = "  In your scene: <one sentence on this scene>."
-    body = "\n".join([_framed_name(name, mode), *gloss_lines, "", scene, "", "Where to from here?"])
-    return f"QUESTION_BANNER: {mode}\nQUESTION:\n{body}"
+    shown = _quiet_name(name)
+    name_lines = _indent_wrap(shown)
+    span = max(len(line) - 3 for line in name_lines)
+    underline = "   " + ("─" * span)
+    sentence = _as_sentence(definition) if definition.strip() else "<one plain sentence>."
+    lines = [
+        "",
+        *name_lines,
+        underline,
+        "",
+        *_indent_wrap(sentence),
+        "",
+        *_indent_wrap("In your scene: <one sentence on this scene>."),
+        "",
+    ]
+    return "QUESTION:\n" + "\n".join(lines) + "\n"
+
+
+def _idk_question(name: str, definition: str) -> str:
+    return _quiet_question(name, definition)
 
 
 def _question_line(result: str, name: str, definition: str = "") -> str:
@@ -620,19 +610,7 @@ def _opening_question(step: int) -> str:
 
 
 def _explain_question(name: str, definition: str) -> str:
-    plain = _as_sentence(definition) if definition.strip() else "<one-line definition>."
-    sentences = [
-        f"In plain words: {plain}",
-        "Like <everyday comparison>.",
-        "In your scene: <one sentence on this scene>.",
-        "Try it: <3 short steps>.",
-    ]
-    lines = [_framed_name(name, _banner_mode())]
-    for sentence in sentences:
-        lines.extend("  " + line for line in _wrap_plain(sentence, 62))
-        lines.append("")
-    lines.append("Where to from here?")
-    return f"QUESTION_BANNER: {_banner_mode()}\nQUESTION:\n" + "\n".join(lines)
+    return _quiet_question(name, definition)
 
 
 def _is_request(text: str) -> bool:
