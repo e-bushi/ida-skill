@@ -8,7 +8,7 @@ A spacer looks blank and is not an empty line. One spacer separates related line
 
 Commands stay short. No prose on the command line. `ida turn deal <id>` or `ida turn next` saves the idea. The card frame prints the word SCENE. In the reply, replace that word with the scene you write. `ida turn idk` prints the banner and the library definition when one is stored. Under that fence, write how it applies to the scene and three steps. If no definition was printed, write the definition there too. Do not write a temp file. Do not use a heredoc. Do not pipe stdin. Do not use a file-edit tool.
 
-Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts.
+Levels: a block banner only when they say idk. Spaced caps for section names and labels. Plain sentences for the scene and the praise. Small labels joined with · for prompts. The choice question after idk or explain is quiet. A blank line, the lowercase name indented 3 spaces, a light underline of the same length, a blank line, one plain definition, a blank line, then `In your scene: <one sentence on this scene>.`, and a blank line after. No frame, no banner, no symbol. Lines wrap at 60 columns and keep the 3-space indent. Pass those lines as-is. Replace the scene sentence. If `<one plain sentence>` is still there, replace it with one plain sentence and no jargon. Never leave a placeholder visible.
 
 The heavy rule opens and closes a screen. The light rule splits inside. ■ is the accent. A card always includes the frame, `■ T H E   Q U E S T I O N`, and the question text, and a multiple-choice card also includes the numbered options. The command leaves the word SCENE in the rail. The reply replaces SCENE with the scene and keeps the question. A free-text card ends there. It does not call the choice tool, and it does not list idk, hint, or skip. Those words are still accepted if the person types them. The tool is for menus, multiple-choice labels, and the next step after feedback. Profile questions have no `›` line. `sh ~/.agents/skills/ida/ida turn --typed` is the fallback, decided once per sitting, and only then does a `›` line appear.
 
@@ -76,9 +76,9 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
 ## Screens
 
 ```text
-  ▀█▀░█▀▄░▀█▀░
-   █░ █░█░█▀█░
-  ▄█▄░█▄▀░▀░▀░
+  ▀█▀ █▀▄ ▀█▀
+   █  █ █ █▀█
+  ▄█▄ █▄▀ ▀ ▀
  ​
  ​
   When it gets noisy,
@@ -88,63 +88,63 @@ Use it for the practice menu, the seven lanes, multiple choice, and the after-an
   ■ □ □    01 / 03
  ​
  ​
-  █░█░█░█░▀█▀░▀█▀░
-  ███░█▀█░█▀█░ █░
-  █▀█░█░█░▀░▀░ █░
+  █ █ █ █ ▀█▀ ▀█▀
+  ███ █▀█ █▀█  █
+  █▀█ █ █ ▀ ▀  █
  ​
-  █▀▄░▄▀▄░
-  █░█░█░█░
-  █▄▀░▀▄▀░
+  █▀▄ ▄▀▄
+  █ █ █ █
+  █▄▀ ▀▄▀
  ​
-  █░█░▄▀▄░█░█░
-   ▀░ █░█░█░█░
-   █░ ▀▄▀░▀▄▀░
+  █ █ ▄▀▄ █ █
+   ▀  █ █ █ █
+   █  ▀▄▀ ▀▄▀
  ​
-  █▀▄░▄▀▄░
-  █░█░█░█░
-  █▄▀░▀▄▀░
+  █▀▄ ▄▀▄
+  █ █ █ █
+  █▄▀ ▀▄▀
  ​
-  █▀▀░▄▀▄░█▀▄░
-  █▀░ █░█░█▀█░
-  █░  ▀▄▀░█░█░
+  █▀▀ ▄▀▄ █▀▄
+  █▀  █ █ █▀█
+  █   ▀▄▀ █ █
  ​
-  █░█░▄▀▄░█▀▄░█░█░
-  ███░█░█░█▀█░█▀░
-  █▀█░▀▄▀░█░█░█░█░
+  █ █ ▄▀▄ █▀▄ █ █
+  ███ █ █ █▀█ █▀
+  █▀█ ▀▄▀ █ █ █ █
 ```
 
 ```text
-  ▀█▀░█▀▄░▀█▀░
-   █░ █░█░█▀█░
-  ▄█▄░█▄▀░▀░▀░
+  ▀█▀ █▀▄ ▀█▀
+   █  █ █ █▀█
+  ▄█▄ █▄▀ ▀ ▀
  ​
  ​
   ■ ■ □    02 / 03
  ​
  ​
-  █░█░█░█░▀█▀░▀█▀░
-  ███░█▀█░█▀█░ █░
-  █▀█░█░█░▀░▀░ █░
+  █ █ █ █ ▀█▀ ▀█▀
+  ███ █▀█ █▀█  █
+  █▀█ █ █ ▀ ▀  █
  ​
-  ▀█▀░█▀▄░█▀▀░
-  █▀█░█▀█░█▀░
-  ▀░▀░█░█░█▄▄░
+  ▀█▀ █▀▄ █▀▀
+  █▀█ █▀█ █▀
+  ▀ ▀ █ █ █▄▄
  ​
-  █░█░▄▀▄░█░█░
-   ▀░ █░█░█░█░
-   █░ ▀▄▀░▀▄▀░
+  █ █ ▄▀▄ █ █
+   ▀  █ █ █ █
+   █  ▀▄▀ ▀▄▀
  ​
-  ▀█▀░█▀█░▀█▀░▄▀▄░
-   █░ ███░ █░ █░█░
-  ▄█▄░█░█░ █░ ▀▄▀░
+  ▀█▀ █▀█ ▀█▀ ▄▀▄
+   █  ███  █  █ █
+  ▄█▄ █ █  █  ▀▄▀
  ​
-  █▀▄░█▀▀░▄▀▀░▀█▀░█▀▄░█▀▀░▄▀▀░
-  █▀█░█▀░ ▀▀▄░ █░ █░█░█▀░ ▀▀▄░
-  █▄▀░█▄▄░▀▄▀░▄█▄░█▄▀░█▄▄░▀▄▀░
+  █▀▄ █▀▀ ▄▀▀ ▀█▀ █▀▄ █▀▀ ▄▀▀
+  █▀█ █▀  ▀▀▄  █  █ █ █▀  ▀▀▄
+  █▄▀ █▄▄ ▀▄▀ ▄█▄ █▄▀ █▄▄ ▀▄▀
  ​
-  ▀█▀░█░█░▀█▀░▀█▀░
-   █░ █▀█░█▀█░ █░
-   █░ █░█░▀░▀░ █░
+  ▀█▀ █ █ ▀█▀ ▀█▀
+   █  █▀█ █▀█  █
+   █  █ █ ▀ ▀  █
 ```
 
 ```text
@@ -257,9 +257,9 @@ When the card is dealt, a status strip sits under the title. Counts come from `~
   □□□  not yet. here's what to reach for.
  ​
  ​
-  ▀█▀░█▀█░█░█░█▀▀░█▀▄░▄▀▀░▀█▀░▄▀▄░█▀█░
-   █░ ███░█░█░█▀░ █▀█░▀▀▄░ █░ █░█░███░
-  ▄█▄░█░█░ ▀░ █▄▄░█░█░▀▄▀░▄█▄░▀▄▀░█░█░
+  ▀█▀ █▀█ █ █ █▀▀ █▀▄ ▄▀▀ ▀█▀ ▄▀▄ █▀█
+   █  ███ █ █ █▀  █▀█ ▀▀▄  █  █ █ ███
+  ▄█▄ █ █  ▀  █▄▄ █ █ ▀▄▀ ▄█▄ ▀▄▀ █ █
  ​
  ​
   to master a problem, study how to fail at it, then refuse to.

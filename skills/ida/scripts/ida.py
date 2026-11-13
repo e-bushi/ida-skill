@@ -520,35 +520,71 @@ def _as_sentence(text: str) -> str:
     return text
 
 
-def _banner_mode() -> str:
-    mode = os.environ.get("IDA_QUESTION_BANNER", "spaced").strip().lower()
-    return "block" if mode == "block" else "spaced"
+def _quiet_name(name: str) -> str:
+    """Lowercase name for the question. A trailing parenthetical is not shown."""
+    text = " ".join(str(name).split())
+    if text.endswith(")") and " (" in text:
+        head, _, _tail = text.rpartition(" (")
+        if head:
+            text = head
+    text = text.replace("\u2013", "-").replace("\u2014", "-").replace("\u2019", "'")
+    return " ".join(text.lower().split()) or "the idea"
 
 
-def _name_mark(name: str, mode: str) -> str:
-    from banner import render_name, spaced_caps
+def _wrap_plain(text: str, width: int) -> list[str]:
+    words = text.split()
+    if not words:
+        return []
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        if not current:
+            current = word
+        elif len(current) + 1 + len(word) <= width:
+            current = current + " " + word
+        else:
+            lines.append(current)
+            current = word
+        while len(current) > width:
+            lines.append(current[:width])
+            current = current[width:]
+    if current:
+        lines.append(current)
+    return lines
 
-    if mode == "block":
-        return "\n".join(render_name(name))
-    return spaced_caps(name)
+
+def _indent_wrap(text: str, width: int = 60) -> list[str]:
+    """Wrap so each line, including a 3-space indent, stays within width."""
+    inner = width - 3
+    return ["   " + line for line in _wrap_plain(text, inner)]
+
+
+def _quiet_question(name: str, definition: str) -> str:
+    """Name, an underline, one definition, and a scene line.
+
+    A blank line opens and closes the block. The agent replaces the scene
+    sentence, and the definition placeholder when no law is stored.
+    """
+    shown = _quiet_name(name)
+    name_lines = _indent_wrap(shown)
+    span = max(len(line) - 3 for line in name_lines)
+    underline = "   " + ("─" * span)
+    sentence = _as_sentence(definition) if definition.strip() else "<one plain sentence>."
+    lines = [
+        "",
+        *name_lines,
+        underline,
+        "",
+        *_indent_wrap(sentence),
+        "",
+        *_indent_wrap("In your scene: <one sentence on this scene>."),
+        "",
+    ]
+    return "QUESTION:\n" + "\n".join(lines) + "\n"
 
 
 def _idk_question(name: str, definition: str) -> str:
-    """Name mark, definition, then the ask.
-
-    Default is spaced caps. Cursor's AskQuestion prompt is a plain string and
-    has shipped with newlines shown as the two characters backslash-n. Claude
-    Code's AskUserQuestion keeps newlines in the question, but the body is bold
-    proportional text, not a monospace grid, so a 3-row banner will not stay
-    aligned. Option descriptions there also flatten newlines. Monospace is only
-    an optional per-option preview, which is not the question the person always
-    sees. Spaced caps survive wrapping. IDA_QUESTION_BANNER=block switches to
-    the 3-row banner for a host that keeps a grid.
-    """
-    mode = _banner_mode()
-    gloss = _as_sentence(definition) if definition.strip() else "<one-line definition you write>."
-    mark = _name_mark(name, mode)
-    return f"QUESTION_BANNER: {mode}\nQUESTION:\n{mark}\n{gloss}\nWhere to from here?"
+    return _quiet_question(name, definition)
 
 
 def _question_line(result: str, name: str, definition: str = "") -> str:
@@ -574,14 +610,7 @@ def _opening_question(step: int) -> str:
 
 
 def _explain_question(name: str, definition: str) -> str:
-    called = _called(name)
-    plain = _as_sentence(definition) if definition.strip() else "<one-line definition>."
-    return (
-        f"QUESTION: {called}. In plain words: {plain} "
-        "Like <everyday comparison>. "
-        "In your scene: <how it applies, 1-2 sentences>. "
-        "Try it: <3 short steps>. Where to from here?"
-    )
+    return _quiet_question(name, definition)
 
 
 def _is_request(text: str) -> bool:

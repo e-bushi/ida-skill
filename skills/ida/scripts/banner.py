@@ -1,12 +1,12 @@
 """Compact banners for an idk reveal.
 
-Each letter is 3 columns and 3 rows, drawn with █ ▀ ▄ so the strokes
-stay crisp. A ░ sits one column to the right of a stroke, only in an
-empty cell, so the banner stays 3 rows tall. A letter plus that shadow
-is 4 columns. 18 letters is 72 columns. A name that fits is one line.
-Otherwise each word is its own line. A word that still does not fit,
-or that uses a character this font does not have, falls back to spaced
-caps with a ■.
+Each letter is 3 columns and 3 rows, drawn with █ ▀ ▄. A plain space
+separates glyphs. There is no shade character. 18 letters is about 72
+columns. A name that fits is one line. Otherwise each word is its own
+line. A word that still does not fit, or that uses a character this
+font does not have, falls back to spaced caps with a ■.
+
+The idk card still uses this banner. The choice question does not.
 """
 
 from __future__ import annotations
@@ -55,10 +55,12 @@ FONT = {
     "'": ["▀", " ", " "],
     "-": ["   ", "▀▀▀", "   "],
     ".": ["   ", "   ", " ▄ "],
+    "/": ["  █", " █ ", "█  "],
+    ",": ["   ", "   ", " ▄ "],
+    "?": ["▀▀▄", " ▀ ", " ▄ "],
 }
 
 MAX_COLS = 72
-FILL = set("█▀▄")
 
 
 def spaced_caps(text: str) -> str:
@@ -99,15 +101,7 @@ def _raster(token: str) -> list[str]:
         glyph = FONT[ch]
         for y in range(3):
             rows[y] += glyph[y]
-    rows = [row + " " for row in rows]
-    painted = []
-    for row in rows:
-        chars = list(row)
-        for x, ch in enumerate(chars[:-1]):
-            if ch in FILL and chars[x + 1] == " ":
-                chars[x + 1] = "░"
-        painted.append("".join(chars).rstrip())
-    return painted
+    return [row.rstrip() for row in rows]
 
 
 def _width(token: str) -> int:

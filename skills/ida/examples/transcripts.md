@@ -5,9 +5,9 @@ Illustrations. During practice, do not open this file.
 ## First visit
 
 ```text
-  ▀█▀░█▀▄░▀█▀░
-   █░ █░█░█▀█░
-  ▄█▄░█▄▀░▀░▀░
+  ▀█▀ █▀▄ ▀█▀
+   █  █ █ █▀█
+  ▄█▄ █▄▀ ▀ ▀
  ​
  ​
   When it gets noisy,
@@ -17,63 +17,63 @@ Illustrations. During practice, do not open this file.
   ■ □ □    01 / 03
  ​
  ​
-  █░█░█░█░▀█▀░▀█▀░
-  ███░█▀█░█▀█░ █░
-  █▀█░█░█░▀░▀░ █░
+  █ █ █ █ ▀█▀ ▀█▀
+  ███ █▀█ █▀█  █
+  █▀█ █ █ ▀ ▀  █
  ​
-  █▀▄░▄▀▄░
-  █░█░█░█░
-  █▄▀░▀▄▀░
+  █▀▄ ▄▀▄
+  █ █ █ █
+  █▄▀ ▀▄▀
  ​
-  █░█░▄▀▄░█░█░
-   ▀░ █░█░█░█░
-   █░ ▀▄▀░▀▄▀░
+  █ █ ▄▀▄ █ █
+   ▀  █ █ █ █
+   █  ▀▄▀ ▀▄▀
  ​
-  █▀▄░▄▀▄░
-  █░█░█░█░
-  █▄▀░▀▄▀░
+  █▀▄ ▄▀▄
+  █ █ █ █
+  █▄▀ ▀▄▀
  ​
-  █▀▀░▄▀▄░█▀▄░
-  █▀░ █░█░█▀█░
-  █░  ▀▄▀░█░█░
+  █▀▀ ▄▀▄ █▀▄
+  █▀  █ █ █▀█
+  █   ▀▄▀ █ █
  ​
-  █░█░▄▀▄░█▀▄░█░█░
-  ███░█░█░█▀█░█▀░
-  █▀█░▀▄▀░█░█░█░█░
+  █ █ ▄▀▄ █▀▄ █ █
+  ███ █ █ █▀█ █▀
+  █▀█ ▀▄▀ █ █ █ █
 ```
 
 ```text
-  ▀█▀░█▀▄░▀█▀░
-   █░ █░█░█▀█░
-  ▄█▄░█▄▀░▀░▀░
+  ▀█▀ █▀▄ ▀█▀
+   █  █ █ █▀█
+  ▄█▄ █▄▀ ▀ ▀
  ​
  ​
   ■ ■ □    02 / 03
  ​
  ​
-  █░█░█░█░▀█▀░▀█▀░
-  ███░█▀█░█▀█░ █░
-  █▀█░█░█░▀░▀░ █░
+  █ █ █ █ ▀█▀ ▀█▀
+  ███ █▀█ █▀█  █
+  █▀█ █ █ ▀ ▀  █
  ​
-  ▀█▀░█▀▄░█▀▀░
-  █▀█░█▀█░█▀░
-  ▀░▀░█░█░█▄▄░
+  ▀█▀ █▀▄ █▀▀
+  █▀█ █▀█ █▀
+  ▀ ▀ █ █ █▄▄
  ​
-  █░█░▄▀▄░█░█░
-   ▀░ █░█░█░█░
-   █░ ▀▄▀░▀▄▀░
+  █ █ ▄▀▄ █ █
+   ▀  █ █ █ █
+   █  ▀▄▀ ▀▄▀
  ​
-  ▀█▀░█▀█░▀█▀░▄▀▄░
-   █░ ███░ █░ █░█░
-  ▄█▄░█░█░ █░ ▀▄▀░
+  ▀█▀ █▀█ ▀█▀ ▄▀▄
+   █  ███  █  █ █
+  ▄█▄ █ █  █  ▀▄▀
  ​
-  █▀▄░█▀▀░▄▀▀░▀█▀░█▀▄░█▀▀░▄▀▀░
-  █▀█░█▀░ ▀▀▄░ █░ █░█░█▀░ ▀▀▄░
-  █▄▀░█▄▄░▀▄▀░▄█▄░█▄▀░█▄▄░▀▄▀░
+  █▀▄ █▀▀ ▄▀▀ ▀█▀ █▀▄ █▀▀ ▄▀▀
+  █▀█ █▀  ▀▀▄  █  █ █ █▀  ▀▀▄
+  █▄▀ █▄▄ ▀▄▀ ▄█▄ █▄▀ █▄▄ ▀▄▀
  ​
-  ▀█▀░█░█░▀█▀░▀█▀░
-   █░ █▀█░█▀█░ █░
-   █░ █░█░▀░▀░ █░
+  ▀█▀ █ █ ▀█▀ ▀█▀
+   █  █▀█ █▀█  █
+   █  █ █ ▀ ▀  █
 ```
 
 ```text
@@ -202,18 +202,23 @@ The command output starts with a line for the agent, then `BEGIN`, then the scre
 [ida -> agent] The user cannot see this output. Paste everything between the markers into your reply in a text fence, then write how it applies + 3 steps, THEN call the choice tool. The choice tool question MUST be the exact string after QUESTION:.
 BEGIN
 END
-QUESTION_BANNER: spaced
 QUESTION:
-I N V E R S I O N
-To master a problem, study how to fail at it, then refuse to.
-Where to from here?
+
+   inversion
+   ─────────
+
+   To master a problem, study how to fail at it, then refuse
+   to.
+
+   In your scene: <one sentence on this scene>.
+
 ```
 
-The choice tool question is that QUESTION line, not "Where do you want to go from here?". If the line still says `<one-line definition you write>`, replace only those words with one sentence.
+The choice tool question is every line after `QUESTION:`, passed as-is with the line breaks kept. Replace `<one sentence on this scene>` with one sentence tied to this scenario. If the definition still says `<one plain sentence>`, replace it with one plain sentence and no jargon. Never leave a placeholder visible. It is not "Where do you want to go from here?".
 
 ## One more pass
 
-They typed a question in Other: "Can you break this down for me even more, please?" That is a request, not an answer. The command is `sh ~/.agents/skills/ida/ida turn explain`. The reply does not explain beside the tool. The next choice tool's question is the `QUESTION:` line, with each placeholder filled in. Break it after each sentence when the tool allows. Then got it, another angle, next, menu.
+They typed a question in Other: "Can you break this down for me even more, please?" That is a request, not an answer. The command is `sh ~/.agents/skills/ida/ida turn explain`. The reply does not explain beside the tool. The next choice tool's question is every line after `QUESTION:`, the same quiet name block, passed as-is. Fill the scene sentence, and the definition placeholder if it is still there. Never leave a placeholder visible. Then got it, another angle, next, menu.
 
 The screen between those markers is the next fence. Under that fence, write how the idea applies to this scene, then three short steps. If the screen had no definition line, write the definition there too. Then the choice tool, one question, short labels only: got it, another like this, menu. The reveal is not inside the tool.
 
@@ -221,9 +226,9 @@ The screen between those markers is the next fence. Under that fence, write how 
   □□□  not yet. here's what to reach for.
  ​
  ​
-  ▀█▀░█▀█░█░█░█▀▀░█▀▄░▄▀▀░▀█▀░▄▀▄░█▀█░
-   █░ ███░█░█░█▀░ █▀█░▀▀▄░ █░ █░█░███░
-  ▄█▄░█░█░ ▀░ █▄▄░█░█░▀▄▀░▄█▄░▀▄▀░█░█░
+  ▀█▀ █▀█ █ █ █▀▀ █▀▄ ▄▀▀ ▀█▀ ▄▀▄ █▀█
+   █  ███ █ █ █▀  █▀█ ▀▀▄  █  █ █ ███
+  ▄█▄ █ █  ▀  █▄▄ █ █ ▀▄▀ ▄█▄ ▀▄▀ █ █
  ​
  ​
   to master a problem, study how to fail at it, then refuse to.
