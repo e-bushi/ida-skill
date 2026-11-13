@@ -549,7 +549,7 @@ def _framed_name(name: str, mode: str) -> str:
     if mode == "spaced":
         inner = ["  " + line for line in _wrap_plain(spaced_caps(bare), 62)]
     else:
-        inner = ["  " + line for line in question_banner(bare, 60)]
+        inner = ["  " + line for line in question_banner(bare, 62)]
     if gloss:
         inner.extend("  " + line for line in _wrap_plain(spaced_caps(gloss), 62))
     if symbol:
@@ -583,9 +583,8 @@ def _wrap_plain(text: str, width: int) -> list[str]:
 def _idk_question(name: str, definition: str) -> str:
     """Framed name, definition, a scene placeholder, then the ask.
 
-    The default is one banner line inside a heavy frame. A longer name uses
-    a smaller letterform, then plain uppercase, instead of a second banner
-    row. Line breaks in the
+    The default is a lowercase Sora banner inside a heavy frame. A longer
+    name uses the 4-row size, then one word per line. Line breaks in the
     Cursor choice box do render, so the question is multi-line. Set
     IDA_QUESTION_BANNER=spaced to use spaced caps inside the same frame.
     The agent replaces the scene placeholder. The script does not know the scene.

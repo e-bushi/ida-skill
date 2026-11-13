@@ -1109,28 +1109,24 @@ class ColorAndBannerTests(unittest.TestCase):
         from banner import question_banner, question_tier
         from ida import _idk_question, _split_name
 
-        self.assertEqual(question_tier("inversion"), 1)
+        forbidden = set("░▒▓▀▄▌▐■")
+        self.assertEqual(question_tier("inversion"), "5")
         inversion = question_banner("inversion")
         self.assertEqual(len(inversion), 5)
-        self.assertIn("_|_", "\n".join(inversion))
-        self.assertNotIn("░", "\n".join(inversion))
+        self.assertIn("█", "\n".join(inversion))
+        self.assertNotIn("INVERSION", "\n".join(inversion))
 
-        self.assertEqual(question_tier("material conditional"), 3)
+        self.assertEqual(question_tier("material conditional"), "wrap")
         material = question_banner("material conditional")
-        self.assertEqual(material, ["MATERIAL CONDITIONAL"])
-        self.assertLessEqual(len(material[0]), 60)
+        self.assertEqual(material.count(""), 1)
+        self.assertEqual(len(material), 9)
 
-        self.assertEqual(question_tier("contingency"), 2)
-        contingency = question_banner("contingency")
-        self.assertEqual(len(contingency), 4)
-        self.assertNotIn("░", "\n".join(contingency))
-
-        long_name = "first-mover advantage vs. first-mover disadvantage"
-        self.assertEqual(question_tier(long_name), 3)
-        long_line = question_banner(long_name)
-        self.assertEqual(long_line, [long_name.upper()])
-        self.assertNotIn("░", long_line[0])
-        self.assertLessEqual(len(long_line[0]), 60)
+        self.assertEqual(question_tier("contingency"), "5")
+        self.assertEqual(len(question_banner("contingency")), 5)
+        self.assertEqual(question_tier("contrapositive"), "4")
+        self.assertEqual(len(question_banner("contrapositive")), 4)
+        self.assertEqual(question_tier("counterexample"), "plain")
+        self.assertEqual(question_banner("counterexample"), ["counterexample"])
 
         _doc, catalog = load_catalog()
         self.assertEqual(len(catalog), 443)
@@ -1138,32 +1134,46 @@ class ColorAndBannerTests(unittest.TestCase):
             bare, _symbol, _gloss = _split_name(entry["name"])
             rows = question_banner(bare)
             self.assertGreaterEqual(len(rows), 1, entry["name"])
-            self.assertLessEqual(len(rows), 5, entry["name"])
-            self.assertTrue(all(row.strip() for row in rows), entry["name"])
-            self.assertEqual(len(rows), {1: 5, 2: 4, 3: 1}[question_tier(bare)], entry["name"])
+            tier = question_tier(bare)
+            if tier == "5":
+                self.assertEqual(len(rows), 5, entry["name"])
+            elif tier == "4":
+                self.assertEqual(len(rows), 4, entry["name"])
+            elif tier == "wrap":
+                self.assertIn("", rows, entry["name"])
+            else:
+                self.assertTrue(all("█" not in row for row in rows), entry["name"])
             for row in rows:
-                self.assertNotIn("░", row, entry["name"])
-                self.assertLessEqual(len(row), 60, entry["name"])
+                self.assertFalse(forbidden & set(row), entry["name"])
+                self.assertLessEqual(len(row), 62, entry["name"])
             body = _idk_question(entry["name"], "A short definition.").split("QUESTION:\n", 1)[1]
             self.assertNotIn("░", body, entry["name"])
             for line in body.splitlines():
                 self.assertLessEqual(len(line), 64, entry["name"])
 
     def test_question_fonts_use_distinct_letterforms(self):
-        from banner import LARGE, MEDIUM
+        from sora_glyphs import SORA4, SORA5
 
-        forbidden = set("░▒▀▄█")
-        glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&-.',/?"
-        for font in (LARGE, MEDIUM):
+        forbidden = set("░▒▓▀▄▌▐■")
+        letters = "abcdefghijklmnopqrstuvwxyz"
+        for font, height in ((SORA5, 5), (SORA4, 4)):
             shapes = []
-            for ch in glyphs:
+            for ch in letters:
                 glyph = font[ch]
+                self.assertEqual(len(glyph), height, ch)
                 self.assertEqual(len({len(row) for row in glyph}), 1, ch)
                 self.assertFalse(forbidden & set("".join(glyph)), ch)
-                shapes.append(tuple(row.rstrip() for row in glyph))
+                self.assertTrue(set("".join(glyph)) <= {"█", " "}, ch)
+                shapes.append(tuple(glyph))
             self.assertEqual(len(shapes), len(set(shapes)))
-        self.assertEqual(len(LARGE["A"]), 5)
-        self.assertEqual(len(MEDIUM["A"]), 4)
+        for ch in "bdfhklti":
+            self.assertIn("█", SORA5[ch][0], ch)
+        for ch in "gjpqy":
+            self.assertIn("█", SORA5[ch][4], ch)
+            self.assertEqual(len(SORA4[ch]), 4, ch)
+        for ch in "ces":
+            self.assertIn(" ", "".join(SORA5[ch]), ch)
+            self.assertIn(" ", "".join(SORA4[ch]), ch)
 
     def test_every_name_fits_the_banner_width(self):
         from banner import render_name

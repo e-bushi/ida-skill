@@ -205,7 +205,7 @@ END
 QUESTION_BANNER: block
 QUESTION:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  <name on one banner line>
+  <lowercase sora banner of the name>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   To master a problem, study how to fail at it, then refuse to.
 
